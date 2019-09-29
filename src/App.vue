@@ -16,8 +16,10 @@ export default {
   background-repeat: space;
   background-blend-mode: saturation;
   background-size: cover;
+
   margin: 0%;
   height: 100%;
   width: 100%;
+
 }
 </style>
