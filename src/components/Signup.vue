@@ -2,33 +2,57 @@
   <div id="Signup" style="height:100%;margin :0%">
     <el-container direction="vertical">
       <el-header height="50">
-        <h1>You're a few steps from becoming a <strong><em>PYSATer</em></strong>!</h1>
+        <transition name="slide-fade">
+          <h1>
+            You're a few steps from becoming a
+            <strong>
+              <em>PYSATer!</em>
+            </strong>
+          </h1>
+        </transition>
       </el-header>
       <el-container direction="horizontal" id="main-container">
-        <el-aside width="30">
-          <div style="height: 80%;width : 100%;transition-duration:2s">
+        <el-aside width="50">
+          <div style="height: 70%;width : 100%;transition-duration:4s">
             <el-steps direction="vertical" :active="step">
               <el-step title="设定账号"></el-step>
-              <el-step title="输入密码" ></el-step>
-              <el-step title="再来一遍"  description></el-step>
-              <el-step title="输入邮箱"  description></el-step>
+              <el-step title="输入密码"></el-step>
+              <el-step title="再来一遍" description></el-step>
+              <el-step title="输入邮箱" description></el-step>
             </el-steps>
           </div>
         </el-aside>
-        <el-main>
+        <el-main id="main-form">
           <el-form :model="registerForm" :rules="registerRule" ref="registerForm">
             <el-form-item prop="userName" v-if="step >= 1">
               <el-input type="userName" v-model="registerForm.userName" placeholder="账号"></el-input>
             </el-form-item>
-            <el-form-item prop="pwd" v-if="step >= 2">
-              <el-input v-model="registerForm.pwd" placeholder="密码" type="password"></el-input>
-            </el-form-item>
-            <el-form-item prop="checkPwd" v-if="step >= 3">
-              <el-input v-model="registerForm.checkPwd" placeholder="请再次输入密码" type="password"></el-input>
-            </el-form-item>
-            <el-form-item prop="email" v-if="step >= 4">
-              <el-input v-model="registerForm.email" placeholder="请输入接收验证码的邮箱"></el-input>
-            </el-form-item>
+            <transition name="fade">
+              <el-form-item prop="pwd" v-if="step >= 2">
+                <el-input v-model="registerForm.pwd" placeholder="密码" type="password"></el-input>
+              </el-form-item>
+            </transition>
+            <transition name="fade">
+              <el-form-item prop="checkPwd" v-if="step >= 3">
+                <el-input v-model="registerForm.checkPwd" placeholder="请再次输入密码" type="password"></el-input>
+              </el-form-item>
+            </transition>
+            <transition name="fade">
+              <el-form-item prop="email" v-if="step >= 4">
+                <el-input v-model="registerForm.email" placeholder="请输入接收验证码的邮箱"></el-input>
+              </el-form-item>
+            </transition>
+            <transition name="fade">
+              <el-form-item v-if="step >= 4">
+                <el-input type="textarea" v-model="registerForm.desc" placeholder="来一段自我介绍"></el-input>
+              </el-form-item>
+            </transition>
+            <transition name="fade">
+              <el-form-item v-if="step >= 4">
+                <el-input type="captcha" v-model="registerForm.captcha" placeholder="请告诉我注册暗号"></el-input>
+              </el-form-item>
+            </transition>
+
             <el-form-item>
               <el-button
                 type="primary"
@@ -95,6 +119,7 @@ export default {
         pwd: '',
         checkPwd: '',
         email: '',
+        desc: '',
         captcha: ''
       },
       registerRule: {
@@ -112,9 +137,7 @@ export default {
       }
     }
   },
-  computed: {
-
-  },
+  computed: {},
   methods: {
     userValidate () {
       var x = this.registerForm.userName
@@ -137,7 +160,9 @@ export default {
       }
     },
     checkPwdValidate () {
-      if (this.registerForm.pwd !== this.registerForm.checkPwd) { return false }
+      if (this.registerForm.pwd !== this.registerForm.checkPwd) {
+        return false
+      }
       return true
     },
     submitForm (formName) {
@@ -167,12 +192,21 @@ export default {
       if (this.step === 2 && this.pwdValidate() && this.userValidate()) {
         this.step++
       }
-      if (this.step === 3 && this.checkPwdValidate() && this.userValidate() && this.pwdValidate()) {
+      if (
+        this.step === 3 &&
+        this.checkPwdValidate() &&
+        this.userValidate() &&
+        this.pwdValidate()
+      ) {
         this.step++
       }
 
-      if (this.step < 1) { this.step = 1 }
-      if (this.step > 4) { this.step = 4 }
+      if (this.step < 1) {
+        this.step = 1
+      }
+      if (this.step > 4) {
+        this.step = 4
+      }
     }
   }
 }
@@ -182,9 +216,17 @@ export default {
 #steps {
   height: 80%;
 }
+.el-step {
+font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif !important;
+transition-delay: 1s;
+  user-select: none;
+}
 #main-container {
   width: 60% !important;
   align-self: center;
+}
+#main-form {
+  margin-left: 10%;
 }
 .el-aside {
   overflow: hidden;
@@ -216,5 +258,13 @@ h2:hover {
   color: rgb(40, 40, 40);
   user-select: none;
   text-align: center;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>

@@ -86,11 +86,12 @@ export default {
         color: white;
         margin-top: 30%;
         user-select: none;
-        transition-duration: 0.5s;
+        transition-duration: 1s;
     }
     h3:hover{
-        transform:scale(1.02);
-        transition-duration: 0.5s;
+        transform:scale(1.05);
+        transition-duration: 2s;
+
         border: skyblue;
     }
     .el-breadcrumb {
