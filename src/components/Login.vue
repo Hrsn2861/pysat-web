@@ -35,17 +35,23 @@
   export default {
     data(){
       let checkPhoneNumber = (rule,value,cb)=>{
+		var pattern = /^1[3456789]\d{9}$/; 
         if(!value){
-          return cb(new Error('账户不能为空!'))
-        }else{
+          return cb(new Error('账户不能为空！'))
+        }else if(!pattern.test(value)){
+		  return cb(new Error('请填写真实的手机号！'))
+		}else{
           cb(); // 将判断传递给后面
         }
 
       }
       let checkPassword = (rule,value,cb)=>{
+		var pattern = /^\S{3,20}$/;
         if(!value){
-          return cb(new Error('密码不能为空!'))
-         }else{
+          return cb(new Error('密码不能为空！'))
+         }else if(!pattern.test(value)){
+		  return cb(new Error('密码长度应在3~20之间！'))
+		 }else{
           cb();
          }
       }
