@@ -1,4 +1,5 @@
 <template>
+<div style="padding: 200px">
   <el-card class="box-card">
     <el-row type="flex" justify="center">
       <el-col :span="12">
@@ -28,6 +29,7 @@
       </el-col>
     </el-row>
   </el-card>
+</div>
 </template>
 
 <script type="text/javascript">
