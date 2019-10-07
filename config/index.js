@@ -59,15 +59,16 @@ module.exports = {
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
+	
     proxyTable: {
-      '/api': {
-              target: 'http://pysat-server.CTRL.secoder.local:3027',
-              changeOrigin: true,
-              pathRewrite: {
-                '^/api': ''
-              }
-            }
-    },
+		'/api': {
+		        target: 'http://pysat-server.CTRL.secoder.local:3027',
+		        changeOrigin: true,
+		        pathRewrite: {
+		          '^/api': ''
+		        }
+		      }
+	},
     /**
      * Source Maps
      */
