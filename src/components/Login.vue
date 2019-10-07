@@ -80,7 +80,7 @@
         this.$refs['formLogin'].validate((valid) => {
           if (valid) {
             // 通过验证之后才请求登录接口
-            this.$http.post('/api/login', this.formLogin)
+            this.$http.get('/api', this.formLogin)
                 .then(res => {
                     console.dir(res.data)
                     if (res.data.success) {
