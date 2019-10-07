@@ -10,7 +10,15 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+		'/api': {
+		        target: 'http://pysat-server.CTRL.secoder.local:3027',
+		        changeOrigin: true,
+		        pathRewrite: {
+		          '^/api': ''
+		        }
+		      }
+	},
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
