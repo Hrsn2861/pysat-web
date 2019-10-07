@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <!-- <router-view/> -->
+    <router-view/>
   </div>
 </template>
 
@@ -12,7 +12,7 @@ export default {
 
 <style>
 #app {
-  background: url("./assets/guoqing.jpg");
+  background: url("./assets/background16-9-2.jpg");
   background-repeat: space;
   background-blend-mode: saturation;
   background-size: cover;
