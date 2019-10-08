@@ -18,14 +18,14 @@
               <el-step title="设定账号"></el-step>
               <el-step title="输入密码"></el-step>
               <el-step title="再来一遍" description></el-step>
-              <el-step title="输入邮箱" description></el-step>
+              <el-step title="其它信息" description></el-step>
             </el-steps>
           </div>
         </el-aside>
         <el-main id="main-form">
           <el-form :model="registerForm" :rules="registerRule" status-icon ref="registerForm">
             <el-form-item prop="userName" v-if="step >= 1">
-              <el-input type="userName" v-model="registerForm.userName" placeholder="账号"></el-input>
+              <el-input type="userName" v-model="registerForm.userName" placeholder="账号" maxlength="10" minlength="3"></el-input>
             </el-form-item>
             <transition name="fade">
               <el-form-item prop="pwd" v-if="step >= 2">
@@ -44,14 +44,19 @@
             </transition>
             <transition name="fade">
               <el-form-item v-if="step >= 4">
-                <el-input type="textarea" v-model="registerForm.desc" placeholder="来一段自我介绍"></el-input>
+                <el-input size="mini" type="input" v-model="registerForm.realname" placeholder="您的真实姓名"></el-input>
+                <el-input size="mini" type="email" v-model="registerForm.email" placeholder="请输入你的邮箱"></el-input>
+                <el-input size="mini" type="input" v-model="registerForm.school" placeholder="学校"></el-input>
+              </el-form-item>
+            </transition>
+            <!-- <transition name="fade">
+              <el-form-item v-if="step >= 4">
               </el-form-item>
             </transition>
             <transition name="fade">
               <el-form-item v-if="step >= 4">
-                <el-input type="captcha" v-model="registerForm.captcha" placeholder="请告诉我注册暗号"></el-input>
               </el-form-item>
-            </transition>
+            </transition> -->
 
             <el-form-item>
               <el-button
@@ -129,8 +134,9 @@ export default {
         pwd: '',
         checkPwd: '',
         phonenumber: '',
-        desc: '',
-        captcha: ''
+        email: '',
+        realname: '',
+        school: ''
       },
       registerRule: {
         userName: [{ validator: validateUser, trigger: 'blur' }],
@@ -172,23 +178,41 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let data = {
-            usr: this.registerForm.userName,
-            pwd: this.registerForm.pwd,
-            phonenumber: this.registerForm.phonenumber
+            username: this.registerForm.userName,
+            password: this.registerForm.pwd,
+            telphone: this.registerForm.phonenumber,
+            realname: this.registerForm.realname,
+            email: this.registerForm.email,
+            school: this.registerForm.school
           }
           // doRegister(this, data);
           console.log(data)
-          this.$axios.get('/api/sign_up', data).then(
+          this.$axios.get('/api/signup/', {params: data}).then(
             res => {
               console.log(res)
-              this.$store.commit('TESTFUNC')
-              // this.$message({
-              //   type: 'success',
-              //   message: '欢迎你,' + this.registerForm.userName + '!',
-              //   duration: 2000
-              // })
+              this.$store.commit('TESTFUNC') // just for testing only
+              if (res.data.status) {
+                this.$message({
+                  type: 'success',
+                  message: '欢迎你,' + this.registerForm.userName + '!',
+                  duration: 2000
+                })
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: 'Oops, sign up failed: ' + res.data.msg,
+                  duration: 2000
+                })
+              }
             }
-          )
+          ).catch(err => {
+            console.log(err)
+            this.$message({
+              type: 'error',
+              message: 'Oops, somethings bad and unknown happened',
+              duration: 1000
+            })
+          })
         } else {
           return false
         }
