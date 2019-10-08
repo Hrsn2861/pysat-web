@@ -178,7 +178,7 @@ export default {
           }
           // doRegister(this, data);
           console.log(data)
-          this.$axios.get('/api', data).then(
+          this.$axios.get('/api/sign_up', data).then(
             res => {
               console.log(res)
               this.$store.commit('TESTFUNC')

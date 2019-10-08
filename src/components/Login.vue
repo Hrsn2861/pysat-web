@@ -3,9 +3,9 @@
   <el-card class="box-card">
     <el-row type="flex" justify="center">
       <el-col :span="12">
-        <el-form 
-          label-position="left" 
-          label-width="80px" 
+        <el-form
+          label-position="left"
+          label-width="80px"
           :model="formLogin"
           :rules="rules"
           ref="formLogin">
@@ -34,83 +34,81 @@
 
 <script type="text/javascript">
 
-  export default {
-    data(){
-      let checkPhoneNumber = (rule,value,cb)=>{
-		var pattern = /^1[3456789]\d{9}$/; 
-        if(!value){
-          return cb(new Error('账户不能为空！'))
-        }else if(!pattern.test(value)){
+export default {
+  data () {
+    let checkPhoneNumber = (rule, value, cb) => {
+      var pattern = /^1[3456789]\d{9}$/
+      if (!value) {
+        return cb(new Error('账户不能为空！'))
+      } else if (!pattern.test(value)) {
 		  return cb(new Error('请填写真实的手机号！'))
-		}else{
-          cb(); // 将判断传递给后面
-        }
-
-      }
-      let checkPassword = (rule,value,cb)=>{
-		var pattern = /^\S{3,20}$/;
-        if(!value){
-          return cb(new Error('密码不能为空！'))
-         }else if(!pattern.test(value)){
-		  return cb(new Error('密码长度应在3~20之间！'))
-		 }else{
-          cb();
-         }
-      }
-      return{
-        formLogin:{
-          phonenumber: '',
-          password: '',
-        },
-        rules:{
-          phonenumber:[
-            {validator:checkPhoneNumber,trigger: 'blur'}
-          ],
-          password:[
-            {validator:checkPassword,trigger: 'blur'}
-          ],
-
-        }
-      }
-    },
-    methods:{
-      // 向登录接口发起请求
-      login(){
-        // 表单验证
-        this.$refs['formLogin'].validate((valid) => {
-          if (valid) {
-            // 通过验证之后才请求登录接口
-            //this.$axios.get(process.env.VUE_APP_BASE_API, this.formLogin)
-			this.$axios.get('/api', this.formLogin)
-                .then(res => {
-                    console.dir(res.data)
-                    if (res.data.success) {
-                      this.userLogin(res.data);
-                      this.$message.success(`${res.data.message}`)
-                      // 登录成功 跳转至首页
-                      // this.$router.push({name:'Home'}) 
-                      this.$router.push('/')
-                    }else{
-                      this.$message.error(`${res.data.message}`);
-                      return false;
-                    }
-                })
-                .catch(err => {
-                    this.$message.error(`${err.message}`, 'ERROR!')
-                })
-          } else {
-            this.$message.error('表单验证失败!')
-            return false;
-          }
-        });
-      },
-      // 表单重置
-      resetForm(){
-        console.log('session')
-        this.$refs['formLogin'].resetFields();
+      } else {
+        cb() // 将判断传递给后面
       }
     }
+    let checkPassword = (rule, value, cb) => {
+      var pattern = /^\S{3,20}$/
+      if (!value) {
+        return cb(new Error('密码不能为空！'))
+      } else if (!pattern.test(value)) {
+		  return cb(new Error('密码长度应在3~20之间！'))
+		 } else {
+        cb()
+      }
+    }
+    return {
+      formLogin: {
+        phonenumber: '',
+        password: ''
+      },
+      rules: {
+        phonenumber: [
+          {validator: checkPhoneNumber, trigger: 'blur'}
+        ],
+        password: [
+          {validator: checkPassword, trigger: 'blur'}
+        ]
+
+      }
+    }
+  },
+  methods: {
+    // 向登录接口发起请求
+    login () {
+      // 表单验证
+      this.$refs['formLogin'].validate((valid) => {
+        if (valid) {
+          // 通过验证之后才请求登录接口
+          this.$http.get('api/sign_up', this.formLogin)
+            .then(res => {
+              console.dir(res.data)
+              if (res.data.success) {
+                this.userLogin(res.data)
+                this.$message.success(`${res.data.message}`)
+                // 登录成功 跳转至首页
+                // this.$router.push({name:'Home'})
+                this.$router.push('/')
+              } else {
+                this.$message.error(`${res.data.message}`)
+                return false
+              }
+            })
+            .catch(err => {
+              console.log(err)
+            })
+        } else {
+          this.$message.error('表单验证失败!')
+          return false
+        }
+      })
+    },
+    // 表单重置
+    resetForm () {
+      console.log('session')
+      this.$refs['formLogin'].resetFields()
+    }
   }
+}
 </script>
 
 <style>
