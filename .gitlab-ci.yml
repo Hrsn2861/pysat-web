@@ -13,11 +13,6 @@ build:
     - export BUILD_IMAGE_USERNAME=$CI_REGISTRY_USER
     - export BUILD_IMAGE_PASSWORD=$CI_REGISTRY_PASSWORD
     - deployer build
-  after_script:
-    - SUFFIX=$RANDOM
-    - curl "http://10.0.0.11/sonar-scanner.tar.gz" -s -o "/tmp/sonar-$SUFFIX.tar.gz"
-    - tar -xf "/tmp/sonar-$SUFFIX.tar.gz" -C /opt
-    - /opt/sonar-scanner/bin/sonar-scanner
   only:
     - feature-fe-login
     - dev
