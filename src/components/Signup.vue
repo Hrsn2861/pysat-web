@@ -178,9 +178,10 @@ export default {
           }
           // doRegister(this, data);
           console.log(data)
-          this.$axios.post('/api/signup', data).then(
+          this.$axios.get('/api', data).then(
             res => {
               console.log(res)
+              this.$store.commit('TESTFUNC')
               // this.$message({
               //   type: 'success',
               //   message: '欢迎你,' + this.registerForm.userName + '!',
