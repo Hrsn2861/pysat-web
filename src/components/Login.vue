@@ -10,8 +10,8 @@
           :rules="rules"
           ref="formLogin">
           <!-- $refs 只在组件渲染完成后才填充，并且它是非响应式的。它仅仅作为一个直接访问子组件的应急方案——应当避免在模版或计算属性中使用 $refs 。 -->
-          <el-form-item label="手机号" prop="phonenumber">
-            <el-input v-model="formLogin.phonenumber"></el-input>
+          <el-form-item label="手机号" prop="identity">
+            <el-input v-model="formLogin.identity"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <el-input v-model="formLogin.password"></el-input>
@@ -34,13 +34,14 @@
 
 <script type="text/javascript">
 
-export default {
-  data () {
-    let checkPhoneNumber = (rule, value, cb) => {
-      var pattern = /^1[3456789]\d{9}$/
-      if (!value) {
-        return cb(new Error('账户不能为空！'))
-      } else if (!pattern.test(value)) {
+  export default {
+    data(){
+      let checkidentity = (rule,value,cb)=>{
+		//var pattern = /^1[3456789]\d{9}$/; 
+		var pattern = /.*/;
+        if(!value){
+          return cb(new Error('账户不能为空！'))
+        }else if(!pattern.test(value)){
 		  return cb(new Error('请填写真实的手机号！'))
       } else {
         cb() // 将判断传递给后面
@@ -55,22 +56,22 @@ export default {
 		 } else {
         cb()
       }
-    }
-    return {
-      formLogin: {
-        phonenumber: '',
-        password: ''
-      },
-      rules: {
-        phonenumber: [
-          {validator: checkPhoneNumber, trigger: 'blur'}
-        ],
-        password: [
-          {validator: checkPassword, trigger: 'blur'}
-        ]
+      return{
+        formLogin:{
+          identity: '',
+          password: '',
+        },
+        rules:{
+          identity:[
+            {validator:checkidentity,trigger: 'blur'}
+          ],
+          password:[
+            {validator:checkPassword,trigger: 'blur'}
+          ],
 
       }
     }
+  }
   },
   methods: {
     // 向登录接口发起请求
@@ -102,10 +103,42 @@ export default {
         }
       })
     },
-    // 表单重置
-    resetForm () {
-      console.log('session')
-      this.$refs['formLogin'].resetFields()
+    methods:{
+      // 向登录接口发起请求
+      login(){
+        // 表单验证
+        this.$refs['formLogin'].validate((valid) => {
+          if (valid) {
+            // 通过验证之后才请求登录接口
+            //this.$axios.get(process.env.VUE_APP_BASE_API, this.formLogin)
+			this.$axios.get('/api/signin/', {params:this.formLogin})
+                .then(res => {
+                    console.dir(res.data)
+                    if (res.data.status) {
+                      //this.userLogin(res.data);
+                      this.$message.success(`${res.data.msg}`)
+                      // 登录成功 跳转至首页
+                      // this.$router.push({name:'Home'}) 
+                      this.$router.push('/')
+                    }else{
+                      this.$message.error(`${res.data.message}`);
+                      return false;
+                    }
+                })
+                .catch(err => {
+                    this.$message.error(`${err.message}`, 'ERROR!')
+                })
+          } else {
+            this.$message.error('表单验证失败!')
+            return false;
+          }
+        });
+      },
+      // 表单重置
+      resetForm(){
+        console.log('session')
+        this.$refs['formLogin'].resetFields();
+      }
     }
   }
 }
