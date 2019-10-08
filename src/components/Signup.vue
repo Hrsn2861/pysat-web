@@ -181,13 +181,18 @@ export default {
           this.$axios.get('/api').then(
             res => {
               console.log(res.data)
+              this.$message({
+                type: 'success',
+                message: '欢迎你,' + this.registerForm.userName + '!',
+                duration: 2000
+              })
             }
           )
-          // this.$message({
-          //   type: 'success',
-          //   message: '欢迎你,' + this.user.name + '!',
-          //   duration: 3000
-          // })
+          this.$message({
+            type: 'success',
+            message: '欢迎你,' + this.user.name + '!',
+            duration: 3000
+          })
         } else {
           return false
         }
