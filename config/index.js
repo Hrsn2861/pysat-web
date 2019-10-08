@@ -13,11 +13,12 @@ module.exports = {
     proxyTable: {
       '/api': {
               target: 'https://pysat-server-CTRL.app.secoder.net',
+			  secure: false,
               changeOrigin: true,
               pathRewrite: {
                 '^/api': ''
               }
-            }
+            },
     },
 // add useless
     // Various Dev Server settings

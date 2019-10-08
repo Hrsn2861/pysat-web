@@ -10,8 +10,8 @@
           :rules="rules"
           ref="formLogin">
           <!-- $refs 只在组件渲染完成后才填充，并且它是非响应式的。它仅仅作为一个直接访问子组件的应急方案——应当避免在模版或计算属性中使用 $refs 。 -->
-          <el-form-item label="手机号" prop="phonenumber">
-            <el-input v-model="formLogin.phonenumber"></el-input>
+          <el-form-item label="手机号" prop="identity">
+            <el-input v-model="formLogin.identity"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <el-input v-model="formLogin.password"></el-input>
@@ -36,8 +36,9 @@
 
   export default {
     data(){
-      let checkPhoneNumber = (rule,value,cb)=>{
-		var pattern = /^1[3456789]\d{9}$/; 
+      let checkidentity = (rule,value,cb)=>{
+		//var pattern = /^1[3456789]\d{9}$/; 
+		var pattern = /.*/;
         if(!value){
           return cb(new Error('账户不能为空！'))
         }else if(!pattern.test(value)){
@@ -59,12 +60,12 @@
       }
       return{
         formLogin:{
-          phonenumber: '',
+          identity: '',
           password: '',
         },
         rules:{
-          phonenumber:[
-            {validator:checkPhoneNumber,trigger: 'blur'}
+          identity:[
+            {validator:checkidentity,trigger: 'blur'}
           ],
           password:[
             {validator:checkPassword,trigger: 'blur'}
@@ -81,7 +82,7 @@
           if (valid) {
             // 通过验证之后才请求登录接口
             //this.$axios.get(process.env.VUE_APP_BASE_API, this.formLogin)
-			this.$axios.get('/api/login/', this.formLogin)
+			this.$axios.get('/api/signin/', {params:this.formLogin})
                 .then(res => {
                     console.dir(res.data)
                     if (res.data.status) {
