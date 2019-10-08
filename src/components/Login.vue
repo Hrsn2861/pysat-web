@@ -3,9 +3,9 @@
   <el-card class="box-card">
     <el-row type="flex" justify="center">
       <el-col :span="12">
-        <el-form 
-          label-position="left" 
-          label-width="80px" 
+        <el-form
+          label-position="left"
+          label-width="80px"
           :model="formLogin"
           :rules="rules"
           ref="formLogin">
@@ -43,20 +43,18 @@
           return cb(new Error('账户不能为空！'))
         }else if(!pattern.test(value)){
 		  return cb(new Error('请填写真实的手机号！'))
-		}else{
-          cb(); // 将判断传递给后面
-        }
-
+      } else {
+        cb() // 将判断传递给后面
       }
-      let checkPassword = (rule,value,cb)=>{
-		var pattern = /^\S{3,20}$/;
-        if(!value){
-          return cb(new Error('密码不能为空！'))
-         }else if(!pattern.test(value)){
+    }
+    let checkPassword = (rule, value, cb) => {
+      var pattern = /^\S{3,20}$/
+      if (!value) {
+        return cb(new Error('密码不能为空！'))
+      } else if (!pattern.test(value)) {
 		  return cb(new Error('密码长度应在3~20之间！'))
-		 }else{
-          cb();
-         }
+		 } else {
+        cb()
       }
       return{
         formLogin:{
@@ -71,8 +69,38 @@
             {validator:checkPassword,trigger: 'blur'}
           ],
 
-        }
       }
+    }
+  },
+  methods: {
+    // 向登录接口发起请求
+    login () {
+      // 表单验证
+      this.$refs['formLogin'].validate((valid) => {
+        if (valid) {
+          // 通过验证之后才请求登录接口
+          this.$http.get('api/sign_up', this.formLogin)
+            .then(res => {
+              console.dir(res.data)
+              if (res.data.success) {
+                this.userLogin(res.data)
+                this.$message.success(`${res.data.message}`)
+                // 登录成功 跳转至首页
+                // this.$router.push({name:'Home'})
+                this.$router.push('/')
+              } else {
+                this.$message.error(`${res.data.message}`)
+                return false
+              }
+            })
+            .catch(err => {
+              console.log(err)
+            })
+        } else {
+          this.$message.error('表单验证失败!')
+          return false
+        }
+      })
     },
     methods:{
       // 向登录接口发起请求
@@ -112,6 +140,7 @@
       }
     }
   }
+}
 </script>
 
 <style>

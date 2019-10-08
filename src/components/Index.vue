@@ -3,15 +3,15 @@
         <el-container>
             <el-main>
                 <el-row class="main-row">
-                    <el-col span=18 push=8>
+                    <el-col :span="18" :push="6">
                             <h2>Welcome to</h2>
                     </el-col>
-                    <el-col push=5>
+                    <el-col :push="5">
                             <h3> PYSAT </h3>
                     </el-col>
                 </el-row>
                 <el-row class="main-row">
-                    <el-col span=10 push=13 id="navi">
+                    <el-col :span="10" :push="13" id="navi">
 
                         <el-breadcrumb separator="  ">
                             <el-breadcrumb-item :to="{ path: '/login'}">Log in</el-breadcrumb-item>
@@ -23,7 +23,7 @@
                     </el-col>
                 </el-row>
             </el-main>
-            <el-footer height="30px">
+            <el-footer height="5%">
                 <center>Proudly presented by CTRL group</center>
             </el-footer>
         </el-container>
