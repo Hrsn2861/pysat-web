@@ -174,25 +174,20 @@ export default {
           let data = {
             usr: this.registerForm.userName,
             pwd: this.registerForm.pwd,
-            email: this.registerForm.phonenumber
+            phonenumber: this.registerForm.phonenumber
           }
           // doRegister(this, data);
           console.log(data)
-          this.$axios.get('/api').then(
+          this.$axios.post('/api/signup', data).then(
             res => {
-              console.log(res.data)
-              this.$message({
-                type: 'success',
-                message: '欢迎你,' + this.registerForm.userName + '!',
-                duration: 2000
-              })
+              console.log(res)
+              // this.$message({
+              //   type: 'success',
+              //   message: '欢迎你,' + this.registerForm.userName + '!',
+              //   duration: 2000
+              // })
             }
           )
-          this.$message({
-            type: 'success',
-            message: '欢迎你,' + this.user.name + '!',
-            duration: 3000
-          })
         } else {
           return false
         }

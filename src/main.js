@@ -18,4 +18,4 @@ new Vue({
   router,
   components: { App },
   template: '<App/>'
-})
+}).$mount('#app') // 挂载？这里似乎加没加之前已经挂载了
