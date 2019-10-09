@@ -33,6 +33,7 @@
 </template>
 
 <script type="text/javascript">
+import {Encrypt, Decrypt} from '@/assets/crypt.js'
 
 export default {
   data () {
@@ -80,22 +81,20 @@ export default {
       // 表单验证
       this.$refs['formLogin'].validate((valid) => {
         if (valid) {
-          var md5 = require('md5-node')
           let tmpData = {
             identity: this.formLogin.identity,
-            password: md5(this.formLogin.password)
+            password: Encrypt(this.formLogin.password)
           }
           // 通过验证之后才请求登录接口
           // this.$axios.get(process.env.VUE_APP_BASE_API, this.formLogin)
+		  // console.log(tmpData)
           this.$axios.get('/api/signin/', {params: tmpData})
             .then(res => {
-              console.dir(res.data)
-              if (res.data.status) {
+              if (res.data.status == 1) {
                 // this.userLogin(res.data);
                 // this.$message.success(`${res.data.msg}`)
                 // store the random string in localStorage
                 // localStorage["token"] = res.data.msg
-
                 // using vuex to store user info
                 let vuexdata = {identity: this.formLogin.identity, token: res.data.msg}
                 this.$store.dispatch('userLogin', vuexdata)
@@ -108,7 +107,7 @@ export default {
                 // this.$router.push({name:'Home'})
                 this.$router.push('/')
               } else {
-                this.$message.error(`${res.data.message}`)
+                this.$message.error(`${res.data.msg}`)
                 return false
               }
             })
@@ -119,6 +118,7 @@ export default {
           this.$message.error('表单验证失败!')
           return false
         }
+		
       })
     },
     // 表单重置

@@ -82,6 +82,8 @@
 </template>
 
 <script>
+import {Encrypt, Decrypt} from '@/assets/crypt.js'
+
 export default {
   name: 'Signup',
   data () {
@@ -177,18 +179,18 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          var md5 = require('md5-node')
+          //var md5 = require('md5-node')
 
           let data = {
             username: this.registerForm.userName,
-            password: md5(this.registerForm.pwd),
+            password: Encrypt(this.registerForm.pwd),
             telphone: this.registerForm.phonenumber,
             realname: this.registerForm.realname,
             email: this.registerForm.email,
             school: this.registerForm.school
           }
           // doRegister(this, data);
-          console.log(data)
+          // console.log(data)
           this.$axios.get('/api/signup/', {params: data}).then(
             res => {
               console.log(res)
