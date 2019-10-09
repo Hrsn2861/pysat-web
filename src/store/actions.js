@@ -13,8 +13,8 @@ const actions = {
   }, // 啊这里两种写法都对
   delUserSession ({
     commit
-  }, data) {
-    commit(types.DELSESSION, data)
+  }) {
+    commit(types.DELSESSION)
   },
   userLoginOut ({
     commit
