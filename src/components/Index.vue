@@ -43,20 +43,13 @@ export default {
   beforeCreate(){
 	  this.$axios.get('/api/check_login/', {params:{entrykey:this.$store.getters.getUserToken}})
 	    .then(res => {
-	      console.dir(res.data)
-	      if (res.data.status != 1) {
-	        this.$message.error(res.data.msg);
-	        //this.user.name = null;
-			this.$router.push('/login')
-	        return false;
-	      }else{
-	        this.$message.success(res.data.msg)
+	      if (res.data.status == 1) {
+			this.$router.push('/myinfo')
 	      }
 	    })
 	    .catch(err => {
 	        this.$message.error(`${err.message}`)
 	    })
-	  
   }
 }
 </script>
