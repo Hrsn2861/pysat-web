@@ -36,11 +36,12 @@ export default {
   name: 'index',
   data () {
     return {
+
       // msg: 'Welcome to Your Vue.js App'
     }
   },
   beforeCreate(){
-	  this.$axios.get('/api/check_login/', {params:{entrykey:localStorage["token"]}})
+	  this.$axios.get('/api/check_login/', {params:{entrykey:this.$store.getters.getUserToken}})
 	    .then(res => {
 	      console.dir(res.data)
 	      if (res.data.status != 1) {
