@@ -3,8 +3,10 @@
 	<el-card class="box-card">
 		<el-row type="flex" justify="center">
       <el-col :span="2" style="width:20%;align-items:center;display:flex">
-        <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" style="width:60%;height:60%;display:flex;align-items:center"></el-avatar>
+        <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" fit="fit" style="width:60%;height:60%;display:flex;align-items:center"></el-avatar>
       </el-col>
+      <!-- FIXME I don't know why local src pic is not allowd -->
+      <!-- TODO CSS is too difficult -->
 			<el-col :span="16">
 				<h1>个人信息</h1>
 				<p>UserName: {{ username }}</p>
