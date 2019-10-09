@@ -123,7 +123,7 @@ export default {
     },
     // 表单重置
     resetForm () {
-      console.log('session')
+      //console.log('session')
       this.$refs['formLogin'].resetFields()
     }
   },

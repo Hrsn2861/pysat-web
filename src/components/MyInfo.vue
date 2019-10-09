@@ -41,13 +41,10 @@ export default {
   beforeCreate () {
     this.$axios.get('/api/check_login/', {params: {entrykey: this.$store.getters.getUserToken}})
       .then(res => {
-        // console.dir(res.data)
         if (res.data.status != 1) {
           this.$message.error(res.data.msg)
-          // this.user.name = null;
           // TODO:Using Vuex api
           this.$router.push('/login')
-          return false
         } else {
           this.$message.success(res.data.msg)
         }
@@ -72,7 +69,7 @@ export default {
     },
     getmyinfo () {
       this.$axios.get('/api/check_login/', {params: {entrykey: this.$store.getters.getUserToken}}).then(res => {
-        console.log(res.data)
+        //console.log(res.data)
         if (this.$store.getters.getUserToken) {
           this.username = res.data.user.username
           this.phonenumber = res.data.user.telphone
@@ -81,7 +78,7 @@ export default {
           this.realname = res.data.user.realname
         }
       }).catch(err => {
-        console.log(err)
+        //console.log(err)
         this.$message({
           type: 'error',
           message: err,

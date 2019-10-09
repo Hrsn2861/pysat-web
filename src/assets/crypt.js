@@ -17,9 +17,7 @@ export function Encrypt(word) {
         mode: CryptoJS.mode.CBC,
         padding: CryptoJS.pad.ZeroPadding
     });
-	console.log(encrypted.ciphertext)
 	return CryptoJS.enc.Hex.stringify(encrypted.ciphertext)
-    // return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
 }
 
 
