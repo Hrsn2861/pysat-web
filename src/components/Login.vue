@@ -10,7 +10,7 @@
           :rules="rules"
           ref="formLogin">
           <!-- $refs 只在组件渲染完成后才填充，并且它是非响应式的。它仅仅作为一个直接访问子组件的应急方案——应当避免在模版或计算属性中使用 $refs 。 -->
-          <el-form-item label="手机号" prop="identity">
+          <el-form-item label="用户名" prop="identity">
             <el-input v-model="formLogin.identity"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
@@ -105,7 +105,7 @@ export default {
                 })
                 // 登录成功 跳转至首页
                 // this.$router.push({name:'Home'})
-                this.$router.push('/')
+                this.$router.push('/myinfo')
               } else {
                 this.$message.error(`${res.data.msg}`)
                 return false
@@ -126,6 +126,17 @@ export default {
       console.log('session')
       this.$refs['formLogin'].resetFields()
     }
+  },
+  beforeCreate(){
+  	  this.$axios.get('/api/check_login/', {params:{entrykey:this.$store.getters.getUserToken}})
+  	    .then(res => {
+  	      if (res.data.status == 1) {
+  			this.$router.push('/myinfo')
+  	      }
+  	    })
+  	    .catch(err => {
+  	        this.$message.error(`${err.message}`)
+  	    })
   }
 }
 
