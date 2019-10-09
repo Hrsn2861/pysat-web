@@ -30,10 +30,10 @@ export default new Router({
       name: 'Login',
       component: Login
     },
-	{
-		path: '/myinfo',
-		name: 'MyInfo',
-		component: MyInfo
-	}
+    {
+      path: '/myinfo',
+      name: 'MyInfo',
+      component: MyInfo
+    }
   ]
 })

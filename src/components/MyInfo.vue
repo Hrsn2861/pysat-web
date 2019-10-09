@@ -1,19 +1,25 @@
 <template>
 <div style="padding: 200px">
-  <el-card class="box-card">
-    <el-row type="flex" justify="center">
-      <el-col :span="12">
-        <h1>个人信息</h1>
-        <p>UserName: {{ username }}</p>
-        <p>Phone: {{ phonenumber }}</p>
-        <p>Email: {{ email }}</p>
+	<el-card class="box-card">
+		<el-row type="flex" justify="center">
+      <el-col :span="2" style="width:20%;align-items:center;display:flex">
+        <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" style="width:60%;height:60%;display:flex;align-items:center"></el-avatar>
       </el-col>
-    </el-row>
-  </el-card>
+			<el-col :span="16">
+				<h1>个人信息</h1>
+				<p>UserName: {{ username }}</p>
+				<p>Phone: {{ phonenumber }}</p>
+				<p>Email: {{ email }}</p>
+        <p>School: {{ school }}</p>
+        <p>RealName: {{realname }}</p>
+			</el-col>
+		</el-row>
+	</el-card>
 </div>
 </template>
 
 <script>
+// import func from '../../vue-temp/vue-editor-bridge'
 
 export default {
   name: 'MyInfo',
@@ -21,8 +27,29 @@ export default {
     return {
       username: 'None',
       phonenumber: 'None',
-      email: 'None'
+      email: 'None',
+      school: 'None',
+      realname: 'None'
+
     }
+  },
+  beforeCreate () {
+    this.$axios.get('/api/check_login/', {params: {entrykey: this.$store.getters.getUserToken}})
+      .then(res => {
+        // console.dir(res.data)
+        if (res.data.status != 1) {
+          this.$message.error(res.data.msg)
+          // this.user.name = null;
+          // TODO:Using Vuex api
+          this.$router.push('/login')
+          return false
+        } else {
+          this.$message.success(res.data.msg)
+        }
+      })
+      .catch(err => {
+        this.$message.error(`${err.message}`)
+      })
   },
   watch: {
     $route (to, from) {
@@ -30,20 +57,29 @@ export default {
       if (to.path === '/MyInfo') { console.log('个人信息') }
     }
   },
+  mounted: function () {
+    this.getmyinfo()
+  },
   methods: {
-    getmyinfo (entrykey) {
-      this.$axios.get('/api/info', {param: entrykey}).then(res => {
-        console.log(res)
+    getmyinfo () {
+      this.$axios.get('/api/check_login/', {params: {entrykey: this.$store.getters.getUserToken}}).then(res => {
+        console.log(res.data)
+        this.username = res.data.user.username
+        this.phonenumber = res.data.user.telphone
+        this.email = res.data.user.email
+        this.school = res.data.user.school
+        this.realname = res.data.user.realname
       }).catch(err => {
         console.log(err)
         this.$message({
           type: 'error',
-          message: 'Could not find',
+          message: err,
           duration: 1000
         })
       })
     }
   }
+
 }
 </script>
 
