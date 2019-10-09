@@ -89,7 +89,12 @@ export default {
                 // this.userLogin(res.data);
                 this.$message.success(`${res.data.msg}`)
 				// store the random string in localStorage
-				localStorage["token"] = res.data.msg
+				// localStorage["token"] = res.data.msg
+				
+				//using vuex to store user info
+				let vuexdata = {identity: this.formLogin.identity, token: res.data.msg}
+				this.$store.dispatch('userLogin', vuexdata)
+				
 				// 登录成功 跳转至首页
 				// this.$router.push({name:'Home'})
                 this.$router.push('/')
