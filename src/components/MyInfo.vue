@@ -16,6 +16,9 @@
         <p>RealName: {{realname }}</p>
 			</el-col>
 		</el-row>
+    <el-row type="flex" justify="center">
+      <el-button type="danger" @click="logout()">登出</el-button>
+    </el-row>
 	</el-card>
 </div>
 </template>
@@ -53,24 +56,30 @@ export default {
         this.$message.error(`${err.message}`)
       })
   },
-  watch: {
-    $route (to, from) {
-      console.log(to.path)
-      if (to.path === '/MyInfo') { console.log('个人信息') }
-    }
-  },
+  // watch: {
+  //   $route (to, from) {
+  //     console.log(to.path)
+  //     if (to.path === '/MyInfo') { console.log('个人信息') }
+  //   }
+  // },
   mounted: function () {
     this.getmyinfo()
   },
   methods: {
+    logout () {
+      this.$store.dispatch('userLoginOut')
+      this.$router.push('/login')
+    },
     getmyinfo () {
       this.$axios.get('/api/check_login/', {params: {entrykey: this.$store.getters.getUserToken}}).then(res => {
         console.log(res.data)
-        this.username = res.data.user.username
-        this.phonenumber = res.data.user.telphone
-        this.email = res.data.user.email
-        this.school = res.data.user.school
-        this.realname = res.data.user.realname
+        if (this.$store.getters.getUserToken) {
+          this.username = res.data.user.username
+          this.phonenumber = res.data.user.telphone
+          this.email = res.data.user.email
+          this.school = res.data.user.school
+          this.realname = res.data.user.realname
+        }
       }).catch(err => {
         console.log(err)
         this.$message({
