@@ -34,14 +34,14 @@
 
 <script type="text/javascript">
 
-  export default {
-    data(){
-      let checkidentity = (rule,value,cb)=>{
-		//var pattern = /^1[3456789]\d{9}$/; 
-		var pattern = /.*/;
-        if(!value){
-          return cb(new Error('账户不能为空！'))
-        }else if(!pattern.test(value)){
+export default {
+  data () {
+    let checkidentity = (rule, value, cb) => {
+      // var pattern = /^1[3456789]\d{9}$/;
+      var pattern = /.*/
+      if (!value) {
+        return cb(new Error('账户不能为空！'))
+      } else if (!pattern.test(value)) {
 		  return cb(new Error('请填写真实的手机号！'))
       } else {
         cb() // 将判断传递给后面
@@ -56,23 +56,24 @@
 		 } else {
         cb()
       }
-      return{
-        formLogin:{
-          identity: '',
-          password: '',
-        },
-        rules:{
-          identity:[
-            {validator:checkidentity,trigger: 'blur'}
-          ],
-          password:[
-            {validator:checkPassword,trigger: 'blur'}
-          ],
+    }
+    return {
+      formLogin: {
+        identity: '',
+        password: ''
+      },
+      rules: {
+        identity: [
+          {validator: checkidentity, trigger: 'blur'}
+        ],
+        password: [
+          {validator: checkPassword, trigger: 'blur'}
+        ]
 
       }
     }
-  }
   },
+
   methods: {
     // 向登录接口发起请求
     login () {
@@ -80,12 +81,13 @@
       this.$refs['formLogin'].validate((valid) => {
         if (valid) {
           // 通过验证之后才请求登录接口
-          this.$http.get('api/sign_up', this.formLogin)
+          // this.$axios.get(process.env.VUE_APP_BASE_API, this.formLogin)
+          this.$axios.get('/api/signin/', {params: this.formLogin})
             .then(res => {
               console.dir(res.data)
-              if (res.data.success) {
-                this.userLogin(res.data)
-                this.$message.success(`${res.data.message}`)
+              if (res.data.status) {
+                // this.userLogin(res.data);
+                this.$message.success(`${res.data.msg}`)
                 // 登录成功 跳转至首页
                 // this.$router.push({name:'Home'})
                 this.$router.push('/')
@@ -95,7 +97,7 @@
               }
             })
             .catch(err => {
-              console.log(err)
+              this.$message.error(`${err.message}`, 'ERROR!')
             })
         } else {
           this.$message.error('表单验证失败!')
@@ -103,45 +105,14 @@
         }
       })
     },
-    methods:{
-      // 向登录接口发起请求
-      login(){
-        // 表单验证
-        this.$refs['formLogin'].validate((valid) => {
-          if (valid) {
-            // 通过验证之后才请求登录接口
-            //this.$axios.get(process.env.VUE_APP_BASE_API, this.formLogin)
-			this.$axios.get('/api/signin/', {params:this.formLogin})
-                .then(res => {
-                    console.dir(res.data)
-                    if (res.data.status) {
-                      //this.userLogin(res.data);
-                      this.$message.success(`${res.data.msg}`)
-                      // 登录成功 跳转至首页
-                      // this.$router.push({name:'Home'}) 
-                      this.$router.push('/')
-                    }else{
-                      this.$message.error(`${res.data.message}`);
-                      return false;
-                    }
-                })
-                .catch(err => {
-                    this.$message.error(`${err.message}`, 'ERROR!')
-                })
-          } else {
-            this.$message.error('表单验证失败!')
-            return false;
-          }
-        });
-      },
-      // 表单重置
-      resetForm(){
-        console.log('session')
-        this.$refs['formLogin'].resetFields();
-      }
+    // 表单重置
+    resetForm () {
+      console.log('session')
+      this.$refs['formLogin'].resetFields()
     }
   }
 }
+
 </script>
 
 <style>
