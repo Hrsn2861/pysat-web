@@ -197,6 +197,7 @@ export default {
                   message: '欢迎你,' + this.registerForm.userName + '!',
                   duration: 2000
                 })
+                this.$router.push('/login')
               } else {
                 this.$message({
                   type: 'error',
