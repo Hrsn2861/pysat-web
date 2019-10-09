@@ -14,7 +14,7 @@
             <el-input v-model="formLogin.identity"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input v-model="formLogin.password"></el-input>
+            <el-input v-model="formLogin.password" type="password"></el-input>
           </el-form-item>
           <el-form-item>
               <el-button type="primary" @click="login">登录</el-button>
@@ -80,23 +80,32 @@ export default {
       // 表单验证
       this.$refs['formLogin'].validate((valid) => {
         if (valid) {
+          var md5 = require('md5-node')
+          let tmpData = {
+            identity: this.formLogin.identity,
+            password: md5(this.formLogin.password)
+          }
           // 通过验证之后才请求登录接口
           // this.$axios.get(process.env.VUE_APP_BASE_API, this.formLogin)
-          this.$axios.get('/api/signin/', {params: this.formLogin})
+          this.$axios.get('/api/signin/', {params: tmpData})
             .then(res => {
               console.dir(res.data)
               if (res.data.status) {
                 // this.userLogin(res.data);
-                this.$message.success(`${res.data.msg}`)
-				// store the random string in localStorage
-				// localStorage["token"] = res.data.msg
-				
-				//using vuex to store user info
-				let vuexdata = {identity: this.formLogin.identity, token: res.data.msg}
-				this.$store.dispatch('userLogin', vuexdata)
-				
-				// 登录成功 跳转至首页
-				// this.$router.push({name:'Home'})
+                // this.$message.success(`${res.data.msg}`)
+                // store the random string in localStorage
+                // localStorage["token"] = res.data.msg
+
+                // using vuex to store user info
+                let vuexdata = {identity: this.formLogin.identity, token: res.data.msg}
+                this.$store.dispatch('userLogin', vuexdata)
+                this.$message({
+                  type: 'success',
+                  message: '欢迎你,' + this.$store.getters.getUserIdentity + '!',
+                  duration: 2000
+                })
+                // 登录成功 跳转至首页
+                // this.$router.push({name:'Home'})
                 this.$router.push('/')
               } else {
                 this.$message.error(`${res.data.message}`)
