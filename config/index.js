@@ -11,15 +11,16 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-		'/api': {
-		        target: 'http://pysat-server.CTRL.secoder.local:3027',
-		        changeOrigin: true,
-		        pathRewrite: {
-		          '^/api': ''
-		        }
-		      }
-	},
-
+      '/api': {
+              target: 'https://pysat-server-CTRL.app.secoder.net',
+			  secure: false,
+              changeOrigin: true,
+              pathRewrite: {
+                '^/api': ''
+              }
+            },
+    },
+// add useless
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
@@ -60,15 +61,6 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
 	
-    proxyTable: {
-		'/api': {
-		        target: 'http://pysat-server.CTRL.secoder.local:3027',
-		        changeOrigin: true,
-		        pathRewrite: {
-		          '^/api': ''
-		        }
-		      }
-	},
     /**
      * Source Maps
      */

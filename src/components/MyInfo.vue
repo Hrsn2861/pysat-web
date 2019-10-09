@@ -1,168 +1,93 @@
-//用了element组件，自己要加载和引入
 <template>
-   <div class="all-container">
-    <div class="all-container-padding bg" >
-     <el-tabs v-model="activeName" @tab-click="handleClick">
-     <el-tab-pane label="基本信息" name="first">
-      <el-form :model="userlist" :rules="rules" ref="EditorUserForms">
-        <el-form-item label="头像" prop="avatar_url" :label-width="formLabelWidth">
-          <el-upload class="avatar-uploader" action="//shujiaoke.oss-cn-hangzhou.aliyuncs.com" :before-upload="beforeupload" :data="uploadParm" :show-file-list="false" :on-success="handleUpSuccess">
-          <img v-if="userlist.avatar_url" :src="userlist.avatar_url" class="avatar">
-          <i v-else class="el-icon-plus avatar-uploader-icon " style="width:80px;height:80px;"></i>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="用户名" prop="username" :label-width="formLabelWidth">
-         <el-col :span="8"> <el-input v-model="userlist.username" disabled ></el-input></el-col>
-        </el-form-item>
-        <el-form-item label="电话" prop="phone" :label-width="formLabelWidth">
-         <el-col :span="8">  <el-input v-model="userlist.phone" placeholder="请输入电话"></el-input></el-col>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="email" :label-width="formLabelWidth">
-         <el-col :span="8">  <el-input v-model="userlist.email" placeholder="请输入邮箱"></el-input></el-col>
-        </el-form-item>
-        <el-form-item label="用户角色" prop="full_name" :label-width="formLabelWidth">
-         <el-col :span="8">
-          <el-input v-model="userlist.full_name" disabled ></el-input>
-          </el-col>
-        </el-form-item>
-      </el-form>
-      <div class="grid-content bg-purple">
-       <el-button type="primary" @click="EditorUserClick('userlist')" >保存</el-button>
-      </div>
-     </el-tab-pane>
-     <el-tab-pane label="修改密码" name="second">
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
-       <el-form-item label="原密码" prop="pass" :label-width="formLabelWidth">
-         <el-col :span="8">  <el-input v-model="ruleForm.pass" placeholder="请输入原密码" type="password"></el-input></el-col>
-        </el-form-item>
-        <el-form-item label="新密码" prop="newpass" :label-width="formLabelWidth">
-         <el-col :span="8"><el-input v-model="ruleForm.newpass" placeholder="请输入新密码" id="newkey" type="password"></el-input></el-col>
-        </el-form-item>
-        <el-form-item label="重复新密码" prop="checknewpass" :label-width="formLabelWidth">
-         <el-col :span="8">  <el-input v-model="ruleForm.checknewpass" placeholder="请再次输入新密码" id='newkey1' type="password"></el-input></el-col>
-        </el-form-item>
-        </el-form>
-        <div class="grid-content bg-purple">
-       <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
-      </div>
-     </el-tab-pane>
-    </el-tabs>
-    </div>
-   </div>
+<div style="padding: 200px">
+	<el-card class="box-card">
+		<el-row type="flex" justify="center">
+      <el-col :span="2" style="width:20%;align-items:center;display:flex">
+        <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" fit="fit" style="width:60%;height:60%;display:flex;align-items:center"></el-avatar>
+      </el-col>
+      <!-- FIXME I don't know why local src pic is not allowd -->
+      <!-- TODO CSS is too difficult -->
+			<el-col :span="16">
+				<h1>个人信息</h1>
+				<p>UserName: {{ username }}</p>
+				<p>Phone: {{ phonenumber }}</p>
+				<p>Email: {{ email }}</p>
+        <p>School: {{ school }}</p>
+        <p>RealName: {{realname }}</p>
+			</el-col>
+		</el-row>
+    <el-row type="flex" justify="center">
+      <el-button type="danger" @click="logout()">登出</el-button>
+    </el-row>
+	</el-card>
+</div>
 </template>
+
 <script>
-// 这些不要在意，这些是我们自定义的接口，用的时候就直接拿来了
-import {fetchAll, fetchByID, fetchList, postData, putData, deleteByID, deleteAllByID, guid, bytesToSize} from '@/api/dbhelper'
-// 这一步很重要，一般我们直接从后台拿过来输出来会是在data里面，但是我发现却在store里面，这里就要用到vuex
-import { mapGetters } from 'vuex'
+// import func from '../../vue-temp/vue-editor-bridge'
+
 export default {
+  name: 'MyInfo',
+  data () {
+    return {
+      username: 'None',
+      phonenumber: 'None',
+      email: 'None',
+      school: 'None',
+      realname: 'None'
+
+    }
+  },
+  beforeCreate () {
+    this.$axios.get('/api/check_login/', {params: {entrykey: this.$store.getters.getUserToken}})
+      .then(res => {
+        if (res.data.status != 1) {
+          this.$message.error(res.data.msg)
+          // TODO:Using Vuex api
+          this.$router.push('/login')
+        } else {
+          this.$message.success(res.data.msg)
+        }
+      })
+      .catch(err => {
+        this.$message.error(`${err.message}`)
+      })
+  },
+  // watch: {
+  //   $route (to, from) {
+  //     console.log(to.path)
+  //     if (to.path === '/MyInfo') { console.log('个人信息') }
+  //   }
+  // },
+  mounted: function () {
+    this.getmyinfo()
+  },
   methods: {
-  // 获取个人用户的信息
-    getUser () {
-      postData('接口', this.username).then(response => {
-        if (response.status === 200) {
-          this.userlist = response.data
-          this.loading = false
-          console.log(this.userlist, 9696)
-        } else {
-          this.$message({
-            message: '获取信息失败,' + response.message,
-            type: 'error'
-          })
+    logout () {
+      this.$store.dispatch('userLoginOut')
+      this.$router.push('/login')
+    },
+    getmyinfo () {
+      this.$axios.get('/api/check_login/', {params: {entrykey: this.$store.getters.getUserToken}}).then(res => {
+        //console.log(res.data)
+        if (this.$store.getters.getUserToken) {
+          this.username = res.data.user.username
+          this.phonenumber = res.data.user.telphone
+          this.email = res.data.user.email
+          this.school = res.data.user.school
+          this.realname = res.data.user.realname
         }
-      })
-    },
-    // tab切换
-    handleClick (tab, event) {
-      console.log(tab, event)
-    },
-    // 上传参数图片初始化
-    upload () {
-      var currentTimeStamp = new Date().getTime() / 1000
-      if (
-        this.uploadParams == null ||
-    this.uploadParams.expire + 3 < currentTimeStamp
-      ) {
-        this.$store
-          .dispatch('GetUploadParams')
-          .then(req => {
-            this.uploadParm = req.data
-          })
-          .catch(err => {
-            this.$message({ message: err.message, type: 'warning' })
-          })
-      } else {
-        this.uploadParm = this.uploadParams
-      }
-    },
-    // 上传之前
-    beforeupload (file) {
-      this.uploadParm.key = this.uploadParm.dir + guid()
-      // console.log(this.uploadParm)
-    },
-    // 图片上传上传成功
-    handleUpSuccess (response, file, fileList) {
-      var newfile = {
-        name: file.name,
-        type: file.raw.type,
-        size: bytesToSize(file.size),
-        url: this.uploadParm.key
-      }
-      postData('file', newfile).then(response => {
-        if (response.status == 200) {
-          this.$message({ message: '修改成功', type: 'success' })
-          this.userlist.style_file_id = response.data.id
-          this.userlist.avatar_url = this.baseUrl + response.data.url
-        } else {
-          this.$message({ message: '修改失败', type: 'error' })
-        }
-      })
-      console.log(this.userlist)
-    },
-    // 修改密码
-    submitForm (ruleForm) {
-      var obj = {
-        username: this.username,
-        oldpwd: this.ruleForm.pass,
-        newpwd: this.ruleForm.newpass
-      }
-      console.log(obj)
-      postData('接口', obj).then(response => {
-        if (response.status == 200) {
-          this.$message({
-            message: '保存成功',
-            type: 'success'
-          })
-        } else {
-          this.$message({
-            message: '修改失败' + response.message,
-            type: 'error'
-          })
-        }
-      })
-    },
-    // 编辑提交的方法
-    EditorUserClick () {
-      this.$refs.EditorUserForms.validate(valid => {
-        if (valid) {
-          console.log(this.userlist)
-          putData('接口', this.userlist).then(response => {
-            if (response.status == 200) {
-              this.$message({
-                message: '编辑成功',
-                type: 'success'
-              })
-            } else {
-              this.$message({
-                message: '修改失败' + response.message,
-                type: 'error'
-              })
-            }
-          })
-        }
+      }).catch(err => {
+        //console.log(err)
+        this.$message({
+          type: 'error',
+          message: err,
+          duration: 1000
+        })
       })
     }
   }
+
 }
 </script>
 

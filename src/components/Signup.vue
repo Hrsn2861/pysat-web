@@ -18,14 +18,14 @@
               <el-step title="设定账号"></el-step>
               <el-step title="输入密码"></el-step>
               <el-step title="再来一遍" description></el-step>
-              <el-step title="输入邮箱" description></el-step>
+              <el-step title="其它信息" description></el-step>
             </el-steps>
           </div>
         </el-aside>
         <el-main id="main-form">
-          <el-form :model="registerForm" :rules="registerRule" ref="registerForm">
+          <el-form :model="registerForm" :rules="registerRule" status-icon ref="registerForm">
             <el-form-item prop="userName" v-if="step >= 1">
-              <el-input type="userName" v-model="registerForm.userName" placeholder="账号"></el-input>
+              <el-input type="userName" v-model="registerForm.userName" placeholder="账号" maxlength="10" minlength="3"></el-input>
             </el-form-item>
             <transition name="fade">
               <el-form-item prop="pwd" v-if="step >= 2">
@@ -38,20 +38,25 @@
               </el-form-item>
             </transition>
             <transition name="fade">
-              <el-form-item prop="email" v-if="step >= 4">
-                <el-input v-model="registerForm.email" placeholder="请输入接收验证码的邮箱"></el-input>
+              <el-form-item prop="phonenumber" v-if="step >= 4">
+                <el-input v-model="registerForm.phonenumber" placeholder="请输入注册手机号"></el-input>
               </el-form-item>
             </transition>
             <transition name="fade">
               <el-form-item v-if="step >= 4">
-                <el-input type="textarea" v-model="registerForm.desc" placeholder="来一段自我介绍"></el-input>
+                <el-input size="mini" type="input" v-model="registerForm.realname" placeholder="您的真实姓名"></el-input>
+                <el-input size="mini" type="email" v-model="registerForm.email" placeholder="请输入你的邮箱"></el-input>
+                <el-input size="mini" type="input" v-model="registerForm.school" placeholder="学校"></el-input>
+              </el-form-item>
+            </transition>
+            <!-- <transition name="fade">
+              <el-form-item v-if="step >= 4">
               </el-form-item>
             </transition>
             <transition name="fade">
               <el-form-item v-if="step >= 4">
-                <el-input type="captcha" v-model="registerForm.captcha" placeholder="请告诉我注册暗号"></el-input>
               </el-form-item>
-            </transition>
+            </transition> -->
 
             <el-form-item>
               <el-button
@@ -77,6 +82,8 @@
 </template>
 
 <script>
+import {Encrypt, Decrypt} from '@/assets/crypt.js'
+
 export default {
   name: 'Signup',
   data () {
@@ -103,6 +110,16 @@ export default {
         cb()
       }
     }
+    var checkPhoneNumber = (rule, value, cb) => {
+      var pattern = /^1[3456789]\d{9}$/
+      if (!value) {
+        return cb(new Error('不能为空！'))
+      } else if (!pattern.test(value)) {
+        return cb(new Error('请填写真实的手机号！'))
+      } else {
+        cb() // 将判断传递给后面
+      }
+    }
     var validateCheckPwd = (rule, value, cb) => {
       if (value === '') {
         cb(new Error('请再次输入密码'))
@@ -118,22 +135,16 @@ export default {
         userName: '',
         pwd: '',
         checkPwd: '',
+        phonenumber: '',
         email: '',
-        desc: '',
-        captcha: ''
+        realname: '',
+        school: ''
       },
       registerRule: {
         userName: [{ validator: validateUser, trigger: 'blur' }],
         pwd: [{ validator: validatePwd, trigger: 'blur' }],
         checkPwd: [{ validator: validateCheckPwd, trigger: 'blur' }],
-        email: [
-          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-          {
-            type: 'email',
-            message: '请输入正确的邮箱地址',
-            trigger: 'blur,change'
-          }
-        ]
+        phonenumber: [{ validator: checkPhoneNumber, trigger: 'blur' }]
       }
     }
   },
@@ -168,12 +179,44 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          //var md5 = require('md5-node')
+			//console.log(this.registerForm.pwd)
           let data = {
-            usr: this.registerForm.userName,
-            pwd: this.registerForm.pwd,
-            email: this.registerForm.email
+            username: this.registerForm.userName,
+            password: Encrypt(this.registerForm.pwd),
+            telphone: this.registerForm.phonenumber,
+            realname: this.registerForm.realname,
+            email: this.registerForm.email,
+            school: this.registerForm.school
           }
           // doRegister(this, data);
+          // console.log(data)
+          this.$axios.get('/api/signup/', {params: data}).then(
+            res => {
+              //console.log(data)
+              if (res.data.status) {
+                this.$message({
+                  type: 'success',
+                  message: '欢迎你,' + this.registerForm.userName + '!',
+                  duration: 2000
+                })
+                this.$router.push('/login')
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: 'Oops, sign up failed: ' + res.data.msg,
+                  duration: 2000
+                })
+              }
+            }
+          ).catch(err => {
+            //console.log(err)
+            this.$message({
+              type: 'error',
+              message: 'Oops, somethings bad and unknown happened',
+              duration: 1000
+            })
+          })
         } else {
           return false
         }
@@ -217,8 +260,9 @@ export default {
   height: 80%;
 }
 .el-step {
-font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif !important;
-transition-delay: 1s;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif !important;
+  transition-delay: 1s;
   user-select: none;
 }
 #main-container {
