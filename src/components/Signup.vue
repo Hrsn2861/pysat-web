@@ -177,9 +177,11 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          var md5 = require('md5-node')
+
           let data = {
             username: this.registerForm.userName,
-            password: this.registerForm.pwd,
+            password: md5(this.registerForm.pwd),
             telphone: this.registerForm.phonenumber,
             realname: this.registerForm.realname,
             email: this.registerForm.email,
@@ -190,6 +192,7 @@ export default {
           this.$axios.get('/api/signup/', {params: data}).then(
             res => {
               console.log(res)
+              console.log(data)
               this.$store.commit('TESTFUNC') // just for testing only
               if (res.data.status) {
                 this.$message({
