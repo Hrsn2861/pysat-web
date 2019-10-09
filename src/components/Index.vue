@@ -38,6 +38,24 @@ export default {
     return {
       // msg: 'Welcome to Your Vue.js App'
     }
+  },
+  beforeCreate(){
+	  this.$axios.get('/api/check_login/', {params:{entrykey:localStorage["token"]}})
+	    .then(res => {
+	      console.dir(res.data)
+	      if (res.data.status != 1) {
+	        this.$message.error(res.data.msg);
+	        //this.user.name = null;
+			this.$router.push('/login')
+	        return false;
+	      }else{
+	        this.$message.success(res.data.msg)
+	      }
+	    })
+	    .catch(err => {
+	        this.$message.error(`${err.message}`)
+	    })
+	  
   }
 }
 </script>

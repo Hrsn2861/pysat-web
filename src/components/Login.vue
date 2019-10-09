@@ -88,8 +88,10 @@ export default {
               if (res.data.status) {
                 // this.userLogin(res.data);
                 this.$message.success(`${res.data.msg}`)
-                // 登录成功 跳转至首页
-                // this.$router.push({name:'Home'})
+				// store the random string in localStorage
+				localStorage["token"] = res.data.msg
+				// 登录成功 跳转至首页
+				// this.$router.push({name:'Home'})
                 this.$router.push('/')
               } else {
                 this.$message.error(`${res.data.message}`)
