@@ -5,7 +5,7 @@ import Index from '@/components/layout/Index'
 import Signup from '@/components/Signup.vue'
 import Login from '@/components/Login.vue'
 import Navi from '@/components/Navigation.vue'
-// import MyInfo from '@/components/MyInfo.vue'
+import MyInfo from '@/components/MyInfo.vue'
 
 Vue.use(Router)
 
@@ -29,7 +29,7 @@ export default new Router({
           component: Navi
         }
       ]
-    }
+    },
 
     // {
     //   path: '/index',
@@ -46,10 +46,10 @@ export default new Router({
     //   name: 'Login',
     //   component: Login
     // },
-    // {
-    //   path: '/myinfo',
-    //   name: 'MyInfo',
-    //   component: MyInfo
-    // }
+    {
+      path: '/myinfo',
+      name: 'MyInfo',
+      component: MyInfo
+    }
   ]
 })

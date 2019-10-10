@@ -22,7 +22,7 @@
               <el-button @click="resetForm">重置</el-button>
             </el-form-item>
             <el-form-item>
-              <router-link to="/Signup">
+              <router-link to="/index/signup">
                 <el-button type>
                   没有账号，立即注册
                   <i class="el-icon-arrow-right el-icon--right"></i>

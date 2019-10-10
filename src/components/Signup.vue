@@ -87,8 +87,8 @@
           </el-form>
 
           <el-breadcrumb>
-            <el-breadcrumb-item :to="{ path: '/login'}">Have an account already?</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/login'}"></el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/index/login'}">Have an account already?</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/index/login'}"></el-breadcrumb-item>
           </el-breadcrumb>
         </el-main>
       </el-container>
@@ -216,7 +216,7 @@ export default {
                   message: '欢迎你,' + this.registerForm.userName + '!',
                   duration: 2000
                 })
-                this.$router.push('/login')
+                this.$router.push('/index/login')
               } else {
                 this.$message({
                   type: 'error',
