@@ -37,7 +37,7 @@
 </template>
 
 <script type="text/javascript">
-import { Encrypt, Decrypt } from '@/assets/crypt.js';
+import { Encrypt } from '@/assets/crypt.js';
 
 export default {
   data () {
@@ -90,7 +90,7 @@ export default {
           this.$axios
             .get('/api/signin/', { params: tmpData })
             .then(res => {
-              if (res.data.status == 1) {
+              if (res.data.status === 1) {
                 // this.userLogin(res.data);
                 // this.$message.success(`${res.data.msg}`)
                 // store the random string in localStorage
@@ -136,7 +136,7 @@ export default {
         params: { entrykey: this.$store.getters.getUserToken }
       })
       .then(res => {
-        if (res.data.status == 1) {
+        if (res.data.status === 1) {
           this.$router.push('/myinfo')
         }
       })
