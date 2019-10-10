@@ -36,20 +36,18 @@ export default {
   name: 'index',
   data () {
     return {
-
       // msg: 'Welcome to Your Vue.js App'
     }
   },
-  beforeCreate(){
-	  this.$axios.get('/api/check_login/', {params:{entrykey:this.$store.getters.getUserToken}})
-	    .then(res => {
-	      if (res.data.status == 1) {
-			this.$router.push('/myinfo')
-	      }
-	    })
-	    .catch(err => {
-	        this.$message.error(`${err.message}`)
-	    })
+  beforeCreate () {
+    this.$axios.GET('/api/check_login/', {params: {entrykey: this.$store.getters.getUserToken}})
+      .then(res => {
+        if (res.data.status === 1) {
+          this.$router.push('/myinfo')
+        }
+      }).catch(err => {
+        this.$message.error(`${err.message}`)
+      })
   }
 }
 </script>

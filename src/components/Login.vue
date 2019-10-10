@@ -33,7 +33,7 @@
 </template>
 
 <script type="text/javascript">
-import {Encrypt, Decrypt} from '@/assets/crypt.js'
+import {Encrypt} from '@/assets/crypt.js'
 
 export default {
   data () {
@@ -43,7 +43,7 @@ export default {
       if (!value) {
         return cb(new Error('账户不能为空！'))
       } else if (!pattern.test(value)) {
-		  return cb(new Error('请填写真实的手机号！'))
+        return cb(new Error('请填写真实的手机号！'))
       } else {
         cb() // 将判断传递给后面
       }
@@ -53,8 +53,8 @@ export default {
       if (!value) {
         return cb(new Error('密码不能为空！'))
       } else if (!pattern.test(value)) {
-		  return cb(new Error('密码长度应在3~20之间！'))
-		 } else {
+        return cb(new Error('密码长度应在3~20之间！'))
+      } else {
         cb()
       }
     }
@@ -87,10 +87,10 @@ export default {
           }
           // 通过验证之后才请求登录接口
           // this.$axios.get(process.env.VUE_APP_BASE_API, this.formLogin)
-		  // console.log(tmpData)
+          // console.log(tmpData)
           this.$axios.get('/api/signin/', {params: tmpData})
             .then(res => {
-              if (res.data.status == 1) {
+              if (res.data.status === 1) {
                 // this.userLogin(res.data);
                 // this.$message.success(`${res.data.msg}`)
                 // store the random string in localStorage
@@ -118,25 +118,24 @@ export default {
           this.$message.error('表单验证失败!')
           return false
         }
-		
       })
     },
     // 表单重置
     resetForm () {
-      //console.log('session')
+      // console.log('session')
       this.$refs['formLogin'].resetFields()
     }
   },
-  beforeCreate(){
-  	  this.$axios.get('/api/check_login/', {params:{entrykey:this.$store.getters.getUserToken}})
-  	    .then(res => {
-  	      if (res.data.status == 1) {
-  			this.$router.push('/myinfo')
-  	      }
-  	    })
-  	    .catch(err => {
-  	        this.$message.error(`${err.message}`)
-  	    })
+  beforeCreate () {
+    this.$axios.get('/api/check_login/', {params: {entrykey: this.$store.getters.getUserToken}})
+      .then(res => {
+        if (res.data.status === 1) {
+          this.$router.push('/myinfo')
+        }
+      })
+      .catch(err => {
+        this.$message.error(`${err.message}`)
+      })
   }
 }
 
