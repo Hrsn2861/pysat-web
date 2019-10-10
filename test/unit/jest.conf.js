@@ -29,5 +29,5 @@ module.exports = {
     '!src/router/index.js',
     '!**/node_modules/**'
   ],
-  testResultsProcessor: "jest-sonar-reporter"
+  testResultsProcessor: 'jest-sonar-reporter'
 }
