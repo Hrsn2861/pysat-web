@@ -2,7 +2,24 @@
   <div class="index-page">
     <el-container>
       <el-header>
-        <h1>to be implemented...</h1>
+        <el-col span="1" style="width:4% !important;">
+          <img src="../../assets/logo.png" height="40" width="40" />
+        </el-col>
+        <el-col span="1" style="justify-content: center !important;">
+          <strong>PYSAT</strong>
+        </el-col>
+        <el-col span="5" push="15">
+          <el-input style="border-radius:25%;" placeholder="我暂时不知道这里的东西可以干什么" v-model="input2"></el-input>-
+          <el-button icon="el-icon-search" circle></el-button>
+        </el-col>
+        <el-col push="16" style="justify-content: right!important;">
+          <el-button type="primary" icon="el-icon-edit" circle></el-button>
+          <el-button type="success" icon="el-icon-check" circle></el-button>
+          <el-button type="info" icon="el-icon-message" circle></el-button>
+          <el-button type="warning" icon="el-icon-star-off" circle></el-button>
+          <!-- <el-button type="danger" icon="el-icon-delete" circle></el-button> -->
+        </el-col>
+        <!-- <h1>to be implemented...</h1> -->
       </el-header>
       <el-main>
         <router-view></router-view>
@@ -44,17 +61,19 @@ export default {
   background-repeat: space;
   background-blend-mode: saturation;
   background-size: cover;
-  height: 80%;
+  height: 95%;
   margin: 0%;
   padding: 0%;
 }
 .el-container {
   height: 100%;
-  margin-top: 5%;
-  margin-bottom: 5%;
+  margin-top: 0%;
+  margin-bottom: 0%;
 }
-.el-row {
-  height: 40% !important;
+.el-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 #navi {
   margin-bottom: 5%;
@@ -71,8 +90,15 @@ div {
   padding: 0%;
 }
 .el-header {
-  height: 10%;
+  color: rgb(180, 180, 180);
+  font-size: 20px;
+  background-color: rgb(40, 40, 40);
+  margin: 0%;
+  padding: 0%;
+  width: 100%;
+  height: 5% !important;
   display: flex;
+  /* justify-content: center; */
   align-self: center;
   user-select: none;
 }
@@ -80,7 +106,9 @@ div {
   margin-bottom: 0%;
   padding: 0%;
   width: 100%;
+  height: 4% !important;
   display: flex;
+  background-color: rgb(40, 40, 40);
   /* flex-direction: column-reverse; */
 
   justify-content: center;
@@ -92,9 +120,9 @@ div {
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   font-weight: bolder;
   font-style: oblique;
-  color: rgb(40, 40, 40);
+  color: rgb(120, 120, 120);
   user-select: none;
-  height: 3%;
+
   /* margin-bottom: 0.1%; */
 }
 </style>

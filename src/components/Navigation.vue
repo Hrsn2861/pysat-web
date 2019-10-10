@@ -8,9 +8,9 @@
     </div>
     <div id="navi">
       <el-breadcrumb separator="  ">
-        <el-breadcrumb-item :to="{ path: '/login'}">Log in</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/index/login'}">Log in</el-breadcrumb-item>
         <br />
-        <el-breadcrumb-item :to="{ path: '/signup'}">Sign up</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/index/signup'}">Sign up</el-breadcrumb-item>
         <br />
       </el-breadcrumb>
     </div>
@@ -45,7 +45,7 @@ export default {
 #pysat {
   position: absolute;
   left: 45%;
-  top: 10%;
+  top: 12%;
 }
 #welcome {
   position: absolute;
@@ -85,7 +85,7 @@ h3:hover {
   border: skyblue;
 }
 .el-breadcrumb {
-  font-size: 50px;
+  font-size: 70px;
   user-select: none;
   height: 60%;
 }

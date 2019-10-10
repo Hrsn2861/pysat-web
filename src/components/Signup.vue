@@ -25,7 +25,13 @@
         <el-main id="main-form">
           <el-form :model="registerForm" :rules="registerRule" status-icon ref="registerForm">
             <el-form-item prop="userName" v-if="step >= 1">
-              <el-input type="userName" v-model="registerForm.userName" placeholder="账号" maxlength="10" minlength="3"></el-input>
+              <el-input
+                type="userName"
+                v-model="registerForm.userName"
+                placeholder="账号"
+                maxlength="10"
+                minlength="3"
+              ></el-input>
             </el-form-item>
             <transition name="fade">
               <el-form-item prop="pwd" v-if="step >= 2">
@@ -44,8 +50,18 @@
             </transition>
             <transition name="fade">
               <el-form-item v-if="step >= 4">
-                <el-input size="mini" type="input" v-model="registerForm.realname" placeholder="您的真实姓名"></el-input>
-                <el-input size="mini" type="email" v-model="registerForm.email" placeholder="请输入你的邮箱"></el-input>
+                <el-input
+                  size="mini"
+                  type="input"
+                  v-model="registerForm.realname"
+                  placeholder="您的真实姓名"
+                ></el-input>
+                <el-input
+                  size="mini"
+                  type="email"
+                  v-model="registerForm.email"
+                  placeholder="请输入你的邮箱"
+                ></el-input>
                 <el-input size="mini" type="input" v-model="registerForm.school" placeholder="学校"></el-input>
               </el-form-item>
             </transition>
@@ -56,7 +72,7 @@
             <transition name="fade">
               <el-form-item v-if="step >= 4">
               </el-form-item>
-            </transition> -->
+            </transition>-->
 
             <el-form-item>
               <el-button
@@ -76,111 +92,110 @@
           </el-breadcrumb>
         </el-main>
       </el-container>
-      <el-footer>Proudly presented by CTRL group</el-footer>
     </el-container>
   </div>
 </template>
 
 <script>
-import {Encrypt, Decrypt} from '@/assets/crypt.js'
+import { Encrypt, Decrypt } from "@/assets/crypt.js";
 
 export default {
-  name: 'Signup',
-  data () {
+  name: "Signup",
+  data() {
     var validateUser = (rule, value, cb) => {
-      var pattern = /^[\w\u4e00-\u9fa5]{3,10}$/g
-      if (value === '') {
-        cb(new Error('请输入用户名'))
+      var pattern = /^[\w\u4e00-\u9fa5]{3,10}$/g;
+      if (value === "") {
+        cb(new Error("请输入用户名"));
       } else if (!pattern.test(value)) {
-        cb(new Error('请输入3-10个字母/汉字/数字/下划线'))
+        cb(new Error("请输入3-10个字母/汉字/数字/下划线"));
       } else {
-        cb()
+        cb();
       }
-    }
+    };
     var validatePwd = (rule, value, cb) => {
-      var pattern = /^\S{3,20}$/g
-      if (value === '') {
-        cb(new Error('请输入密码'))
+      var pattern = /^\S{3,20}$/g;
+      if (value === "") {
+        cb(new Error("请输入密码"));
       } else if (!pattern.test(value)) {
-        cb(new Error('请输入3-20个非空白字符'))
+        cb(new Error("请输入3-20个非空白字符"));
       } else {
-        if (this.registerForm.checkPwd !== '') {
-          this.$refs.registerForm.validateField('checkPwd')
+        if (this.registerForm.checkPwd !== "") {
+          this.$refs.registerForm.validateField("checkPwd");
         }
-        cb()
+        cb();
       }
-    }
+    };
     var checkPhoneNumber = (rule, value, cb) => {
-      var pattern = /^1[3456789]\d{9}$/
+      var pattern = /^1[3456789]\d{9}$/;
       if (!value) {
-        return cb(new Error('不能为空！'))
+        return cb(new Error("不能为空！"));
       } else if (!pattern.test(value)) {
-        return cb(new Error('请填写真实的手机号！'))
+        return cb(new Error("请填写真实的手机号！"));
       } else {
-        cb() // 将判断传递给后面
+        cb(); // 将判断传递给后面
       }
-    }
+    };
     var validateCheckPwd = (rule, value, cb) => {
-      if (value === '') {
-        cb(new Error('请再次输入密码'))
+      if (value === "") {
+        cb(new Error("请再次输入密码"));
       } else if (value !== this.registerForm.pwd) {
-        cb(new Error('两次输入密码不一致!'))
+        cb(new Error("两次输入密码不一致!"));
       } else {
-        cb()
+        cb();
       }
-    }
+    };
     return {
       step: 1,
       registerForm: {
-        userName: '',
-        pwd: '',
-        checkPwd: '',
-        phonenumber: '',
-        email: '',
-        realname: '',
-        school: ''
+        userName: "",
+        pwd: "",
+        checkPwd: "",
+        phonenumber: "",
+        email: "",
+        realname: "",
+        school: ""
       },
       registerRule: {
-        userName: [{ validator: validateUser, trigger: 'blur' }],
-        pwd: [{ validator: validatePwd, trigger: 'blur' }],
-        checkPwd: [{ validator: validateCheckPwd, trigger: 'blur' }],
-        phonenumber: [{ validator: checkPhoneNumber, trigger: 'blur' }]
+        userName: [{ validator: validateUser, trigger: "blur" }],
+        pwd: [{ validator: validatePwd, trigger: "blur" }],
+        checkPwd: [{ validator: validateCheckPwd, trigger: "blur" }],
+        phonenumber: [{ validator: checkPhoneNumber, trigger: "blur" }]
       }
-    }
+    };
   },
   computed: {},
   methods: {
-    userValidate () {
-      var x = this.registerForm.userName
-      var pattern = /^[\w\u4e00-\u9fa5]{3,10}$/g
-      if (x === '') {
-        return false
+    userValidate() {
+      var x = this.registerForm.userName;
+      var pattern = /^[\w\u4e00-\u9fa5]{3,10}$/g;
+      if (x === "") {
+        return false;
       } else if (!pattern.test(x)) {
-        return false
+        return false;
       } else {
-        return true
+        return true;
       }
     },
-    pwdValidate () {
-      var pattern = /^\S{3,20}$/g
-      var x = this.registerForm.pwd
-      if (x === '' || !pattern.test(x)) {
-        return false
+    pwdValidate() {
+      var pattern = /^\S{3,20}$/g;
+      var x = this.registerForm.pwd;
+      if (x === "" || !pattern.test(x)) {
+        return false;
       } else {
-        return true
+        return true;
       }
     },
-    checkPwdValidate () {
+    checkPwdValidate() {
       if (this.registerForm.pwd !== this.registerForm.checkPwd) {
-        return false
+        return false;
       }
-      return true
+      return true;
     },
-    submitForm (formName) {
+    submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           //var md5 = require('md5-node')
-			//console.log(this.registerForm.pwd)
+          //console.log(this.registerForm.pwd)
           let data = {
             username: this.registerForm.userName,
             password: Encrypt(this.registerForm.pwd),
@@ -188,52 +203,53 @@ export default {
             realname: this.registerForm.realname,
             email: this.registerForm.email,
             school: this.registerForm.school
-          }
+          };
           // doRegister(this, data);
           // console.log(data)
-          this.$axios.get('/api/signup/', {params: data}).then(
-            res => {
+          this.$axios
+            .get("/api/signup/", { params: data })
+            .then(res => {
               //console.log(data)
               if (res.data.status) {
                 this.$message({
-                  type: 'success',
-                  message: '欢迎你,' + this.registerForm.userName + '!',
+                  type: "success",
+                  message: "欢迎你," + this.registerForm.userName + "!",
                   duration: 2000
-                })
-                this.$router.push('/login')
+                });
+                this.$router.push("/login");
               } else {
                 this.$message({
-                  type: 'error',
-                  message: 'Oops, sign up failed: ' + res.data.msg,
+                  type: "error",
+                  message: "Oops, sign up failed: " + res.data.msg,
                   duration: 2000
-                })
+                });
               }
-            }
-          ).catch(err => {
-            //console.log(err)
-            this.$message({
-              type: 'error',
-              message: 'Oops, somethings bad and unknown happened',
-              duration: 1000
             })
-          })
+            .catch(err => {
+              //console.log(err)
+              this.$message({
+                type: "error",
+                message: "Oops, somethings bad and unknown happened",
+                duration: 1000
+              });
+            });
         } else {
-          return false
+          return false;
         }
-      })
+      });
     },
-    prev () {
-      this.step--
+    prev() {
+      this.step--;
     },
-    next () {
+    next() {
       if (this.step === 1 && this.userValidate()) {
-        this.step++
+        this.step++;
       }
       if (!this.userValidate()) {
-        this.step--
+        this.step--;
       }
       if (this.step === 2 && this.pwdValidate() && this.userValidate()) {
-        this.step++
+        this.step++;
       }
       if (
         this.step === 3 &&
@@ -241,18 +257,18 @@ export default {
         this.userValidate() &&
         this.pwdValidate()
       ) {
-        this.step++
+        this.step++;
       }
 
       if (this.step < 1) {
-        this.step = 1
+        this.step = 1;
       }
       if (this.step > 4) {
-        this.step = 4
+        this.step = 4;
       }
     }
   }
-}
+};
 </script>
 
 <style scoped>
