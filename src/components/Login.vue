@@ -37,7 +37,7 @@
 </template>
 
 <script type="text/javascript">
-import { Encrypt } from '@/assets/crypt.js';
+import { Encrypt } from '@/assets/crypt.js'
 
 export default {
   data () {

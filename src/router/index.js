@@ -5,7 +5,7 @@ import Index from '@/components/layout/Index'
 import Signup from '@/components/Signup.vue'
 import Login from '@/components/Login.vue'
 import Navi from '@/components/Navigation.vue'
-import MyInfo from '@/components/MyInfo.vue'
+// import MyInfo from '@/components/MyInfo.vue'
 
 Vue.use(Router)
 

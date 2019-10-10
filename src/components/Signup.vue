@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { Encrypt } from '@/assets/crypt.js';
+import { Encrypt } from '@/assets/crypt.js'
 
 export default {
   name: 'Signup',

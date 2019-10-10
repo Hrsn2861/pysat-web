@@ -43,7 +43,7 @@ export default {
         params: { entrykey: this.$store.getters.getUserToken }
       })
       .then(res => {
-        if (res.data.status == 1) {
+        if (res.data.status === 1) {
           this.$router.push('/myinfo')
         }
       })
