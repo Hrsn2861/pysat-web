@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -12,14 +12,8 @@ export default {
 
 <style>
 #app {
-  background: url("./assets/background16-9-2.jpg");
-  background-repeat: space;
-  background-blend-mode: saturation;
-  background-size: cover;
-
   margin: 0%;
   height: 100%;
   width: 100%;
-
 }
 </style>
