@@ -44,7 +44,7 @@ export default {
         if (res.data.status !== 1) {
           this.$message.error(res.data.msg)
           // TODO:Using Vuex api
-          this.$router.push('/login')
+          this.$router.push('/index/login')
         } else {
           this.$message.success(res.data.msg)
         }
@@ -65,7 +65,7 @@ export default {
   methods: {
     logout () {
       this.$store.dispatch('userLoginOut')
-      this.$router.push('/login')
+      this.$router.push('/index/login')
     },
     getmyinfo () {
       this.$axios.get('/api/check_login/', {params: {entrykey: this.$store.getters.getUserToken}}).then(res => {
