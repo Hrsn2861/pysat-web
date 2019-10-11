@@ -57,13 +57,13 @@
           >立即注册</el-button>
           <!-- <el-button @click.prevent="prev()">Previous</el-button> -->
           <el-button @click.prevent="next()" v-if="step < 5">下一步</el-button>
-          <el-button @click.prevent="next()" v-if="step >= 5 && step < 6">获取验证码</el-button>
+          <el-button @click.prevent="getCaptcha()" v-if="step >= 5 && step < 6">获取验证码</el-button>
         </el-form-item>
       </el-form>
 
       <el-breadcrumb separator="">
-        <el-breadcrumb-item :to="{ path: '/index/login'}">已有账户？</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/index'}">摸我返回主页！</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: 'login'}">已有账户？</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/'}">摸我返回主页！</el-breadcrumb-item>
       </el-breadcrumb>
     </el-card>
   </div>
@@ -142,18 +142,18 @@ export default {
     }
   },
   beforeCreate () {
-    myPost('api/session/start', {},
-      res => {
-        let data = {
-          token: res.data.data.token
-        }
-        this.$store.dispatch('userLogin', data)
-      },
+    // myPost('api/session/start', {},
+    //   res => {
+    //     let data = {
+    //       token: res.data.data.token
+    //     }
+    //     this.$store.dispatch('setToken', data)
+    //   },
 
-      err => {
-        this.$message.error(`${err.message}`)
-      }
-    )
+    //   err => {
+    //     this.$message.error(`${err.message}`)
+    //   }
+    // )
   },
   computed: {},
   methods: {
@@ -197,6 +197,23 @@ export default {
         return true
       }
     },
+    getCaptcha () {
+      let data = {
+        token: this.$store.getters.getUserToken,
+        phone: this.registerForm.phonenumber
+      }
+      myPost('api/user/sign/verify', data,
+        res => {
+          // console.log(res)
+          this.$message.error(`${res.data.msg}`)
+          this.step++
+        },
+        err => {
+          this.$message.error(`${err.message}`)
+        }
+
+      )
+    },
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -206,7 +223,8 @@ export default {
             username: this.registerForm.userName,
             password: Encrypt(this.registerForm.pwd),
             phone: this.registerForm.phonenumber,
-            token: this.$store.getters.getUserToken
+            token: this.$store.getters.getUserToken,
+            CAPTCHA: this.registerForm.captcha
           }
 
           myPost('api/user/sign/register', data,
@@ -217,7 +235,7 @@ export default {
                   message: '欢迎你,' + this.registerForm.userName + '!',
                   duration: 2000
                 })
-                this.$router.push('/index/login')
+                this.$router.push('login')
               } else {
                 this.$message({
                   type: 'error',

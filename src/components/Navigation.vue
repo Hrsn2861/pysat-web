@@ -8,9 +8,9 @@
     </div>
     <div id="navi">
       <el-breadcrumb separator="  ">
-        <el-breadcrumb-item :to="{ path: '/index/login'}">Log in</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: 'login'}">Log in</el-breadcrumb-item>
         <br />
-        <el-breadcrumb-item :to="{ path: '/index/signup'}">Sign up</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: 'signup'}">Sign up</el-breadcrumb-item>
         <br />
       </el-breadcrumb>
     </div>

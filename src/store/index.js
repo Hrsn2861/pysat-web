@@ -7,10 +7,9 @@ import getters from './getters'
 Vue.use(Vuex)
 
 const state = {
-  user: {
+  token: '',
+  user: null
 
-    token: ''
-  }
 }
 
 export default new Vuex.Store({

@@ -39,53 +39,61 @@ export default {
     }
   },
   beforeCreate () {
-    this.$axios.get('/api/check_login/', {params: {entrykey: this.$store.getters.getUserToken}})
-      .then(res => {
-        if (res.data.status !== 1) {
-          this.$message.error(res.data.msg)
-          // TODO:Using Vuex api
-          this.$router.push('/index/login')
-        } else {
-          this.$message.success(res.data.msg)
-        }
-      })
-      .catch(err => {
-        this.$message.error(`${err.message}`)
-      })
+    if (this.$store.state.user == null) {
+      this.$router.push('/')
+    }
+    // myPost('api/session/start', {},
+    //   res => {
+    //     let data = {
+    //       token: res.data.data.token
+    //     }
+    //     this.$store.dispatch('setToken', data)
+    //   },
+
+    //   err => {
+    //     this.$message.error(`${err.message}`)
+    //   }
+    // )
+    // this.$axios
+    //   .get('/api/check_login/', {
+    //     params: { entrykey: this.$store.getters.getUserToken }
+    //   })
+    //   .then(res => {
+    //     if (res.data.status === 1) {
+    //       this.$router.push('/myinfo')
+    //     }
+    //   })
+    //   .catch(err => {
+    //     this.$message.error(`${err.message}`)
+    //   })
   },
-  // watch: {
-  //   $route (to, from) {
-  //     console.log(to.path)
-  //     if (to.path === '/MyInfo') { console.log('个人信息') }
-  //   }
-  // },
   mounted: function () {
-    this.getmyinfo()
+    // this.getmyinfo()
   },
   methods: {
     logout () {
-      this.$store.dispatch('userLoginOut')
+      this.$store.dispatch('userLogOut')
       this.$router.push('/index/login')
-    },
-    getmyinfo () {
-      this.$axios.get('/api/check_login/', {params: {entrykey: this.$store.getters.getUserToken}}).then(res => {
-        // console.log(res.data)
-        if (this.$store.getters.getUserToken) {
-          this.username = res.data.user.username
-          this.phonenumber = res.data.user.telphone
-          this.email = res.data.user.email
-          this.school = res.data.user.school
-          this.realname = res.data.user.realname
-        }
-      }).catch(err => {
-        // console.log(err)
-        this.$message({
-          type: 'error',
-          message: err,
-          duration: 1000
-        })
-      })
     }
+    // getmyinfo () {
+    //   this.$axios.get('/api/check_login/', {params: {entrykey: this.$store.getters.getUserToken}}).then(res => {
+    //     // console.log(res.data)
+    //     if (this.$store.getters.getUserToken) {
+    //       this.username = res.data.user.username
+    //       this.phonenumber = res.data.user.telphone
+    //       this.email = res.data.user.email
+    //       this.school = res.data.user.school
+    //       this.realname = res.data.user.realname
+    //     }
+    //   }).catch(err => {
+    //     // console.log(err)
+    //     this.$message({
+    //       type: 'error',
+    //       message: err,
+    //       duration: 1000
+    //     })
+    //   })
+    // // }
   }
 
 }

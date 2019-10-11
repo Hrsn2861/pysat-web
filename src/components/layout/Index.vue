@@ -16,7 +16,7 @@
           <el-button type="primary" icon="el-icon-edit" circle></el-button>
           <el-button type="success" icon="el-icon-check" circle></el-button>
           <el-button type="info" icon="el-icon-message" circle></el-button>
-          <el-button type="warning" icon="el-icon-star-off" circle></el-button>
+          <el-button type="warning" icon="el-icon-star-off" circle @click="logOut()"></el-button>
           <!-- TODO : USE BETTER ICONS -->
           <!-- <el-button type="danger" icon="el-icon-delete" circle></el-button> -->
         </el-col>
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { myPost } from '@/utils/request.js'
+import {myPost, myGet} from '@/utils/request.js'
 export default {
   name: 'index',
   data () {
@@ -43,17 +43,51 @@ export default {
     }
   },
   beforeCreate () {
-    myPost('api/session/start', {},
+    console.log(this.$store.getters.getUserToken)
+    myGet('api/session/check', {token: this.$store.getters.getUserToken},
       res => {
-        let data = {
-          token: res.data.data.token
+        if (res.data.status === 1) {
+          if (res.data.data.user) {
+            // 已登陆
+            this.$message.success('已登陆！')
+          } else {
+            // 未登录
+            this.$message.success('未登录！')
+          }
+          this.$store.dispatch('checkSession', {user: res.data.data.user})
+        } else {
+          // 建立会话
+          myPost('api/session/start', {},
+            res => {
+              let data = {
+                token: res.data.data.token
+              }
+              this.$store.dispatch('setToken', data)
+              this.$message.success('建立会话！')
+            },
+
+            err => {
+              this.$message.error(`${err.message}`)
+            }
+          )
         }
-        this.$store.dispatch('userLogin', data)
       },
       err => {
         this.$message.error(`${err.message}`)
       }
     )
+  },
+  methods: {
+    logOut () {
+      myPost('api/user/sign/logout', {token: this.$store.getters.getUserToken},
+        res => {
+          this.$router.go()
+        },
+        err => {
+          this.$message.error(`${err.message}`)
+        }
+      )
+    }
   }
 }
 </script>
@@ -171,3 +205,4 @@ div {
 
 }
 </style>
+]

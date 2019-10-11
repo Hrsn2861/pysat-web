@@ -19,7 +19,7 @@
               <el-button @click="resetForm">重置</el-button>
             </el-form-item>
             <el-form-item>
-              <router-link to="/index/signup">
+              <router-link to="/signup">
                 <el-button type>
                   没有账号，立即注册
                   <i class="el-icon-arrow-right el-icon--right"></i>
@@ -33,7 +33,7 @@
 
 <script type="text/javascript">
 import { Encrypt } from '@/utils/crypt.js'
-import { myPost } from '@/utils/request.js'
+import { myPost, myGet } from '@/utils/request.js'
 
 export default {
   data () {
@@ -90,16 +90,16 @@ export default {
           myPost('/api/user/sign/login', tmpdata,
             res => {
               if (res.data.status === 1) {
-              // this.userLogin(res.data);
+              // this.setToken(res.data);
               // this.$message.success(`${res.data.msg}`)
               // store the random string in localStorage
               // localStorage["token"] = res.data.msg
               // using vuex to store user info
-                let vuexdata = {
-                  identity: this.formLogin.identity,
-                  token: res.data.msg
-                }
-                this.$store.dispatch('userLogin', vuexdata)
+                // let vuexdata = {
+                //   identity: this.formLogin.identity,
+                //   token: res.data.msg
+                // }
+                // this.$store.dispatch('setToken', vuexdata)
                 this.$message({
                   type: 'success',
                   message:
@@ -108,7 +108,7 @@ export default {
                 })
                 // 登录成功 跳转至首页
                 // this.$router.push({name:'Home'})
-                this.$router.push('/myinfo')
+                this.$router.push('myinfo')
               } else {
                 console.log(this.$store.getters.getUserToken)
 
@@ -127,18 +127,21 @@ export default {
     }
   },
   beforeCreate () {
-    myPost('api/session/start', {},
-      res => {
-        let data = {
-          token: res.data.data.token
-        }
-        this.$store.dispatch('userLogin', data)
-      },
+    if (this.$store.state.user != null) {
+      this.$router.push('myinfo')
+    }
+    // myPost('api/session/start', {},
+    //   res => {
+    //     let data = {
+    //       token: res.data.data.token
+    //     }
+    //     this.$store.dispatch('setToken', data)
+    //   },
 
-      err => {
-        this.$message.error(`${err.message}`)
-      }
-    )
+    //   err => {
+    //     this.$message.error(`${err.message}`)
+    //   }
+    // )
     // this.$axios
     //   .get('/api/check_login/', {
     //     params: { entrykey: this.$store.getters.getUserToken }
