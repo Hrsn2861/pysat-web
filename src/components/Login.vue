@@ -29,7 +29,6 @@
           </el-form>
 
     </el-card>
-  </transition>
   </div>
 </template>
 

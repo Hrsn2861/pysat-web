@@ -1,98 +1,67 @@
 <template>
-  <div id="Signup" style="height:100%;margin :0%">
-    <el-container direction="vertical">
-      <el-header height="50">
-        <transition name="slide-fade">
-          <h1>
-            You're a few steps from becoming a
-            <strong>
-              <em>PYSATer!</em>
-            </strong>
-          </h1>
+  <div class="main-div">
+    <el-card class="box-card">
+      <h1 style="user-select:none">注册成为一名派塞特！</h1>
+      <el-progress :percentage="percentage" stroke-width="20" style="margin-bottom:4%;"></el-progress>
+      <el-form :model="registerForm" :rules="registerRule" status-icon ref="registerForm">
+        <el-form-item prop="userName" v-if="step >= 1">
+          <el-input
+            type="userName"
+            v-model="registerForm.userName"
+            placeholder="账号"
+            maxlength="10"
+            minlength="3"
+          ></el-input>
+        </el-form-item>
+        <transition name="fade">
+          <el-form-item prop="pwd" v-if="step >= 2">
+            <el-input v-model="registerForm.pwd" placeholder="密码" type="password"></el-input>
+          </el-form-item>
         </transition>
-      </el-header>
-      <el-container direction="horizontal" id="main-container">
-        <el-aside width="50">
-          <div style="height: 70%;width : 100%;transition-duration:4s">
-            <el-steps direction="vertical" :active="step">
-              <el-step title="设定账号"></el-step>
-              <el-step title="输入密码"></el-step>
-              <el-step title="再来一遍" description></el-step>
-              <el-step title="其它信息" description></el-step>
-            </el-steps>
-          </div>
-        </el-aside>
-        <el-main id="main-form">
-          <el-form :model="registerForm" :rules="registerRule" status-icon ref="registerForm">
-            <el-form-item prop="userName" v-if="step >= 1">
-              <el-input
-                type="userName"
-                v-model="registerForm.userName"
-                placeholder="账号"
-                maxlength="10"
-                minlength="3"
-              ></el-input>
-            </el-form-item>
-            <transition name="fade">
-              <el-form-item prop="pwd" v-if="step >= 2">
-                <el-input v-model="registerForm.pwd" placeholder="密码" type="password"></el-input>
-              </el-form-item>
-            </transition>
-            <transition name="fade">
-              <el-form-item prop="checkPwd" v-if="step >= 3">
-                <el-input v-model="registerForm.checkPwd" placeholder="请再次输入密码" type="password"></el-input>
-              </el-form-item>
-            </transition>
-            <transition name="fade">
-              <el-form-item prop="phonenumber" v-if="step >= 4">
-                <el-input v-model="registerForm.phonenumber" placeholder="请输入注册手机号"></el-input>
-              </el-form-item>
-            </transition>
-            <transition name="fade">
-              <el-form-item v-if="step >= 4">
-                <el-input
-                  size="mini"
-                  type="input"
-                  v-model="registerForm.realname"
-                  placeholder="您的真实姓名"
-                ></el-input>
-                <el-input
-                  size="mini"
-                  type="email"
-                  v-model="registerForm.email"
-                  placeholder="请输入你的邮箱"
-                ></el-input>
-                <el-input size="mini" type="input" v-model="registerForm.school" placeholder="学校"></el-input>
-              </el-form-item>
-            </transition>
-            <!-- <transition name="fade">
+        <transition name="fade">
+          <el-form-item prop="checkPwd" v-if="step >= 3">
+            <el-input v-model="registerForm.checkPwd" placeholder="请再次输入密码" type="password"></el-input>
+          </el-form-item>
+        </transition>
+        <transition name="fade">
+          <el-form-item prop="phonenumber" v-if="step >= 4">
+            <el-input v-model="registerForm.phonenumber" placeholder="请输入注册手机号"></el-input>
+          </el-form-item>
+        </transition>
+        <transition name="fade">
+          <el-form-item v-if="step >= 5">
+            <el-input type="input" v-model="registerForm.realname" placeholder="您的真实姓名"></el-input>
+            <el-input type="email" v-model="registerForm.email" placeholder="请输入你的邮箱"></el-input>
+            <el-input type="input" v-model="registerForm.school" placeholder="学校"></el-input>
+          </el-form-item>
+        </transition>
+        <!-- <transition name="fade">
               <el-form-item v-if="step >= 4">
               </el-form-item>
             </transition>
             <transition name="fade">
               <el-form-item v-if="step >= 4">
               </el-form-item>
-            </transition>-->
+        </transition>-->
 
-            <el-form-item>
-              <el-button
-                type="primary"
-                @click="submitForm('registerForm')"
-                class="submitBtn"
-                v-if="step >= 4"
-              >立即注册</el-button>
-              <!-- <el-button @click.prevent="prev()">Previous</el-button> -->
-              <el-button @click.prevent="next()" v-if="step < 4">下一步</el-button>
-            </el-form-item>
-          </el-form>
+        <el-form-item>
+          <el-button
+            type="primary"
+            @click="submitForm('registerForm')"
+            class="submitBtn"
+            v-if="step >= 5"
+          >立即注册</el-button>
+          <!-- <el-button @click.prevent="prev()">Previous</el-button> -->
+          <el-button @click.prevent="next()" v-if="step < 5">下一步</el-button>
+        </el-form-item>
+      </el-form>
 
-          <el-breadcrumb>
-            <el-breadcrumb-item :to="{ path: '/index/login'}">Have an account already?</el-breadcrumb-item>
-            <el-breadcrumb-item :to="{ path: '/index/login'}"></el-breadcrumb-item>
-          </el-breadcrumb>
-        </el-main>
-      </el-container>
-    </el-container>
+      <el-breadcrumb>
+        <el-breadcrumb-item :to="{ path: '/index/login'}">Have an account already?</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/index/login'}"></el-breadcrumb-item>
+      </el-breadcrumb>
+
+    </el-card>
   </div>
 </template>
 
@@ -146,6 +115,7 @@ export default {
     }
     return {
       step: 1,
+
       registerForm: {
         userName: '',
         pwd: '',
@@ -165,6 +135,9 @@ export default {
   },
   computed: {},
   methods: {
+    format (percentage) {
+      return percentage === 100 ? '满' : `${percentage}%`
+    },
     userValidate () {
       var x = this.registerForm.userName
       var pattern = /^[\w\u4e00-\u9fa5]{3,10}$/g
@@ -190,6 +163,17 @@ export default {
         return false
       }
       return true
+    },
+    phonenumberValidate () {
+      var pattern = /^1[3456789]\d{9}$/
+      var x = this.registerForm.phonenumber
+      if (x === '') {
+        return false
+      } else if (!pattern.test(x)) {
+        return false
+      } else {
+        return true
+      }
     },
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
@@ -244,12 +228,15 @@ export default {
     next () {
       if (this.step === 1 && this.userValidate()) {
         this.step++
+        this.percentage = 25
       }
       if (!this.userValidate()) {
         this.step--
+        this.percentage = 0
       }
       if (this.step === 2 && this.pwdValidate() && this.userValidate()) {
         this.step++
+        this.percentage = 50
       }
       if (
         this.step === 3 &&
@@ -258,13 +245,23 @@ export default {
         this.pwdValidate()
       ) {
         this.step++
+        this.percentage = 90
+      }
+      if (
+        this.step === 4 &&
+        this.checkPwdValidate() &&
+        this.userValidate() &&
+        this.pwdValidate() && this.phonenumberValidate()
+      ) {
+        this.step++
+        this.percentage = 99
       }
 
       if (this.step < 1) {
         this.step = 1
       }
-      if (this.step > 4) {
-        this.step = 4
+      if (this.step > 5) {
+        this.step = 5
       }
     }
   }
@@ -272,44 +269,23 @@ export default {
 </script>
 
 <style scoped>
+.main-div {
+  height: 100%;
+  width: 100%;
+  margin: 0%;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
 #steps {
   height: 80%;
 }
-.el-step {
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif !important;
-  transition-delay: 1s;
-  user-select: none;
-}
-#main-container {
-  width: 60% !important;
-  align-self: center;
-}
+
 #main-form {
+  margin-top: 5%;
   margin-left: 10%;
 }
-.el-aside {
-  overflow: hidden;
-}
-.el-container {
-  height: 100% !important;
-}
-h1,
-h2 {
-  font-weight: normal;
-  font-size: 50px;
-  color: white;
-  margin-top: 5%;
-  user-select: none;
-  transition-duration: 0.5s;
-  text-align: center;
-}
-h1:hover,
-h2:hover {
-  transform: scale(1.005);
-  transition-duration: 0.5s;
-  color: gainsboro;
-}
+
 .el-footer {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
@@ -326,5 +302,19 @@ h2:hover {
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+.box-card {
+  align-self: center;
+  height: auto;
+  width: 25%;
+
+  border: 0px dashed rgb(40, 40, 40);
+  background-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease-in-out !important;
+  transition-duration: 1s;
+}
+.box-card:hover {
+  box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);
 }
 </style>
