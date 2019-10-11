@@ -28,12 +28,14 @@
             </el-form-item>
           </el-form>
     </el-card>
+
   </div>
 </template>
 
 <script type="text/javascript">
 import { Encrypt } from '@/utils/crypt.js'
-import { myPost, myGet } from '@/utils/request.js'
+import { myPost } from '@/utils/request.js'
+import { checkSession } from '@/utils/session.js'
 
 export default {
   data () {
@@ -83,7 +85,6 @@ export default {
             'token': this.$store.getters.getUserToken
             // token: localStorage.token
           }
-
           // 通过验证之后才请求登录接口
           // this.$axios.get(process.env.VUE_APP_BASE_API, this.formLogin)
           // console.log(tmpData)
@@ -103,12 +104,13 @@ export default {
                 this.$message({
                   type: 'success',
                   message:
-                    '欢迎你,' + this.$store.getters.getUserIdentity + '!',
+                    '欢迎你,' + this.formLogin.identity + '!',
                   duration: 2000
                 })
                 // 登录成功 跳转至首页
-                // this.$router.push({name:'Home'})
                 this.$router.push('myinfo')
+
+                // this.$router.go()
               } else {
                 console.log(this.$store.getters.getUserToken)
 
@@ -127,42 +129,9 @@ export default {
     }
   },
   beforeCreate () {
-    if (this.$store.state.user != null) {
-      this.$router.push('myinfo')
-    }
-    // myPost('api/session/start', {},
-    //   res => {
-    //     let data = {
-    //       token: res.data.data.token
-    //     }
-    //     this.$store.dispatch('setToken', data)
-    //   },
-
-    //   err => {
-    //     this.$message.error(`${err.message}`)
-    //   }
-    // )
-    // this.$axios
-    //   .get('/api/check_login/', {
-    //     params: { entrykey: this.$store.getters.getUserToken }
-    //   })
-    //   .then(res => {
-    //     if (res.data.status === 1) {
-    //       this.$router.push('/myinfo')
-    //     }
-    //   })
-    //   .catch(err => {
-    //     this.$message.error(`${err.message}`)
-    //   })
-  },
-  mounted: function () {
-    this.$nextTick(
-      function () {
-        this.show = true
-        // I Think it's very odd
-      }
-    )
+    checkSession(this, 'myinfo', '')
   }
+
 }
 </script>
 

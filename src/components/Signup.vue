@@ -72,6 +72,7 @@
 <script>
 import { Encrypt } from '@/utils/crypt.js'
 import { myPost } from '@/utils/request.js'
+import { checkSession } from '@/utils/session.js'
 
 export default {
   name: 'Signup',
@@ -142,18 +143,7 @@ export default {
     }
   },
   beforeCreate () {
-    // myPost('api/session/start', {},
-    //   res => {
-    //     let data = {
-    //       token: res.data.data.token
-    //     }
-    //     this.$store.dispatch('setToken', data)
-    //   },
-
-    //   err => {
-    //     this.$message.error(`${err.message}`)
-    //   }
-    // )
+    checkSession(this, 'myinfo', '')
   },
   computed: {},
   methods: {

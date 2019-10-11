@@ -25,6 +25,8 @@
 
 <script>
 // import func from '../../vue-temp/vue-editor-bridge'
+import { checkSession } from '@/utils/session.js'
+import { myGet } from '@/utils/request.js'
 
 export default {
   name: 'MyInfo',
@@ -39,63 +41,38 @@ export default {
     }
   },
   beforeCreate () {
-    if (this.$store.state.user == null) {
-      this.$router.push('/')
-    }
-    // myPost('api/session/start', {},
-    //   res => {
-    //     let data = {
-    //       token: res.data.data.token
-    //     }
-    //     this.$store.dispatch('setToken', data)
-    //   },
-
-    //   err => {
-    //     this.$message.error(`${err.message}`)
-    //   }
-    // )
-    // this.$axios
-    //   .get('/api/check_login/', {
-    //     params: { entrykey: this.$store.getters.getUserToken }
-    //   })
-    //   .then(res => {
-    //     if (res.data.status === 1) {
-    //       this.$router.push('/myinfo')
-    //     }
-    //   })
-    //   .catch(err => {
-    //     this.$message.error(`${err.message}`)
-    //   })
+    checkSession(this, '', '/')
   },
   mounted: function () {
-    // this.getmyinfo()
+    this.getmyinfo()
   },
   methods: {
     logout () {
       this.$store.dispatch('userLogOut')
       this.$router.push('/index/login')
-    }
-    // getmyinfo () {
-    //   this.$axios.get('/api/check_login/', {params: {entrykey: this.$store.getters.getUserToken}}).then(res => {
-    //     // console.log(res.data)
-    //     if (this.$store.getters.getUserToken) {
-    //       this.username = res.data.user.username
-    //       this.phonenumber = res.data.user.telphone
-    //       this.email = res.data.user.email
-    //       this.school = res.data.user.school
-    //       this.realname = res.data.user.realname
-    //     }
-    //   }).catch(err => {
-    //     // console.log(err)
-    //     this.$message({
-    //       type: 'error',
-    //       message: err,
-    //       duration: 1000
-    //     })
-    //   })
-    // // }
-  }
+    },
+    getmyinfo () {
+      myGet('/api/user/info/get', {token: this.$store.getters.getUserToken},
+        res => {
+          if (res.data.status === 1) {
+            this.username = res.data.data.user.username
+            this.phonenumber = res.data.data.user.phone
 
+            this.school = res.data.data.user.school
+            this.realname = res.data.data.user.realname
+          }
+        },
+        err => {
+          this.$message({
+            type: 'error',
+            message: err,
+            duration: 1000
+          })
+        }
+      )
+    }
+
+  }
 }
 </script>
 

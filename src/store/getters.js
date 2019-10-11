@@ -7,22 +7,8 @@ export const getters = {
     }
     return state.token
   },
-  getUserIdentity: (state) => {
-    if (!state.user.token) {
-      state.user = {
-
-        token: localStorage.token
-      }
-    }
-    return state.user.identity
-  },
+  // 这里的user是一个字典
   getUser: (state) => {
-    if (!state.user.token) {
-      state.user = {
-
-        token: localStorage.token
-      }
-    }
     return state.user
   }
 

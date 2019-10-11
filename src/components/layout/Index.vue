@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import {myPost, myGet} from '@/utils/request.js'
+import {logout} from '@/utils/session.js'
 export default {
   name: 'index',
   data () {
@@ -42,51 +42,10 @@ export default {
       // msg: 'Welcome to Your Vue.js App'
     }
   },
-  beforeCreate () {
-    console.log(this.$store.getters.getUserToken)
-    myGet('api/session/check', {token: this.$store.getters.getUserToken},
-      res => {
-        if (res.data.status === 1) {
-          if (res.data.data.user) {
-            // 已登陆
-            this.$message.success('已登陆！')
-          } else {
-            // 未登录
-            this.$message.success('未登录！')
-          }
-          this.$store.dispatch('checkSession', {user: res.data.data.user})
-        } else {
-          // 建立会话
-          myPost('api/session/start', {},
-            res => {
-              let data = {
-                token: res.data.data.token
-              }
-              this.$store.dispatch('setToken', data)
-              this.$message.success('建立会话！')
-            },
-
-            err => {
-              this.$message.error(`${err.message}`)
-            }
-          )
-        }
-      },
-      err => {
-        this.$message.error(`${err.message}`)
-      }
-    )
-  },
   methods: {
-    logOut () {
-      myPost('api/user/sign/logout', {token: this.$store.getters.getUserToken},
-        res => {
-          this.$router.go()
-        },
-        err => {
-          this.$message.error(`${err.message}`)
-        }
-      )
+    async logOut () {
+      await logout(this)
+      this.$router.go(0)
     }
   }
 }

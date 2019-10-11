@@ -20,10 +20,16 @@
 <script>
 // import func from '../../vue-temp/vue-editor-bridge'
 
+import {checkSession} from '@/utils/session.js'
+
 export default {
+
   name: 'Index',
   data () {
     return {}
+  },
+  beforeCreate () {
+    checkSession(this, 'myinfo', '')
   }
   // watch: {
   //   $route (to, from) {
