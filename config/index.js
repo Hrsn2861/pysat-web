@@ -12,7 +12,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-              target: 'https://pysat-server-CTRL.app.secoder.net',
+              // target: 'https://pysat-server-CTRL.app.secoder.net',
+              target : 'http://192.168.0.110:8000',
 			  secure: false,
               changeOrigin: true,
               pathRewrite: {

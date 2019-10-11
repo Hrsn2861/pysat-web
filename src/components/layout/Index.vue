@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import { myPost } from '@/utils/request.js'
 export default {
   name: 'index',
   data () {
@@ -42,18 +43,17 @@ export default {
     }
   },
   beforeCreate () {
-    this.$axios
-      .get('/api/check_login/', {
-        params: { entrykey: this.$store.getters.getUserToken }
-      })
-      .then(res => {
-        if (res.data.status === 1) {
-          this.$router.push('/myinfo')
+    myPost('api/session/start', {},
+      res => {
+        let data = {
+          token: res.data.data.token
         }
-      })
-      .catch(err => {
+        this.$store.dispatch('userLogin', data)
+      },
+      err => {
         this.$message.error(`${err.message}`)
-      })
+      }
+    )
   }
 }
 </script>
@@ -135,7 +135,7 @@ div {
 .slide-left-enter-active,
 .slide-left-leave-active {
   /* will-change: transform; */
-  transition: all 400ms;
+  transition: all 1s;
   /* will-change:scroll-position; */
   /* will-change: contents; */
   /* will-change: unset; */
@@ -144,17 +144,20 @@ div {
 }
 .slide-right-enter {
   opacity: 0;
-  transform: scale(0.95);
-  /* transform: translate3d(2%, 0, 0); */
+  /* transform: scale(0.95); */
+
+  transform: scale(0.8), translate3d(0 , -4%, 0) ;
     overflow: hidden !important;
 
 }
 .slide-right-leave-active {
   opacity: 0;
   transform: scale(0.95);
+  transform: translate3d( 0, 4%, 0);
     overflow: hidden !important;
 
 }
+
 .slide-left-enter {
   opacity: 0;
   transform: translate3d(100%, 0, 0);

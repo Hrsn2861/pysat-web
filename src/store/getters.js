@@ -4,7 +4,7 @@ export const getters = {
     // console.log('TEST')
     if (!state.user.token) {
       state.user = {
-        identity: localStorage.identity,
+
         token: localStorage.token
       }
     }
@@ -13,7 +13,7 @@ export const getters = {
   getUserIdentity: (state) => {
     if (!state.user.token) {
       state.user = {
-        identity: localStorage.identity,
+
         token: localStorage.token
       }
     }
@@ -22,7 +22,7 @@ export const getters = {
   getUser: (state) => {
     if (!state.user.token) {
       state.user = {
-        identity: localStorage.identity,
+
         token: localStorage.token
       }
     }

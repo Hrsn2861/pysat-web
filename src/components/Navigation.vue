@@ -4,7 +4,7 @@
       <h2>Welcome to</h2>
     </div>
     <div id="pysat">
-      <h3>PYSAT</h3>
+      <h3>派塞特</h3>
     </div>
     <div id="navi">
       <el-breadcrumb separator="  ">
@@ -63,7 +63,7 @@ h2 {
   color: white;
   margin-top: 20%;
   user-select: none;
-  transition-duration: 0.5s;
+  transition-duration: 2s;
 }
 h2:hover {
   transform: scale(1.005);

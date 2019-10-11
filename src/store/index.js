@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 const state = {
   user: {
-    identity: '',
+
     token: ''
   }
 }

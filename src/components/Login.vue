@@ -27,13 +27,13 @@
               </router-link>
             </el-form-item>
           </el-form>
-
     </el-card>
   </div>
 </template>
 
 <script type="text/javascript">
-import { Encrypt } from '@/assets/crypt.js'
+import { Encrypt } from '@/utils/crypt.js'
+import { myPost } from '@/utils/request.js'
 
 export default {
   data () {
@@ -77,22 +77,24 @@ export default {
       // 表单验证
       this.$refs['formLogin'].validate(valid => {
         if (valid) {
-          let tmpData = {
-            identity: this.formLogin.identity,
-            password: Encrypt(this.formLogin.password)
+          let tmpdata = {
+            'username': this.formLogin.identity,
+            'password': Encrypt(this.formLogin.password),
+            'token': this.$store.getters.getUserToken
+            // token: localStorage.token
           }
+
           // 通过验证之后才请求登录接口
           // this.$axios.get(process.env.VUE_APP_BASE_API, this.formLogin)
           // console.log(tmpData)
-          this.$axios
-            .get('/api/signin/', { params: tmpData })
-            .then(res => {
+          myPost('/api/user/sign/login', tmpdata,
+            res => {
               if (res.data.status === 1) {
-                // this.userLogin(res.data);
-                // this.$message.success(`${res.data.msg}`)
-                // store the random string in localStorage
-                // localStorage["token"] = res.data.msg
-                // using vuex to store user info
+              // this.userLogin(res.data);
+              // this.$message.success(`${res.data.msg}`)
+              // store the random string in localStorage
+              // localStorage["token"] = res.data.msg
+              // using vuex to store user info
                 let vuexdata = {
                   identity: this.formLogin.identity,
                   token: res.data.msg
@@ -108,16 +110,13 @@ export default {
                 // this.$router.push({name:'Home'})
                 this.$router.push('/myinfo')
               } else {
+                console.log(this.$store.getters.getUserToken)
+
                 this.$message.error(`${res.data.msg}`)
                 return false
               }
-            })
-            .catch(err => {
-              this.$message.error(`${err.message}`, 'ERROR!')
-            })
-        } else {
-          this.$message.error('表单验证失败!')
-          return false
+            },
+            err => { this.$message.error(`${err.message}`, 'ERROR!') })
         }
       })
     },
@@ -128,18 +127,30 @@ export default {
     }
   },
   beforeCreate () {
-    this.$axios
-      .get('/api/check_login/', {
-        params: { entrykey: this.$store.getters.getUserToken }
-      })
-      .then(res => {
-        if (res.data.status === 1) {
-          this.$router.push('/myinfo')
+    myPost('api/session/start', {},
+      res => {
+        let data = {
+          token: res.data.data.token
         }
-      })
-      .catch(err => {
+        this.$store.dispatch('userLogin', data)
+      },
+
+      err => {
         this.$message.error(`${err.message}`)
-      })
+      }
+    )
+    // this.$axios
+    //   .get('/api/check_login/', {
+    //     params: { entrykey: this.$store.getters.getUserToken }
+    //   })
+    //   .then(res => {
+    //     if (res.data.status === 1) {
+    //       this.$router.push('/myinfo')
+    //     }
+    //   })
+    //   .catch(err => {
+    //     this.$message.error(`${err.message}`)
+    //   })
   },
   mounted: function () {
     this.$nextTick(
