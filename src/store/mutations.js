@@ -14,6 +14,8 @@ export const mutations = {
     state.token = ''
     localStorage.removeItem('token')
   }, // 我暂时不知道deleteSession是用来干什么的，可能是用户超时之后清空用的
+
+  // CHECKSESSION实际上用来设置用户数据
   [types.CHECKSESSION] (state, data) {
     state.user = data.user
     localStorage.setItem('user', data.user)

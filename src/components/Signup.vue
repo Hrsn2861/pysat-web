@@ -40,14 +40,7 @@
             <el-input type="input" v-model="registerForm.school" placeholder="学校"></el-input>
           </el-form-item>
         </transition>
-        <!-- <transition name="fade">
-              <el-form-item v-if="step >= 4">
-              </el-form-item>
-            </transition>
-            <transition name="fade">
-              <el-form-item v-if="step >= 4">
-              </el-form-item>
-        </transition>-->
+
         <el-form-item>
           <el-button
             type="primary"

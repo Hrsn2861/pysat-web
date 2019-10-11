@@ -17,15 +17,14 @@
                   </el-col>
             </el-row>
     <el-row type="flex" justify="center">
-      <el-button type="danger" @click="logout()">登出</el-button>
+      <el-button type="danger" @click="logOut()">登出</el-button>
     </el-row>
       </el-card>
 </div>
 </template>
 
 <script>
-// import func from '../../vue-temp/vue-editor-bridge'
-import { checkSession } from '@/utils/session.js'
+import { checkSession, logout } from '@/utils/session.js'
 import { myGet } from '@/utils/request.js'
 
 export default {
@@ -47,9 +46,13 @@ export default {
     this.getmyinfo()
   },
   methods: {
-    logout () {
-      this.$store.dispatch('userLogOut')
-      this.$router.push('/index/login')
+    // logOut () {
+    //   logout()
+    //   this.$router.push('/login')
+    // },     //必须加this才可以！!!
+    async logOut () {
+      await logout(this)
+      this.$router.go(0) // 刷新页面
     },
     getmyinfo () {
       myGet('/api/user/info/get', {token: this.$store.getters.getUserToken},

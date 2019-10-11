@@ -18,7 +18,6 @@
 </template>
 
 <script>
-// import func from '../../vue-temp/vue-editor-bridge'
 
 import {checkSession} from '@/utils/session.js'
 
@@ -31,12 +30,6 @@ export default {
   beforeCreate () {
     checkSession(this, 'myinfo', '')
   }
-  // watch: {
-  //   $route (to, from) {
-  //     console.log(to.path)
-  //     if (to.path === '/MyInfo') { console.log('个人信息') }
-  //   }
-  // },
 }
 </script>
 

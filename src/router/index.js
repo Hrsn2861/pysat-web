@@ -35,20 +35,4 @@ export default new Router({
         }
       ]
     }]
-
-  // {
-  //   path: '/index',
-  //   name: 'Index',
-  //   component: Index
-  // },
-  // {
-  //   path: '/signup',
-  //   name: 'Signup',
-  //   component: Signup
-  // },
-  // {
-  //   path: '/login',
-  //   name: 'Login',
-  //   component: Login
-  // },
 })

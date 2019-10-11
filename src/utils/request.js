@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+// surcess handle and err Handle (Something like Lambda func)
 export async function myPost (url, data, sucHandle, errHandle) {
   let params = new URLSearchParams()
 

@@ -83,24 +83,11 @@ export default {
             'username': this.formLogin.identity,
             'password': Encrypt(this.formLogin.password),
             'token': this.$store.getters.getUserToken
-            // token: localStorage.token
           }
-          // 通过验证之后才请求登录接口
-          // this.$axios.get(process.env.VUE_APP_BASE_API, this.formLogin)
-          // console.log(tmpData)
+
           myPost('/api/user/sign/login', tmpdata,
             res => {
               if (res.data.status === 1) {
-              // this.setToken(res.data);
-              // this.$message.success(`${res.data.msg}`)
-              // store the random string in localStorage
-              // localStorage["token"] = res.data.msg
-              // using vuex to store user info
-                // let vuexdata = {
-                //   identity: this.formLogin.identity,
-                //   token: res.data.msg
-                // }
-                // this.$store.dispatch('setToken', vuexdata)
                 this.$message({
                   type: 'success',
                   message:

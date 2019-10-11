@@ -3,7 +3,11 @@ export const getters = {
   getUserToken: (state) => {
     // console.log('TEST')
     if (!state.token) {
-      state.token = localStorage.token
+      if (localStorage.getItem('token') != null) {
+        state.token = localStorage.token
+      } else {
+        return state.token
+      }
     }
     return state.token
   },
