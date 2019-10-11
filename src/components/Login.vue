@@ -19,7 +19,7 @@
               <el-button @click="resetForm">重置</el-button>
             </el-form-item>
             <el-form-item>
-              <router-link to="/index/signup">
+              <router-link to="/signup">
                 <el-button type>
                   没有账号，立即注册
                   <i class="el-icon-arrow-right el-icon--right"></i>
@@ -27,13 +27,15 @@
               </router-link>
             </el-form-item>
           </el-form>
-
     </el-card>
+
   </div>
 </template>
 
 <script type="text/javascript">
-import { Encrypt } from '@/assets/crypt.js'
+import { Encrypt } from '@/utils/crypt.js'
+import { myPost } from '@/utils/request.js'
+import { checkSession } from '@/utils/session.js'
 
 export default {
   data () {
@@ -77,47 +79,33 @@ export default {
       // 表单验证
       this.$refs['formLogin'].validate(valid => {
         if (valid) {
-          let tmpData = {
-            identity: this.formLogin.identity,
-            password: Encrypt(this.formLogin.password)
+          let tmpdata = {
+            'username': this.formLogin.identity,
+            'password': Encrypt(this.formLogin.password),
+            'token': this.$store.getters.getUserToken
           }
-          // 通过验证之后才请求登录接口
-          // this.$axios.get(process.env.VUE_APP_BASE_API, this.formLogin)
-          // console.log(tmpData)
-          this.$axios
-            .get('/api/signin/', { params: tmpData })
-            .then(res => {
+
+          myPost('/api/user/sign/login', tmpdata,
+            res => {
               if (res.data.status === 1) {
-                // this.userLogin(res.data);
-                // this.$message.success(`${res.data.msg}`)
-                // store the random string in localStorage
-                // localStorage["token"] = res.data.msg
-                // using vuex to store user info
-                let vuexdata = {
-                  identity: this.formLogin.identity,
-                  token: res.data.msg
-                }
-                this.$store.dispatch('userLogin', vuexdata)
                 this.$message({
                   type: 'success',
                   message:
-                    '欢迎你,' + this.$store.getters.getUserIdentity + '!',
+                    '欢迎你,' + this.formLogin.identity + '!',
                   duration: 2000
                 })
                 // 登录成功 跳转至首页
-                // this.$router.push({name:'Home'})
-                this.$router.push('/myinfo')
+                this.$router.push('myinfo')
+
+                // this.$router.go()
               } else {
+                console.log(this.$store.getters.getUserToken)
+
                 this.$message.error(`${res.data.msg}`)
                 return false
               }
-            })
-            .catch(err => {
-              this.$message.error(`${err.message}`, 'ERROR!')
-            })
-        } else {
-          this.$message.error('表单验证失败!')
-          return false
+            },
+            err => { this.$message.error(`${err.message}`, 'ERROR!') })
         }
       })
     },
@@ -128,27 +116,9 @@ export default {
     }
   },
   beforeCreate () {
-    this.$axios
-      .get('/api/check_login/', {
-        params: { entrykey: this.$store.getters.getUserToken }
-      })
-      .then(res => {
-        if (res.data.status === 1) {
-          this.$router.push('/myinfo')
-        }
-      })
-      .catch(err => {
-        this.$message.error(`${err.message}`)
-      })
-  },
-  mounted: function () {
-    this.$nextTick(
-      function () {
-        this.show = true
-        // I Think it's very odd
-      }
-    )
+    checkSession(this, 'myinfo', '')
   }
+
 }
 </script>
 

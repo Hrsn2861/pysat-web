@@ -12,7 +12,8 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/index',
+
+      path: '/',
       // name: 'Index',
       component: Index,
       children: [
@@ -27,29 +28,11 @@ export default new Router({
         {
           path: '',
           component: Navi
+        },
+        {
+          path: 'myinfo',
+          component: MyInfo
         }
       ]
-    },
-
-    // {
-    //   path: '/index',
-    //   name: 'Index',
-    //   component: Index
-    // },
-    // {
-    //   path: '/signup',
-    //   name: 'Signup',
-    //   component: Signup
-    // },
-    // {
-    //   path: '/login',
-    //   name: 'Login',
-    //   component: Login
-    // },
-    {
-      path: '/myinfo',
-      name: 'MyInfo',
-      component: MyInfo
-    }
-  ]
+    }]
 })

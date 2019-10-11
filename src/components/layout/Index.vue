@@ -16,11 +16,9 @@
           <el-button type="primary" icon="el-icon-edit" circle></el-button>
           <el-button type="success" icon="el-icon-check" circle></el-button>
           <el-button type="info" icon="el-icon-message" circle></el-button>
-          <el-button type="warning" icon="el-icon-star-off" circle></el-button>
+          <el-button type="danger" icon="el-icon-delete" circle @click="logOut()"></el-button>
           <!-- TODO : USE BETTER ICONS -->
-          <!-- <el-button type="danger" icon="el-icon-delete" circle></el-button> -->
         </el-col>
-        <!-- <h1>to be implemented...</h1> -->
       </el-header>
       <el-main>
         <transition :name="transitionName">
@@ -33,27 +31,19 @@
 </template>
 
 <script>
+import {logout} from '@/utils/session.js'
 export default {
   name: 'index',
   data () {
     return {
       transitionName: 'slide-right'
-      // msg: 'Welcome to Your Vue.js App'
     }
   },
-  beforeCreate () {
-    this.$axios
-      .get('/api/check_login/', {
-        params: { entrykey: this.$store.getters.getUserToken }
-      })
-      .then(res => {
-        if (res.data.status === 1) {
-          this.$router.push('/myinfo')
-        }
-      })
-      .catch(err => {
-        this.$message.error(`${err.message}`)
-      })
+  methods: {
+    async logOut () {
+      await logout(this)
+      this.$router.go(0) // 刷新页面
+    }
   }
 }
 </script>
@@ -131,11 +121,9 @@ div {
 
 }
 .slide-right-enter-active,
-.slide-right-leave-active,
-.slide-left-enter-active,
-.slide-left-leave-active {
+.slide-right-leave-active{
   /* will-change: transform; */
-  transition: all 400ms;
+  transition: all 1s;
   /* will-change:scroll-position; */
   /* will-change: contents; */
   /* will-change: unset; */
@@ -144,27 +132,18 @@ div {
 }
 .slide-right-enter {
   opacity: 0;
-  transform: scale(0.95);
-  /* transform: translate3d(2%, 0, 0); */
+  /* transform: scale(0.95); */
+
+  transform: scale(0.8), translate3d(0 , -4%, 0) ;
     overflow: hidden !important;
 
 }
 .slide-right-leave-active {
   opacity: 0;
   transform: scale(0.95);
-    overflow: hidden !important;
-
-}
-.slide-left-enter {
-  opacity: 0;
-  transform: translate3d(100%, 0, 0);
-    overflow: hidden !important;
-
-}
-.slide-left-leave-active {
-  opacity: 0;
-  transform: translate3d(-100%, 0, 0);
+  transform: translate3d( 0, 4%, 0);
     overflow: hidden !important;
 
 }
 </style>
+]

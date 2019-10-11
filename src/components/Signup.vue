@@ -1,8 +1,8 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <h1 style="user-select:none">注册成为一名派塞特！</h1>
-      <el-progress :percentage="percentage" stroke-width="20" style="margin-bottom:4%;"></el-progress>
+      <h1 style="user-select:none">注册成为一名派塞特er！</h1>
+      <el-progress :percentage="percentage" :stroke-width="20" style="margin-bottom:4%;"></el-progress>
       <el-form :model="registerForm" :rules="registerRule" status-icon ref="registerForm">
         <el-form-item prop="userName" v-if="step >= 1">
           <el-input
@@ -29,50 +29,50 @@
           </el-form-item>
         </transition>
         <transition name="fade">
-          <el-form-item v-if="step >= 5">
+          <el-form-item prop="captcha" v-if="step >= 5">
+            <el-input v-model="registerForm.captcha" placeholder="请输入注册验证码"></el-input>
+          </el-form-item>
+        </transition>
+        <transition name="fade">
+          <el-form-item v-if="step >= 10">
             <el-input type="input" v-model="registerForm.realname" placeholder="您的真实姓名"></el-input>
             <el-input type="email" v-model="registerForm.email" placeholder="请输入你的邮箱"></el-input>
             <el-input type="input" v-model="registerForm.school" placeholder="学校"></el-input>
           </el-form-item>
         </transition>
-        <!-- <transition name="fade">
-              <el-form-item v-if="step >= 4">
-              </el-form-item>
-            </transition>
-            <transition name="fade">
-              <el-form-item v-if="step >= 4">
-              </el-form-item>
-        </transition>-->
 
         <el-form-item>
           <el-button
             type="primary"
             @click="submitForm('registerForm')"
             class="submitBtn"
-            v-if="step >= 5"
+            v-if="step >= 6"
           >立即注册</el-button>
           <!-- <el-button @click.prevent="prev()">Previous</el-button> -->
           <el-button @click.prevent="next()" v-if="step < 5">下一步</el-button>
+          <el-button @click.prevent="getCaptcha()" v-if="step >= 5 && step < 6">获取验证码</el-button>
         </el-form-item>
       </el-form>
 
-      <el-breadcrumb>
-        <el-breadcrumb-item :to="{ path: '/index/login'}">Have an account already?</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: '/index/login'}"></el-breadcrumb-item>
+      <el-breadcrumb separator="">
+        <el-breadcrumb-item :to="{ path: 'login'}">已有账户？</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/'}">摸我返回主页！</el-breadcrumb-item>
       </el-breadcrumb>
-
     </el-card>
   </div>
 </template>
 
 <script>
-import { Encrypt } from '@/assets/crypt.js'
+import { Encrypt } from '@/utils/crypt.js'
+import { myPost } from '@/utils/request.js'
+import { checkSession } from '@/utils/session.js'
 
 export default {
   name: 'Signup',
   data () {
     var validateUser = (rule, value, cb) => {
       var pattern = /^[\w\u4e00-\u9fa5]{3,10}$/g
+      // var pattern = /^(?=.*[a-zA-Z])[a-zA-Z0-9]{4,16}$/g
       if (value === '') {
         cb(new Error('请输入用户名'))
       } else if (!pattern.test(value)) {
@@ -82,11 +82,12 @@ export default {
       }
     }
     var validatePwd = (rule, value, cb) => {
-      var pattern = /^\S{3,20}$/g
+      // var pattern = /^\S{3,20}$/g
+      var pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9~!@&%#_]{6,20}$/g
       if (value === '') {
         cb(new Error('请输入密码'))
       } else if (!pattern.test(value)) {
-        cb(new Error('请输入3-20个非空白字符'))
+        cb(new Error('必须包含大写字母、小写字母、数字特殊字符只支持 ~!@&%#_长度在 6-20 位'))
       } else {
         if (this.registerForm.checkPwd !== '') {
           this.$refs.registerForm.validateField('checkPwd')
@@ -115,11 +116,12 @@ export default {
     }
     return {
       step: 1,
-
+      percentage: 0,
       registerForm: {
         userName: '',
         pwd: '',
         checkPwd: '',
+        captcha: '',
         phonenumber: '',
         email: '',
         realname: '',
@@ -132,6 +134,9 @@ export default {
         phonenumber: [{ validator: checkPhoneNumber, trigger: 'blur' }]
       }
     }
+  },
+  beforeCreate () {
+    checkSession(this, 'myinfo', '')
   },
   computed: {},
   methods: {
@@ -150,7 +155,7 @@ export default {
       }
     },
     pwdValidate () {
-      var pattern = /^\S{3,20}$/g
+      var pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9~!@&%#_]{6,20}$/g
       var x = this.registerForm.pwd
       if (x === '' || !pattern.test(x)) {
         return false
@@ -175,6 +180,23 @@ export default {
         return true
       }
     },
+    getCaptcha () {
+      let data = {
+        token: this.$store.getters.getUserToken,
+        phone: this.registerForm.phonenumber
+      }
+      myPost('api/user/sign/verify', data,
+        res => {
+          // console.log(res)
+          this.$message.error(`${res.data.msg}`)
+          this.step++
+        },
+        err => {
+          this.$message.error(`${err.message}`)
+        }
+
+      )
+    },
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -183,24 +205,20 @@ export default {
           let data = {
             username: this.registerForm.userName,
             password: Encrypt(this.registerForm.pwd),
-            telphone: this.registerForm.phonenumber,
-            realname: this.registerForm.realname,
-            email: this.registerForm.email,
-            school: this.registerForm.school
+            phone: this.registerForm.phonenumber,
+            token: this.$store.getters.getUserToken,
+            CAPTCHA: this.registerForm.captcha
           }
-          // doRegister(this, data);
-          // console.log(data)
-          this.$axios
-            .get('/api/signup/', { params: data })
-            .then(res => {
-              // console.log(data)
+
+          myPost('api/user/sign/register', data,
+            res => {
               if (res.data.status) {
                 this.$message({
                   type: 'success',
                   message: '欢迎你,' + this.registerForm.userName + '!',
                   duration: 2000
                 })
-                this.$router.push('/index/login')
+                this.$router.push('login')
               } else {
                 this.$message({
                   type: 'error',
@@ -208,15 +226,16 @@ export default {
                   duration: 2000
                 })
               }
-            })
-            .catch(error => {
-              console.log(error)
+            },
+            err => {
+              console.log(err)
               this.$message({
                 type: 'error',
                 message: 'Oops, somethings bad and unknown happened',
                 duration: 1000
               })
-            })
+            }
+          )
         } else {
           return false
         }
@@ -248,7 +267,7 @@ export default {
         this.percentage = 90
       }
       if (
-        this.step === 4 &&
+        (this.step === 4 || this.step === 5) &&
         this.checkPwdValidate() &&
         this.userValidate() &&
         this.pwdValidate() && this.phonenumberValidate()
@@ -260,8 +279,8 @@ export default {
       if (this.step < 1) {
         this.step = 1
       }
-      if (this.step > 5) {
-        this.step = 5
+      if (this.step > 6) {
+        this.step = 6
       }
     }
   }

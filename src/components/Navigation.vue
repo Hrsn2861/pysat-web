@@ -4,13 +4,13 @@
       <h2>Welcome to</h2>
     </div>
     <div id="pysat">
-      <h3>PYSAT</h3>
+      <h3>派塞特</h3>
     </div>
     <div id="navi">
       <el-breadcrumb separator="  ">
-        <el-breadcrumb-item :to="{ path: '/index/login'}">Log in</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: 'login'}">Log in</el-breadcrumb-item>
         <br />
-        <el-breadcrumb-item :to="{ path: '/index/signup'}">Sign up</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: 'signup'}">Sign up</el-breadcrumb-item>
         <br />
       </el-breadcrumb>
     </div>
@@ -18,19 +18,18 @@
 </template>
 
 <script>
-// import func from '../../vue-temp/vue-editor-bridge'
+
+import {checkSession} from '@/utils/session.js'
 
 export default {
+
   name: 'Index',
   data () {
     return {}
+  },
+  beforeCreate () {
+    checkSession(this, 'myinfo', '')
   }
-  // watch: {
-  //   $route (to, from) {
-  //     console.log(to.path)
-  //     if (to.path === '/MyInfo') { console.log('个人信息') }
-  //   }
-  // },
 }
 </script>
 
@@ -63,7 +62,7 @@ h2 {
   color: white;
   margin-top: 20%;
   user-select: none;
-  transition-duration: 0.5s;
+  transition-duration: 2s;
 }
 h2:hover {
   transform: scale(1.005);
