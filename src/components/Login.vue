@@ -1,11 +1,8 @@
 <template>
-  <div>
+  <div class="main-div">
     <el-card class="box-card">
-      <el-row type="flex" justify="center">
-        <el-col :span="12">
           <el-form
             label-position="left"
-            label-width="80px"
             :model="formLogin"
             :rules="rules"
             ref="formLogin"
@@ -30,9 +27,9 @@
               </router-link>
             </el-form-item>
           </el-form>
-        </el-col>
-      </el-row>
+
     </el-card>
+  </transition>
   </div>
 </template>
 
@@ -65,7 +62,8 @@ export default {
     return {
       formLogin: {
         identity: '',
-        password: ''
+        password: '',
+        show: false
       },
       rules: {
         identity: [{ validator: checkidentity, trigger: 'blur' }],
@@ -143,9 +141,39 @@ export default {
       .catch(err => {
         this.$message.error(`${err.message}`)
       })
+  },
+  mounted: function () {
+    this.$nextTick(
+      function () {
+        this.show = true
+        // I Think it's very odd
+      }
+    )
   }
 }
 </script>
 
 <style>
+  .main-div{
+    height: 100%;
+    width: 100%;
+    margin: 0%;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+  }
+  .box-card{
+    align-self: center;
+    height: auto;
+    width:25%;
+
+    border: 0px dashed rgb(40, 40, 40);
+    background-color:rgba(255, 255, 255, 0.7);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s ease-in-out !important;
+    transition-duration: 1s;
+  }
+  .box-card:hover{
+    box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);
+  }
 </style>

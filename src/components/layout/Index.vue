@@ -2,27 +2,30 @@
   <div class="index-page">
     <el-container>
       <el-header>
-        <el-col span="1" style="width:4% !important;">
+        <el-col :span="1" style="width:4% !important;">
           <img src="../../assets/logo.png" height="40" width="40" />
         </el-col>
-        <el-col span="1" style="justify-content: center !important;">
+        <el-col :span="1" style="justify-content: center !important;">
           <strong>PYSAT</strong>
         </el-col>
-        <el-col span="5" push="15">
-          <el-input style="border-radius:25%;" placeholder="我暂时不知道这里的东西可以干什么" v-model="input2"></el-input>-
+        <el-col :span="5" :push="15">
+          <el-input style="border-radius:25%;" placeholder="我暂时不知道这里的东西可以干什么"></el-input>-
           <el-button icon="el-icon-search" circle></el-button>
         </el-col>
-        <el-col push="16" style="justify-content: right!important;">
+        <el-col :push="16" style="justify-content: right!important;">
           <el-button type="primary" icon="el-icon-edit" circle></el-button>
           <el-button type="success" icon="el-icon-check" circle></el-button>
           <el-button type="info" icon="el-icon-message" circle></el-button>
           <el-button type="warning" icon="el-icon-star-off" circle></el-button>
+          <!-- TODO : USE BETTER ICONS -->
           <!-- <el-button type="danger" icon="el-icon-delete" circle></el-button> -->
         </el-col>
         <!-- <h1>to be implemented...</h1> -->
       </el-header>
       <el-main>
-        <router-view></router-view>
+        <transition :name="transitionName">
+          <router-view class="router"></router-view>
+        </transition>
       </el-main>
       <el-footer id="foot1">Proudly presented by CTRL group</el-footer>
     </el-container>
@@ -34,6 +37,7 @@ export default {
   name: 'index',
   data () {
     return {
+      transitionName: 'slide-right'
       // msg: 'Welcome to Your Vue.js App'
     }
   },
@@ -64,7 +68,9 @@ export default {
   height: 95%;
   margin: 0%;
   padding: 0%;
+  overflow: hidden !important;
 }
+
 .el-container {
   height: 100%;
   margin-top: 0%;
@@ -86,7 +92,7 @@ div {
   margin: 0%;
   display: flex;
   align-items: center;
-  overflow: hidden;
+  overflow: hidden !important;
   padding: 0%;
 }
 .el-header {
@@ -123,6 +129,42 @@ div {
   color: rgb(120, 120, 120);
   user-select: none;
 
-  /* margin-bottom: 0.1%; */
+}
+.slide-right-enter-active,
+.slide-right-leave-active,
+.slide-left-enter-active,
+.slide-left-leave-active {
+  /* will-change: transform; */
+  transition: all 400ms;
+  /* will-change:scroll-position; */
+  /* will-change: contents; */
+  /* will-change: unset; */
+  overflow: hidden !important;
+
+}
+.slide-right-enter {
+  opacity: 0;
+  transform: scale(0.95);
+  /* transform: translate3d(2%, 0, 0); */
+    overflow: hidden !important;
+
+}
+.slide-right-leave-active {
+  opacity: 0;
+  transform: scale(0.95);
+    overflow: hidden !important;
+
+}
+.slide-left-enter {
+  opacity: 0;
+  transform: translate3d(100%, 0, 0);
+    overflow: hidden !important;
+
+}
+.slide-left-leave-active {
+  opacity: 0;
+  transform: translate3d(-100%, 0, 0);
+    overflow: hidden !important;
+
 }
 </style>
