@@ -1,5 +1,4 @@
 import {myPost, myGet} from './request.js'
-import router from '../router/index.js'
 
 export async function checkSession (context, loggedUrl, unloggedUrl) {
   let toStart = false
