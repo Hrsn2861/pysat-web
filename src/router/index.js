@@ -2,10 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 // import HelloWorld from '@/components/HelloWorld'
 import Index from '@/components/layout/Index'
-import Signup from '@/components/Signup.vue'
-import Login from '@/components/Login.vue'
-import Navi from '@/components/Navigation.vue'
-import MyInfo from '@/components/MyInfo.vue'
+import Signup from '@/components/welcomePage/Signup.vue'
+import Login from '@/components/welcomePage/Login.vue'
+import Navi from '@/components/welcomePage/Navigation.vue'
+import MyInfo from '@/components/dashboard/MyInfo.vue'
 
 Vue.use(Router)
 

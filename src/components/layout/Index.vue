@@ -2,23 +2,8 @@
   <div class="index-page">
     <el-container>
       <el-header>
-        <el-col :span="1" style="width:4% !important;">
-          <img src="../../assets/logo.png" height="40" width="40" />
-        </el-col>
-        <el-col :span="1" style="justify-content: center !important;">
-          <strong>PYSAT</strong>
-        </el-col>
-        <el-col :span="5" :push="15">
-          <el-input style="border-radius:25%;" placeholder="我暂时不知道这里的东西可以干什么"></el-input>-
-          <el-button icon="el-icon-search" circle></el-button>
-        </el-col>
-        <el-col :push="16" style="justify-content: right!important;">
-          <el-button type="primary" icon="el-icon-edit" circle></el-button>
-          <el-button type="success" icon="el-icon-check" circle></el-button>
-          <el-button type="info" icon="el-icon-message" circle></el-button>
-          <el-button type="danger" icon="el-icon-delete" circle @click="logOut()"></el-button>
-          <!-- TODO : USE BETTER ICONS -->
-        </el-col>
+        <!-- import headbar from a component -->
+       <headbar></headbar>
       </el-header>
       <el-main>
         <transition :name="transitionName">
@@ -31,7 +16,8 @@
 </template>
 
 <script>
-import {logout} from '@/utils/session.js'
+// import {logout} from '@/utils/session.js'
+import headbar from '@/components/headbar/Headbar.vue'
 export default {
   name: 'index',
   data () {
@@ -40,10 +26,9 @@ export default {
     }
   },
   methods: {
-    async logOut () {
-      await logout(this)
-      this.$router.go(0) // 刷新页面
-    }
+  },
+  components: {
+    headbar
   }
 }
 </script>
@@ -66,17 +51,6 @@ export default {
   margin-top: 0%;
   margin-bottom: 0%;
 }
-.el-col {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-#navi {
-  margin-bottom: 5%;
-}
-h1 {
-  align-self: center;
-}
 div {
   height: 100%;
   margin: 0%;
@@ -93,10 +67,6 @@ div {
   padding: 0%;
   width: 100%;
   height: 5% !important;
-  display: flex;
-  /* justify-content: center; */
-  align-self: center;
-  user-select: none;
 }
 #foot1 {
   margin-bottom: 0%;
@@ -146,4 +116,3 @@ div {
 
 }
 </style>
-]
