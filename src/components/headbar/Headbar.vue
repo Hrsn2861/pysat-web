@@ -1,20 +1,20 @@
 <template>
   <div>
     <el-row class="head-row" type="flex" align="middle" justify="">
-      <el-col :span="1" class="my-logo" >
+      <el-col :xs="8" :sm="1" :md="1" :lg="1" :xl="1" class="my-logo" >
         <img src="../../assets/icon_white.png" height="30" width="30" />
       </el-col>
-      <el-col :span="1" class="my-logo" style="color:rgb(220, 220, 220)!important">
+      <el-col :xs="8" :sm="1" :md="1" :lg="1" :xl="1" class="my-logo" style="color:rgb(220, 220, 220)!important">
         <strong>PYSAT</strong>
       </el-col>
-      <el-col :span="10" :xs="8" :sm="1" :md="1" :lg="1" :xl="1" class="my-search">
+      <el-col hidden-lg-and-down class="my-search">
         <el-input
           placeholder="请输入内容"
           suffix-icon="el-icon-search"
           v-model="input1"
         ></el-input>
       </el-col>
-      <el-col :span="14" class="my-menu-bar">
+      <el-col :xs="8" :sm="1" :md="1" :lg="1" :xl="1" class="my-menu-bar">
         <!-- <el-button type="primary" icon="el-icon-edit" circle></el-button>
       <el-button type="success" icon="el-icon-check" circle></el-button>
       <el-button type="info" icon="el-icon-message" circle></el-button>
@@ -97,11 +97,13 @@ export default {
   margin-right: 2% !important;
   height: 90% !important;
 }
+.el-input{
+  height: auto !important;
+}
 
 .el-col{
   width: auto !important;
   margin: auto;
-
 }
 .el-menu{
   height: 100%;
