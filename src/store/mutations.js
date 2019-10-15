@@ -30,6 +30,23 @@ export const mutations = {
       token: '000000'
     }
     console.log('A test func in mutations.js')
+  },
+
+  // for view change
+  [types.TOGGLE_SIDEBAR] (state) {
+    if (state.sidebar.opened) {
+      localStorage.setItem('sidebarStatus', 1)
+    } else {
+      localStorage.setItem('sidebarStatus', 0)
+    }
+    state.sidebar.opened = !state.sidebar.opened
+  },
+  [types.CLOSE_SIDEBAR] (state) {
+    localStorage.setItem('sidebarStatus', 1)
+    state.sidebar.opened = false
+  },
+  [types.TOGGLE_DEVICE] (state, device) {
+    state.device = device
   }
 }
 

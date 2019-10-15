@@ -8,11 +8,18 @@ Vue.use(Vuex)
 
 const state = {
   token: '',
-  user: null
+  user: null,
+
+  // view-related
+  sidebar: {
+    opened: !+localStorage.getItem('sidebarStatus')
+  },
+  device: 'desktop'
 
 }
 
 export default new Vuex.Store({
+
   state,
   mutations,
   actions,
