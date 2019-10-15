@@ -19,17 +19,17 @@
           </el-form-item>
         </transition>
         <transition name="fade">
-          <el-form-item prop="checkPwd" v-if="step >= 3">
+          <el-form-item prop="checkPwd" v-if="step >= 3" @keyup.enter="next()">
             <el-input v-model="registerForm.checkPwd" placeholder="请再次输入密码" type="password"></el-input>
           </el-form-item>
         </transition>
         <transition name="fade">
-          <el-form-item prop="phonenumber" v-if="step >= 4">
+          <el-form-item prop="phonenumber" v-if="step >= 4" @keyup.enter="next()">
             <el-input v-model="registerForm.phonenumber" placeholder="请输入注册手机号"></el-input>
           </el-form-item>
         </transition>
         <transition name="fade">
-          <el-form-item prop="captcha" v-if="step >= 5">
+          <el-form-item prop="captcha" v-if="step >= 5" @keyup.enter="next()">
             <el-input v-model="registerForm.captcha" placeholder="请输入注册验证码"></el-input>
           </el-form-item>
         </transition>
@@ -49,7 +49,7 @@
             v-if="step >= 6"
           >立即注册</el-button>
           <!-- <el-button @click.prevent="prev()">Previous</el-button> -->
-          <el-button @click.prevent="next()" v-if="step < 5">下一步</el-button>
+          <el-button @click.prevent="next()" v-if="step < 5" >下一步</el-button>
           <el-button @click.prevent="getCaptcha()" v-if="step >= 5 && step < 6">获取验证码</el-button>
         </el-form-item>
       </el-form>
