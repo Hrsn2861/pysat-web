@@ -50,8 +50,8 @@
 
       <transition name="fade">
       <el-row v-if="changePhoneVisible" class="change" >
-        <el-input class="change-input" v-model="changePhone.CAPTCHA" placeholder="验证码" ></el-input>
-        <el-input class="change-input" v-model="changePhone.newnumber" placeholder="新手机号" ></el-input>
+        <el-input class="change-input" v-model="phone.CAPTCHA" placeholder="验证码" ></el-input>
+        <el-input class="change-input" v-model="phone.newnumber" placeholder="新手机号" ></el-input>
         <el-button @click="changePhoneVisible = false">取 消</el-button>
         <el-button type="primary" @click="changePhone">更 新</el-button>
         <!-- TODO :发送消息 -->
@@ -80,11 +80,11 @@ export default {
       changePwdVisible: false,
       changePhoneVisible: false,
 
-      changePwd: {
+      pwd: {
         oldpwd: '',
         newpwd: ''
       },
-      changePhone: {
+      phone: {
         CAPTCHA: '',
         newnumber: ''
       }
@@ -138,8 +138,8 @@ export default {
     changePwd() {
       let tmpdata = {
 		  token: this.$store.getters.getUserToken,
-          oldpassword: Encrypt(this.passwd.oldpwd),
-		  newpassword: Encrypt(this.passwd.newpwd)
+          oldpassword: Encrypt(this.pwd.oldpwd),
+		  newpassword: Encrypt(this.pwd.newpwd)
 	  }
 	  console.log(tmpdata)
 	  myPost(
@@ -147,18 +147,18 @@ export default {
 		tmpdata,
 		res => {
 		  if (res.data.status == 1) {
-		    this.changePwd.oldpwd = this.changePwd.newpwd;
-			this.$message.success('${res.data.msg}');
+		    this.pwd.oldpwd = this.pwd.newpwd;
+			this.$message.success(`${res.data.msg}`);
 			this.changePwdVisible = false;
-			this.changePwd.oldpwd = '';
-			this.changePwd.newpwd = '';
+			this.pwd.oldpwd = '';
+			this.pwd.newpwd = '';
 		  }
 		  else {
-		    this.$message.error('${res.data.msg}');
+		    this.$message.error(`${res.data.msg}`);
 		  }
 		},
 		err => {
-			this.$message.error('${err.message}', 'ERROR!');
+			this.$message.error(`${err.message}`, 'ERROR!');
 		}
 	  )
 	},
@@ -166,8 +166,8 @@ export default {
 	changePhone() {
 	  let tmpdata = {
 		  token: this.$store.getters.getUserToken,
-	      phone: this.changePhone.newnumber,
-		  CAPTCHA: this.passwd.CAPTCHA
+	      phone: this.phone.newnumber,
+		  CAPTCHA: this.phone.CAPTCHA
 	  }
 	  console.log(tmpdata)
 	  myPost(
@@ -175,18 +175,19 @@ export default {
 		tmpdata,
 		res => {
 		  if (res.data.status == 1) {
-		    this.phonenumber = this.changePwd.newnumber;
-			this.$message.success('${res.data.msg}');
+		    this.phonenumber = this.phone.newnumber;
+			this.$message.success(`${res.data.msg}`);
 			this.changePhoneVisible = false;
-			this.changePhone.CAPTCHA = '';
-			this.changePhone.newnumber = '';
+			this.phone.CAPTCHA = '';
+			this.phone.newnumber = '';
+			this.phonenumber = this.phone.newnumber;
 		  }
 		  else {
-		    this.$message.error('${res.data.msg}');
+		    this.$message.error(`${res.data.msg}`);
 		  }
 		},
 		err => {
-			this.$message.error('${err.message}', 'ERROR!');
+			this.$message.error(`${err.message}`, 'ERROR!');
 		}
 	  )
 	},
@@ -194,23 +195,24 @@ export default {
 	sendCAPTCHA() {
 		let tmpdata = {
 			token: this.$store.getters.getUserToken,
-			username: this.username,
+			//username: this.username,
 			phone: this.phonenumber
 		}
 		console.log(tmpdata)
 		myPost(
-			'api/user/sign/retrieve',
+			//'api/user/sign/retrieve',
+			'api/user/sign/verify',
 			tmpdata,
 			res => {
 				if (res.data.status == 1) {
-					this.$message.success('${res.data.msg}');
+					this.$message.success(`${res.data.msg}`);
 				}
 				else {
-					this.$message.error('${res.data.msg}');
+					this.$message.error(`${res.data.msg}`);
 				}
 			},
 			err => {
-				this.$message.error('${err.message}', 'ERROR!');
+				this.$message.error(`${err.message}`, 'ERROR!');
 			}			
 		)
 	}
