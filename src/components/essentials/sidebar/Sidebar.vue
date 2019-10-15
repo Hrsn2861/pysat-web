@@ -5,7 +5,7 @@
       router
       class="el-menu-vertical-demo"
       :collapse="isCollapse"
-      background-color="#545c64"
+      background-color="#272727"
       text-color="#fff"
       active-text-color="#ffd04b"
     >
@@ -68,6 +68,7 @@ export default {
 <style scoped>
   .sidebar {
     background-color: rgb(43, 68, 94);
+    width: 64px !important;
 
   }
   .el-menu-vertical-demo:not(.el-menu--collapse) {
@@ -87,7 +88,7 @@ export default {
   }
 
   .el-submenu .el-menu-item {
-    padding-left: 60px !important;
+    padding-left: 100px !important;
     min-width: auto;
   }
   .el-submenu.is-active .el-menu-item {
@@ -97,7 +98,7 @@ export default {
     background: #3a4046 !important;
   }
   .el-submenu .el-menu-item:hover {
-    padding-left: 60px !important;
+    padding-left: 100px !important;
     background: rgb(67, 74, 80) !important;
   }
   .el-menu-item i {
