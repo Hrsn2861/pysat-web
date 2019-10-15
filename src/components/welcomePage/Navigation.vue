@@ -1,19 +1,19 @@
 <template>
   <div class="main-div">
     <div id="welcome">
-      <!-- <h2>Welcome to PYSAT</h2> -->
+      <h2>Welcome to</h2>
     </div>
     <div id="pysat">
       <h3>派塞特</h3>
     </div>
-    <!-- <div id="navi">
+    <div id="navi">
       <el-breadcrumb separator="  ">
         <el-breadcrumb-item :to="{ path: 'login'}">Log in</el-breadcrumb-item>
         <br />
         <el-breadcrumb-item :to="{ path: 'signup'}">Sign up</el-breadcrumb-item>
         <br />
       </el-breadcrumb>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -34,12 +34,30 @@ export default {
 </script>
 
 <style scoped>
+.main-div {
+  overflow: hidden;
+  width: 100%;
+  margin: 0%;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+
+  padding: 0%;
+  background: url("../../assets/background16-9-2.jpg");
+    background-repeat:cover;
+    background-size:auto;
+    height :100%;
+}
 #welcome {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: relative;
 }
 #pysat{
+  position: relative;
+  top: 30%;
+  right: 5%;
+}
+#navi{
+  top: 30%;
   position: relative;
 }
 
@@ -59,8 +77,8 @@ h2:hover {
 }
 h3 {
   font-weight: normal;
-  font-size: 50px;
-  color: black;
+  font-size: 100px;
+  color: whitesmoke;
   margin-top: 30%;
   user-select: none;
   transition-duration: 1s;

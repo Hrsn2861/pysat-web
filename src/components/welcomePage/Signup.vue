@@ -298,7 +298,7 @@ export default {
 
   padding: 0%;
   background: url("../../assets/background16-9-2.jpg");
-    background-repeat:round;
+    background-repeat:cover;
     background-size:auto;
     height :100%;
 }

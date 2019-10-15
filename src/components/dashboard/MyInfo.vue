@@ -34,11 +34,11 @@
           </el-row>
         </transition>
       </div>
-      <el-row type="flex" justify="center">
+      <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible ">
         <!-- FIXME I don't know why local src pic is not allowd -->
         <!-- TODO CSS is too difficult -->
         <el-col class="my-info">
-          <h1>个人信息</h1>
+          <center><h1>个人信息</h1></center>
           <el-input class="my-info-item" v-model="username" placeholder="用户名"></el-input>
           <el-input class="my-info-item" v-model="phonenumber" placeholder="电话号码"></el-input>
           <el-input class="my-info-item" v-model="email" placeholder="Email"></el-input>
@@ -46,9 +46,9 @@
           <el-input class="my-info-item" v-model="realname" placeholder="真实姓名"></el-input>
         </el-col>
       </el-row>
-      <el-row type="flex" justify="center">
+      <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible ">
         <el-button type="danger" @click="logOut()">登出</el-button>
-        <el-button type="primary" @click="changePwdVisible = true">修改密码</el-button>
+        <el-button type="primary" @click="changePwdVisible = !changePwdVisible">修改密码</el-button>
         <el-button type="primary" @click="changePhoneVisible = true; sendCAPTCHA()">修改手机号码</el-button>
 
         <!-- <el-dialog class="my-dialog" title="修改密码" :visible.sync="changePassWdVisible" width="30%">
@@ -62,22 +62,23 @@
       </el-row>
 
       <transition name="fade">
-        <el-row v-if="changePwdVisible" class="change">
-          <el-input class="change-pswd-input" v-model="pwd.oldpwd" placeholder="旧密码"></el-input>
-          <el-input class="change-pswd-input" v-model="pwd.newpwd" placeholder="新密码"></el-input>
-          <el-button @click="changePwdVisible = false">取 消</el-button>
-          <el-button type="primary" @click="changePwd">更 新</el-button>
-        </el-row>
+        <div v-if="changePwdVisible" class="change">
+
+            <el-input class="change-input" v-model="pwd.oldpwd" placeholder="旧密码"></el-input>
+            <el-input class="change-input" v-model="pwd.newpwd" placeholder="新密码"></el-input>
+            <el-button @click="changePwdVisible = false" class="change-button">取消</el-button>
+            <el-button type="primary" @click="changePwd" class="change-button">更新</el-button>
+        </div>
       </transition>
 
       <transition name="fade">
-        <el-row v-if="changePhoneVisible" class="change">
+        <div v-if="changePhoneVisible" class="change">
           <el-input class="change-input" v-model="phone.CAPTCHA" placeholder="验证码"></el-input>
-          <el-input class="change-input" v-model="phone.newnumber" placeholder="新手机号"></el-input>
-          <el-button @click="changePhoneVisible = false">取 消</el-button>
-          <el-button type="primary" @click="changePhone">更 新</el-button>
+          <el-input class="change-input" v-model="phone.newnumber" placeholder="新号码"></el-input>
+          <el-button @click="changePhoneVisible = false" class="change-button">取消</el-button>
+          <el-button type="primary" @click="changePhone" class="change-button">更新</el-button>
           <!-- TODO :发送消息 -->
-        </el-row>
+        </div>
       </transition>
     </el-card>
   </div>
@@ -188,7 +189,7 @@ export default {
         'api/user/sign/modify',
         tmpdata,
         res => {
-          if (res.data.status == 1) {
+          if (res.data.status === 1) {
             this.pwd.oldpwd = this.pwd.newpwd
             this.$message.success(`${res.data.msg}`)
             this.changePwdVisible = false
@@ -215,7 +216,7 @@ export default {
         'api/user/info/setphone',
         tmpdata,
         res => {
-          if (res.data.status == 1) {
+          if (res.data.status === 1) {
             this.phonenumber = this.phone.newnumber
             this.$message.success(`${res.data.msg}`)
             this.changePhoneVisible = false
@@ -244,7 +245,7 @@ export default {
         'api/user/sign/verify',
         tmpdata,
         res => {
-          if (res.data.status == 1) {
+          if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
           } else {
             this.$message.error(`${res.data.msg}`)
@@ -281,9 +282,9 @@ export default {
 
   padding: 0%;
   background: url("../../assets/background16-9-2.jpg");
-    background-repeat:round;
-    background-size:auto;
-    height :100%;
+  background-repeat: cover;
+  background-size: auto;
+  height: 100%;
 }
 .box-card {
   align-self: center;
@@ -310,12 +311,16 @@ export default {
 }
 
 .change {
-  margin-top: 2%;
+  margin-top: 3%;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 .change-input {
   margin: 1%;
+}
+.change-button{
+  margin: 0%;
 }
 
 .my-info {
@@ -331,6 +336,7 @@ export default {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  margin: 0%;
 }
 .avatar-uploader .el-upload:hover {
   border-color: #409eff;
@@ -338,9 +344,9 @@ export default {
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
   text-align: center;
 }
 </style>
