@@ -27,7 +27,7 @@
 
         <el-button type="danger" @click="logOut()">登出</el-button>
         <el-button type="primary" @click="changePwdVisible = true">修改密码</el-button>
-        <el-button type="primary" @click="changePhoneVisible = true">修改手机号码</el-button>
+        <el-button type="primary" @click="changePhoneVisible = true; sendCAPTCHA()">修改手机号码</el-button>
 
         <!-- <el-dialog class="my-dialog" title="修改密码" :visible.sync="changePassWdVisible" width="30%">
           <el-input v-model="passwd.oldpasswd" placeholder="请输入旧密码"></el-input>
@@ -141,6 +141,7 @@ export default {
           oldpassword: Encrypt(this.passwd.oldpwd),
 		  newpassword: Encrypt(this.passwd.newpwd)
 	  }
+	  console.log(tmpdata)
 	  myPost(
 	    'api/user/sign/modify',
 		tmpdata,
@@ -162,7 +163,58 @@ export default {
 	  )
 	},
 	
-
+	changePhone() {
+	  let tmpdata = {
+		  token: this.$store.getters.getUserToken,
+	      phone: this.changePhone.newnumber,
+		  CAPTCHA: this.passwd.CAPTCHA
+	  }
+	  console.log(tmpdata)
+	  myPost(
+	    'api/user/info/setphone',
+		tmpdata,
+		res => {
+		  if (res.data.status == 1) {
+		    this.phonenumber = this.changePwd.newnumber;
+			this.$message.success('${res.data.msg}');
+			this.changePhoneVisible = false;
+			this.changePhone.CAPTCHA = '';
+			this.changePhone.newnumber = '';
+		  }
+		  else {
+		    this.$message.error('${res.data.msg}');
+		  }
+		},
+		err => {
+			this.$message.error('${err.message}', 'ERROR!');
+		}
+	  )
+	},
+	
+	sendCAPTCHA() {
+		let tmpdata = {
+			token: this.$store.getters.getUserToken,
+			username: this.username,
+			phone: this.phonenumber
+		}
+		console.log(tmpdata)
+		myPost(
+			'api/user/sign/retrieve',
+			tmpdata,
+			res => {
+				if (res.data.status == 1) {
+					this.$message.success('${res.data.msg}');
+				}
+				else {
+					this.$message.error('${res.data.msg}');
+				}
+			},
+			err => {
+				this.$message.error('${err.message}', 'ERROR!');
+			}			
+		)
+	}
+	
   }
 }
 </script>
