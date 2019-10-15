@@ -1,5 +1,4 @@
 import * as types from './mutation-types'
-import { type } from 'os'
 
 export const mutations = {
   // 这里的data指提交时：
