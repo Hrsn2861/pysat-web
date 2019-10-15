@@ -25,6 +25,16 @@ const actions = {
     commit
   }, data) {
     commit(types.CHECKSESSION, data)
+  },
+
+  ToggleSideBar ({ commit }) {
+    commit(types.TOGGLE_SIDEBAR)
+  },
+  CloseSideBar ({ commit }) {
+    commit(types.CLOSE_SIDEBAR)
+  },
+  ToggleDevice ({ commit }, device) {
+    commit(types.TOGGLE_DEVICE, device)
   }
 }
 

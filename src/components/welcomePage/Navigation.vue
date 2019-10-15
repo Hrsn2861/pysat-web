@@ -1,16 +1,18 @@
 <template>
-  <div>
-    <div id="welcome">
+  <div class="main-div">
+    <!-- <div id="welcome">
       <h2>Welcome to</h2>
-    </div>
-    <div id="pysat">
+    </div> -->
+    <!-- <div id="pysat">
       <h3>派塞特</h3>
-    </div>
+    </div> -->
     <div id="navi">
       <el-breadcrumb separator="  ">
         <el-breadcrumb-item :to="{ path: 'login'}">Log in</el-breadcrumb-item>
         <br />
         <el-breadcrumb-item :to="{ path: 'signup'}">Sign up</el-breadcrumb-item>
+        <br />
+        <el-breadcrumb-item :to="{ path: ''}">主页出了一些故障</el-breadcrumb-item>
         <br />
       </el-breadcrumb>
     </div>
@@ -34,26 +36,9 @@ export default {
 </script>
 
 <style scoped>
-#navi {
-  margin-bottom: 5%;
-  position: absolute;
-  left: 65%;
-  top: 55%;
-  height: 30%;
-}
-#pysat {
-  position: absolute;
-  left: 45%;
-  top: 12%;
-}
-#welcome {
-  position: absolute;
-  left: 30%;
-  top: 5%;
-}
-div {
-  margin: 0%;
-  overflow: hidden;
+div{
+  height: auto;
+  overflow:visible;
 }
 h1,
 h2 {
@@ -71,7 +56,7 @@ h2:hover {
 }
 h3 {
   font-weight: normal;
-  font-size: 190px;
+  font-size: 50px;
   color: white;
   margin-top: 30%;
   user-select: none;

@@ -14,7 +14,9 @@ export const getters = {
   // 这里的user是一个字典
   getUser: (state) => {
     return state.user
-  }
+  },
+  sidebar: state => state.sidebar,
+  device: state => state.device
 
 }
 export default getters
