@@ -1,21 +1,20 @@
 <template>
   <div>
-    <el-row class="head-row" type="flex" align="middle" justify="start">
-      <el-col :span="1" style="margin-left:20px;margin-right:20px;">
+    <el-row class="head-row" type="flex" align="middle" justify="">
+      <el-col :span="1" class="my-logo" >
         <img src="../../assets/icon_white.png" height="30" width="30" />
       </el-col>
-      <el-col :span="1" style="color:rgb(220, 220, 220)!important">
+      <el-col :span="1" class="my-logo" style="color:rgb(220, 220, 220)!important">
         <strong>PYSAT</strong>
       </el-col>
-      <el-col :span="10" :push="14">
+      <el-col :span="10" :xs="8" :sm="1" :md="1" :lg="1" :xl="1" class="my-search">
         <el-input
           placeholder="请输入内容"
           suffix-icon="el-icon-search"
           v-model="input1"
-          style="width:100%;height:80%;"
         ></el-input>
       </el-col>
-      <el-col :span="14" :offset="14">
+      <el-col :span="14" class="my-menu-bar">
         <!-- <el-button type="primary" icon="el-icon-edit" circle></el-button>
       <el-button type="success" icon="el-icon-check" circle></el-button>
       <el-button type="info" icon="el-icon-message" circle></el-button>
@@ -50,7 +49,7 @@
               <el-menu-item index="2-4-3">选项3</el-menu-item>
             </el-submenu>
           </el-submenu>
-          <el-menu-item index="3" disabled>消息中心</el-menu-item>
+          <el-menu-item index="3" @click="logOut">退出登陆</el-menu-item>
           <el-menu-item index="4">
             <a href="https://www.ele.me" target="_blank">摸我</a>
           </el-menu-item>
@@ -62,6 +61,7 @@
 
 <script>
 import { logout } from '@/utils/session.js'
+import 'element-ui/lib/theme-chalk/display.css'
 export default {
   name: 'headbar',
   data () {
@@ -83,9 +83,40 @@ export default {
   width: 100% !important;
   height: 100%;
 }
-.el-col{
-  width: auto;
+.my-menu-bar{
+  height: 100% !important;
+  margin-right: 2% !important;
+  margin-left: 2% !important;
+
 }
+.my-logo{
+  margin-left: 1% !important;
+  margin-right: 1% !important;
+}
+.my-search{
+  margin-right: 2% !important;
+  height: 90% !important;
+}
+
+.el-col{
+  width: auto !important;
+  margin: auto;
+
+}
+.el-menu{
+  height: 100%;
+}
+.el-menu-item{
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.el-submenu{
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
 /* div {
   /* height: 100%; */
 /* width: 100%;

@@ -61,7 +61,6 @@ div {
 }
 .el-header {
   color: rgb(180, 180, 180);
-  font-size: 20px;
   background-color: rgb(40, 40, 40);
   margin: 0%;
   padding: 0%;
