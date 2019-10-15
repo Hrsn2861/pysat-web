@@ -26,7 +26,7 @@
       <el-row type="flex" justify="center">
 
         <el-button type="danger" @click="logOut()">登出</el-button>
-        <el-button type="primary" @click="changePassWdVisible = true">修改密码</el-button>
+        <el-button type="primary" @click="changePwdVisible = true">修改密码</el-button>
         <el-button type="primary" @click="changePhoneVisible = true">修改手机号码</el-button>
 
         <!-- <el-dialog class="my-dialog" title="修改密码" :visible.sync="changePassWdVisible" width="30%">
@@ -40,11 +40,11 @@
       </el-row>
 
       <transition name="fade">
-      <el-row v-if="changePassWdVisible" class="change" >
-        <el-input class="change-pswd-input" v-model="passwd.oldpasswd" placeholder="旧密码" ></el-input>
-        <el-input class="change-pswd-input" v-model="passwd.newpasswd" placeholder="新密码" ></el-input>
-        <el-button @click="changePassWdVisible = false">取 消</el-button>
-        <el-button type="primary" @>更 新</el-button>
+      <el-row v-if="changePwdVisible" class="change" >
+        <el-input class="change-pswd-input" v-model="pwd.oldpwd" placeholder="旧密码" ></el-input>
+        <el-input class="change-pswd-input" v-model="pwd.newpwd" placeholder="新密码" ></el-input>
+        <el-button @click="changePwdVisible = false">取 消</el-button>
+        <el-button type="primary" @click="changePwd">更 新</el-button>
       </el-row>
       </transition>
 
@@ -53,7 +53,7 @@
         <el-input class="change-input" v-model="changePhone.CAPTCHA" placeholder="验证码" ></el-input>
         <el-input class="change-input" v-model="changePhone.newnumber" placeholder="新手机号" ></el-input>
         <el-button @click="changePhoneVisible = false">取 消</el-button>
-        <el-button type="primary" @>更 新</el-button>
+        <el-button type="primary" @click="changePhone">更 新</el-button>
         <!-- TODO :发送消息 -->
       </el-row>
       </transition>
@@ -65,7 +65,8 @@
 
 <script>
 import { checkSession, logout } from '@/utils/session.js'
-import { myGet } from '@/utils/request.js'
+import { myGet, myPost } from '@/utils/request.js'
+import { Encrypt } from '@/utils/crypt.js'
 
 export default {
   name: 'MyInfo',
@@ -76,12 +77,12 @@ export default {
       email: 'None',
       school: 'None',
       realname: 'None',
-      changePassWdVisible: false,
+      changePwdVisible: false,
       changePhoneVisible: false,
 
-      passwd: {
-        oldpasswd: '',
-        newpasswd: ''
+      changePwd: {
+        oldpwd: '',
+        newpwd: ''
       },
       changePhone: {
         CAPTCHA: '',
@@ -132,7 +133,36 @@ export default {
           done()
         })
         .catch(_ => {})
-    }
+    },
+	
+    changePwd() {
+      let tmpdata = {
+		  token: this.$store.getters.getUserToken,
+          oldpassword: Encrypt(this.passwd.oldpwd),
+		  newpassword: Encrypt(this.passwd.newpwd)
+	  }
+	  myPost(
+	    'api/user/sign/modify',
+		tmpdata,
+		res => {
+		  if (res.data.status == 1) {
+		    this.changePwd.oldpwd = this.changePwd.newpwd;
+			this.$message.success('${res.data.msg}');
+			this.changePwdVisible = false;
+			this.changePwd.oldpwd = '';
+			this.changePwd.newpwd = '';
+		  }
+		  else {
+		    this.$message.error('${res.data.msg}');
+		  }
+		},
+		err => {
+			this.$message.error('${err.message}', 'ERROR!');
+		}
+	  )
+	},
+	
+
   }
 }
 </script>
