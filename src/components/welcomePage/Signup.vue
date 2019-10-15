@@ -295,6 +295,12 @@ export default {
   display: flex;
   align-content: center;
   justify-content: center;
+
+  padding: 0%;
+  background: url("../../assets/background16-9-2.jpg");
+    background-repeat:cover;
+    background-size:auto;
+    height :100%;
 }
 #steps {
   height: 80%;
@@ -315,13 +321,6 @@ export default {
   text-align: center;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 1.5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
 .box-card {
   align-self: center;
   height: auto;

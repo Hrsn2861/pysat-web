@@ -1,13 +1,11 @@
 <template>
   <div class="header">
     <div class="logo" :class="{'is-active':isActive}">
-      <img src="@/assets/icon_white.png" height="30px"/>
+      <img src="@/assets/icon_white.png" height="30px" @click="handleMenu">
       PYSAT控制中心
     </div>
     <div class="navbar">
-      <div class="btn" :class="{'is-active':isActive}" @click="handleMenu">
-        <el-button type="primary">展开</el-button>
-      </div>
+
       <!-- <el-col class="my-search">
         <el-input
           placeholder="请输入内容"
@@ -117,15 +115,20 @@ export default {
     line-height: 50px;
     font-weight: 600;
     transition: 0.4s ease;
-
+    overflow: hidden;
     &.is-active {
       width: 64px;
     }
 
     img {
-      padding: 5px 10px 0px 0;
+      padding: 10px 10px 0px 0;
     }
   }
+  .logo.is-active {
+    transform: rotateY(180deg);
+    transition-duration:1s;
+  }
+
   .el-menu {
     height: 49px;
     margin-left: auto;
