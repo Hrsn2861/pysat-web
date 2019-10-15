@@ -16,14 +16,15 @@
         <!-- TODO CSS is too difficult -->
         <el-col :span="16">
           <h1>个人信息</h1>
-          <p>UserName: {{ username }}</p>
-          <p>Phone: {{ phonenumber }}</p>
-          <p>Email: {{ email }}</p>
-          <p>School: {{ school }}</p>
-          <p>RealName: {{realname }}</p>
+          <el-input v-model="username" placeholder="用户名" ></el-input>
+          <el-input v-model="phonenumber" placeholder="电话号码" ></el-input>
+          <el-input v-model="email" placeholder="Email" ></el-input>
+          <el-input v-model="school" placeholder="学校" ></el-input>
+          <el-input v-model="realname" placeholder="真实姓名" ></el-input>
         </el-col>
       </el-row>
       <el-row type="flex" justify="center">
+
         <el-button type="danger" @click="logOut()">登出</el-button>
         <el-button type="primary" @click="changePassWdVisible = true">修改密码</el-button>
         <el-button type="primary" @click="changePhoneVisible = true">修改手机号码</el-button>
