@@ -3,9 +3,9 @@
     <div id="welcome">
       <!-- <h2>Welcome to PYSAT</h2> -->
     </div>
-    <!-- <div id="pysat">
+    <div id="pysat">
       <h3>派塞特</h3>
-    </div> -->
+    </div>
     <!-- <div id="navi">
       <el-breadcrumb separator="  ">
         <el-breadcrumb-item :to="{ path: 'login'}">Log in</el-breadcrumb-item>
@@ -39,6 +39,9 @@ export default {
     align-items: center;
     justify-content: center;
 }
+#pysat{
+  position: relative;
+}
 
 h1,
 h2 {
@@ -57,7 +60,7 @@ h2:hover {
 h3 {
   font-weight: normal;
   font-size: 50px;
-  color: white;
+  color: black;
   margin-top: 30%;
   user-select: none;
   transition-duration: 1s;

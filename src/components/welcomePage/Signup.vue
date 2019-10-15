@@ -295,6 +295,12 @@ export default {
   display: flex;
   align-content: center;
   justify-content: center;
+
+  padding: 0%;
+  background: url("../../assets/background16-9-2.jpg");
+    background-repeat:round;
+    background-size:auto;
+    height :100%;
 }
 #steps {
   height: 80%;

@@ -67,9 +67,7 @@ export default {
 
 <style scoped>
   .sidebar {
-    background-color: rgb(43, 68, 94);
-    width: 64px !important;
-
+    background-color: rgb(84, 92, 100);
   }
   .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 200px;
@@ -88,7 +86,7 @@ export default {
   }
 
   .el-submenu .el-menu-item {
-    padding-left: 100px !important;
+    padding-left: 60px !important;
     min-width: auto;
   }
   .el-submenu.is-active .el-menu-item {
@@ -98,7 +96,7 @@ export default {
     background: #3a4046 !important;
   }
   .el-submenu .el-menu-item:hover {
-    padding-left: 100px !important;
+    padding-left: 60px !important;
     background: rgb(67, 74, 80) !important;
   }
   .el-menu-item i {
@@ -115,5 +113,4 @@ export default {
       overflow: hidden;
     }
   }
-
 </style>

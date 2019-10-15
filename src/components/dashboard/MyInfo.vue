@@ -2,25 +2,36 @@
   <div class="main-div">
     <el-card class="box-card">
       <div class="avatar">
-        <el-row type="flex" justify="center" style="height:100px !important" >
-          <img :src="imageURL" @click="changeAvatarVisible = !changeAvatarVisible" class="avatar-change" />
+        <el-row type="flex" justify="center" style="height:100px !important">
+          <img
+            :src="imageURL"
+            @click="changeAvatarVisible = !changeAvatarVisible"
+            class="avatar-change"
+          />
         </el-row>
-        <el-row type="flex" justify="center" style="height:auto !important; user-select: none;" >
-          点击头像就可以修改头像啦！
-        </el-row>
+        <el-row
+          type="flex"
+          justify="center"
+          style="height:auto !important; user-select: none;"
+        >点击头像就可以修改头像啦！</el-row>
         <transition name="fade">
-        <el-row type="flex" justify="center" style="height:100px !important" v-if="changeAvatarVisible">
-          <el-upload
-            class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
+          <el-row
+            type="flex"
+            justify="center"
+            style="height:100px !important"
+            v-if="changeAvatarVisible"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-        </el-row>
+            <el-upload
+              class="avatar-uploader"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-row>
         </transition>
       </div>
       <el-row type="flex" justify="center">
@@ -37,8 +48,8 @@
       </el-row>
       <el-row type="flex" justify="center">
         <el-button type="danger" @click="logOut()">登出</el-button>
-        <el-button type="primary" @click="changePassWdVisible = true">修改密码</el-button>
-        <el-button type="primary" @click="changePhoneVisible = true">修改手机号码</el-button>
+        <el-button type="primary" @click="changePwdVisible = true">修改密码</el-button>
+        <el-button type="primary" @click="changePhoneVisible = true; sendCAPTCHA()">修改手机号码</el-button>
 
         <!-- <el-dialog class="my-dialog" title="修改密码" :visible.sync="changePassWdVisible" width="30%">
           <el-input v-model="passwd.oldpasswd" placeholder="请输入旧密码"></el-input>
@@ -51,20 +62,20 @@
       </el-row>
 
       <transition name="fade">
-        <el-row v-if="changePassWdVisible" class="change">
-          <el-input class="change-pswd-input" v-model="passwd.oldpasswd" placeholder="旧密码"></el-input>
-          <el-input class="change-pswd-input" v-model="passwd.newpasswd" placeholder="新密码"></el-input>
-          <el-button @click="changePassWdVisible = false">取 消</el-button>
-          <el-button type="primary" @>更 新</el-button>
+        <el-row v-if="changePwdVisible" class="change">
+          <el-input class="change-pswd-input" v-model="pwd.oldpwd" placeholder="旧密码"></el-input>
+          <el-input class="change-pswd-input" v-model="pwd.newpwd" placeholder="新密码"></el-input>
+          <el-button @click="changePwdVisible = false">取 消</el-button>
+          <el-button type="primary" @click="changePwd">更 新</el-button>
         </el-row>
       </transition>
 
       <transition name="fade">
         <el-row v-if="changePhoneVisible" class="change">
-          <el-input class="change-input" v-model="changePhone.CAPTCHA" placeholder="验证码"></el-input>
-          <el-input class="change-input" v-model="changePhone.newnumber" placeholder="新手机号"></el-input>
+          <el-input class="change-input" v-model="phone.CAPTCHA" placeholder="验证码"></el-input>
+          <el-input class="change-input" v-model="phone.newnumber" placeholder="新手机号"></el-input>
           <el-button @click="changePhoneVisible = false">取 消</el-button>
-          <el-button type="primary" @>更 新</el-button>
+          <el-button type="primary" @click="changePhone">更 新</el-button>
           <!-- TODO :发送消息 -->
         </el-row>
       </transition>
@@ -75,7 +86,8 @@
 
 <script>
 import { checkSession, logout } from '@/utils/session.js'
-import { myGet } from '@/utils/request.js'
+import { myGet, myPost } from '@/utils/request.js'
+import { Encrypt } from '@/utils/crypt.js'
 
 export default {
   name: 'MyInfo',
@@ -87,15 +99,15 @@ export default {
       school: 'None',
       realname: 'None',
       changeAvatarVisible: false,
-      changePassWdVisible: false,
+      changePwdVisible: false,
       changePhoneVisible: false,
       imageURL: require('../../assets/icon.png'),
 
-      passwd: {
-        oldpasswd: '',
-        newpasswd: ''
+      pwd: {
+        oldpwd: '',
+        newpwd: ''
       },
-      changePhone: {
+      phone: {
         CAPTCHA: '',
         newnumber: ''
       }
@@ -152,7 +164,8 @@ export default {
       this.changeAvatarVisible = false
     },
     beforeAvatarUpload (file) {
-      const isJPGPNG = file.type === 'image/jpeg' | file.type === 'image/png'
+      const isJPGPNG =
+        (file.type === 'image/jpeg') | (file.type === 'image/png')
       const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isJPGPNG) {
@@ -162,6 +175,85 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
       return isJPGPNG && isLt2M
+    },
+
+    changePwd () {
+      let tmpdata = {
+        token: this.$store.getters.getUserToken,
+        oldpassword: Encrypt(this.pwd.oldpwd),
+        newpassword: Encrypt(this.pwd.newpwd)
+      }
+      console.log(tmpdata)
+      myPost(
+        'api/user/sign/modify',
+        tmpdata,
+        res => {
+          if (res.data.status == 1) {
+            this.pwd.oldpwd = this.pwd.newpwd
+            this.$message.success(`${res.data.msg}`)
+            this.changePwdVisible = false
+            this.pwd.oldpwd = ''
+            this.pwd.newpwd = ''
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
+    },
+
+    changePhone () {
+      let tmpdata = {
+        token: this.$store.getters.getUserToken,
+        phone: this.phone.newnumber,
+        CAPTCHA: this.phone.CAPTCHA
+      }
+      console.log(tmpdata)
+      myPost(
+        'api/user/info/setphone',
+        tmpdata,
+        res => {
+          if (res.data.status == 1) {
+            this.phonenumber = this.phone.newnumber
+            this.$message.success(`${res.data.msg}`)
+            this.changePhoneVisible = false
+            this.phone.CAPTCHA = ''
+            this.phone.newnumber = ''
+            this.phonenumber = this.phone.newnumber
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
+    },
+
+    sendCAPTCHA () {
+      let tmpdata = {
+        token: this.$store.getters.getUserToken,
+        // username: this.username,
+        phone: this.phonenumber
+      }
+      console.log(tmpdata)
+      myPost(
+        // 'api/user/sign/retrieve',
+        'api/user/sign/verify',
+        tmpdata,
+        res => {
+          if (res.data.status == 1) {
+            this.$message.success(`${res.data.msg}`)
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
     }
   }
 }
@@ -174,19 +266,24 @@ export default {
   border-radius: 100%;
   transition-duration: 1s;
   user-select: none;
-
 }
 .avatar-change:hover {
   transform: scale(1.1);
   transition-duration: 1s;
 }
 .main-div {
-  height: 80%;
+  height: 100%;
   width: 100%;
   margin: 0%;
   display: flex;
   align-content: center;
   justify-content: center;
+
+  padding: 0%;
+  background: url("../../assets/background16-9-2.jpg");
+    background-repeat:round;
+    background-size:auto;
+    height :100%;
 }
 .box-card {
   align-self: center;
@@ -210,7 +307,6 @@ export default {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
-
 }
 
 .change {

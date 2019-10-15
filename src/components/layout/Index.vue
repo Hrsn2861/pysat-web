@@ -66,11 +66,10 @@ export default {
   }
 
   .el-main {
-    background: url("../../assets/background16-9-2.jpg");
-    background-repeat: space;
-    background-size: cover;
-    height :100%;
 
+    height :100%;
+    color: #333;
+    padding: 0;
   }
 
   body > .el-container {
