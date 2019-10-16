@@ -9,24 +9,28 @@
       text-color="#fff"
       active-text-color="#ffd04b"
     >
-      <el-menu-item index="/dashboard" >
+      <el-menu-item index="/myinfo" >
         <i class="el-icon-service"></i>
-        <span slot="title">Dashboard</span>
+        <span slot="title">个人信息</span>
+      </el-menu-item>
+      <el-menu-item index="/hangout" >
+        <i class="el-icon-view"></i>
+        <span slot="title">随便逛逛</span>
       </el-menu-item>
       <el-submenu index="/charts">
         <template slot="title">
           <i class="el-icon-view"></i>
-          <span slot="title">Charts</span>
+          <span slot="title">这不重要</span>
         </template>
-        <el-menu-item index="/charts/diagram">Diagram</el-menu-item>
-        <el-menu-item index="/charts/slider">Slilder</el-menu-item>
+        <el-menu-item index="/charts/diagram">ZBZY</el-menu-item>
+        <el-menu-item index="/charts/slider">ZBZY</el-menu-item>
       </el-submenu>
       <el-submenu index="/tables">
         <template slot="title">
           <i class="el-icon-location-outline"></i>
-          <span slot="title">Tables</span>
+          <span slot="title">暂时没有什么用</span>
         </template>
-        <el-menu-item index="/tables/list">Example</el-menu-item>
+        <el-menu-item index="/tables/list">我也不会用</el-menu-item>
       </el-submenu>
       <el-menu-item index="/setting" >
         <i class="el-icon-setting"></i>

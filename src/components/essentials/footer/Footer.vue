@@ -17,5 +17,6 @@ export default {
     font-size 14px
     text-align center
     color #777
-    user-select: none;
+    user-select none
+    background-color #272727
 </style>
