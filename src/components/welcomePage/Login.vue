@@ -22,18 +22,18 @@
         <transition name="fade">
           <el-row v-if="forgetVisible" class="forget">
             <el-form-item label="手机号" prop="identity">
-            <el-input class="forget-input"  placeholder="手机号"></el-input>
+            <el-input v-model="formForgetpwd.phone" class="forget-input"  placeholder="手机号"></el-input>
             </el-form-item>
             <el-form-item label="新密码" prop="identity">
-            <el-input class="forget-input"  placeholder="新密码"></el-input>
+            <el-input v-model="formForgetpwd.newpwd" class="forget-input"  placeholder="新密码"></el-input>
             </el-form-item>
 			<el-form-item label="验证码" prop="identity">
-			<el-input class="forget-input"  placeholder="验证码"></el-input>
+			<el-input v-model="formForgetpwd.CAPTCHA" class="forget-input"  placeholder="验证码"></el-input>
 			</el-form-item>
 
-            <el-button class="forget-button" type="primary">发送验证码</el-button>
-            <el-button class="forget-button" type="primary">更 新</el-button>
-			<el-button @click="forgetVisible = false">取 消</el-button>
+            <el-button class="forget-button" type="primary" @click="sendCAPTCHA">发送验证码</el-button>
+            <el-button class="forget-button" type="primary" @click="updatePwd">更 新</el-button>
+			<el-button @click="forgetVisible = false; resetForm()">取 消</el-button>
             <!-- TODO :发送消息 -->
           </el-row>
         </transition>
@@ -86,6 +86,11 @@ export default {
         password: '',
         show: false
       },
+      formForgetpwd: {
+        phone: '',
+        newpwd: '',
+        CAPTCHA: ''
+      },
       rules: {
         identity: [{ validator: checkidentity, trigger: 'blur' }],
         password: [{ validator: checkPassword, trigger: 'blur' }]
@@ -104,7 +109,6 @@ export default {
             password: Encrypt(this.formLogin.password),
             token: this.$store.getters.getUserToken
           }
-
           myPost(
             '/api/user/sign/login',
             tmpdata,
@@ -117,7 +121,6 @@ export default {
                 })
                 // 登录成功 跳转至首页
                 this.$router.push('myinfo')
-
                 // this.$router.go()
               } else {
                 console.log(this.$store.getters.getUserToken)
@@ -133,10 +136,59 @@ export default {
         }
       })
     },
+	
+	sendCAPTCHA() {
+		let tmpdata = {
+			token: this.$store.getters.getUserToken,
+			phone: this.formForgetpwd.phone
+		}
+		console.log(tmpdata)
+		myPost(
+		  'api/user/sign/verify',
+		  tmpdata,
+		  res => {
+		    if (res.data.status === 1) {
+		      this.$message.success(`${res.data.msg}`)
+		    } else {
+		      this.$message.error(`${res.data.msg}`)
+		    }
+		  },
+		  err => {
+		    this.$message.error(`${err.message}`, 'ERROR!')
+		  }
+		)
+	},
+	
+	updatePwd() {
+		let tmpdata = {
+			token: this.$store.getters.getUserToken,
+			password: Encrypt(this.formForgetpwd.newpwd),
+			CAPTCHA: this.formForgetpwd.CAPTCHA
+		}
+		//console.log(this.formForgetpwd.newpwd)
+		console.log(tmpdata)
+		myPost(
+		  'api/user/sign/passwd',
+		  tmpdata,
+		  res => {
+		    if (res.data.status === 1) {
+		      this.$message.success(`${res.data.msg}`)
+			  this.forgetVisible = false
+		    } else {
+		      this.$message.error(`${res.data.msg}`)
+		    }
+		  },
+		  err => {
+		    this.$message.error(`${err.message}`, 'ERROR!')
+		  }
+		)		
+	},
+	
     // 表单重置
     resetForm () {
       // console.log('session')
-      this.$refs['formLogin'].resetFields()
+      this.$refs['formLogin'].resetFields();
+	  this.$refs['formForgetpwd'].resetFields();
     }
   },
   beforeCreate () {
