@@ -1,9 +1,9 @@
 <template>
   <div class="main-div">
-    <div id="welcome">
+    <div id="welcome" v-bind:class="{ 'is-mobile': isMobile}">
       <h2>Welcome to</h2>
     </div>
-    <div id="pysat">
+    <div id="pysat" v-bind:class="{ 'is-mobile': isMobile}">
       <h3>派塞特</h3>
     </div>
     <div id="navi">
@@ -29,11 +29,25 @@ export default {
   },
   beforeCreate () {
     checkSession(this, 'myinfo', '')
+  },
+  computed: {
+    isMobile () {
+      if (this.$store.state.device === 'mobile') {
+        // this.$message({
+        //   type: 'error',
+        //   message: '请调至能用的分辨率！！！！！！！',
+        //   duration: 2000
+        // })
+        return true
+      } else {
+        return false // 为整个组件添加一个is-mobile的class，然后返回对应的
+      }
+    }
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="stylus">
 .main-div {
   overflow: hidden;
   width: 100%;
@@ -43,9 +57,9 @@ export default {
   justify-content: center;
 
   padding: 0%;
-  background: url("../../assets/background16-9-2.jpg");
-    background-repeat:cover;
-    background-size:auto;
+  background: url('../../assets/background16-9-2.jpg');
+  background-size:cover;
+  background-repeat :none;
     height :100%;
 }
 #welcome {
@@ -60,6 +74,8 @@ export default {
   top: 30%;
   position: relative;
 }
+&.is-mobile
+  display none
 
 h1,
 h2 {
@@ -90,7 +106,7 @@ h3:hover {
   border: skyblue;
 }
 .el-breadcrumb {
-  font-size: 70px;
+  font-size: 60px;
   user-select: none;
   height: 60%;
 }

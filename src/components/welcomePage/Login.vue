@@ -1,31 +1,31 @@
 <template>
   <div class="main-div">
-    <el-card class="box-card">
+    <el-card class="box-card" v-bind:class="{ 'is-mobile': isMobile}">
       <el-form label-position="left" :model="formLogin" :rules="rules" ref="formLogin" >
         <!-- $refs 只在组件渲染完成后才填充，并且它是非响应式的。它仅仅作为一个直接访问子组件的应急方案——应当避免在模版或计算属性中使用 $refs 。 -->
         <transition name="fade">
           <el-row v-if="!forgetVisible" class="login">
-        <el-form-item label="用户名" prop="identity">
-          <el-input v-model="formLogin.identity"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="formLogin.password" type="password"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="login">登录</el-button>
-          <el-button @click="resetForm">重置</el-button>
-          <el-button type="warning" @click="forgetVisible=!forgetVisible">忘记密码</el-button>
-        </el-form-item>
-        </el-row>
+            <el-form-item label="用户名" prop="identity">
+              <el-input v-model="formLogin.identity"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" prop="password">
+              <el-input v-model="formLogin.password" type="password"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="login">登录</el-button>
+              <el-button @click="resetForm">重置</el-button>
+              <el-button type="warning" @click="forgetVisible=!forgetVisible">忘记密码</el-button>
+            </el-form-item>
+          </el-row>
         </transition>
 
         <transition name="fade">
           <el-row v-if="forgetVisible" class="forget">
             <el-form-item label="验证码" prop="identity">
-            <el-input class="forget-input"  placeholder="验证码"></el-input>
+              <el-input class="forget-input" placeholder="验证码"></el-input>
             </el-form-item>
             <el-form-item label="用户名" prop="identity">
-            <el-input class="forget-input"  placeholder="新密码"></el-input>
+              <el-input class="forget-input" placeholder="新密码"></el-input>
             </el-form-item>
 
             <el-button @click="forgetVisible = false">取 消</el-button>
@@ -36,7 +36,7 @@
 
         <el-form-item v-if="!forgetVisible">
           <router-link to="/signup">
-            <el-button type>
+            <el-button>
               没有账号，立即注册
               <i class="el-icon-arrow-right el-icon--right"></i>
             </el-button>
@@ -88,7 +88,20 @@ export default {
       }
     }
   },
-
+  computed: {
+    isMobile () {
+      if (this.$store.state.device === 'mobile') {
+        this.$message({
+          type: 'error',
+          message: '请调至能用的分辨率！！！！！！！',
+          duration: 2000
+        })
+        return true
+      } else {
+        return false // 为整个组件添加一个is-mobile的class，然后返回对应的
+      }
+    }
+  },
   methods: {
     // 向登录接口发起请求
     login () {
@@ -141,7 +154,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="stylus">
 .main-div {
   height: 100%;
   width: 100%;
@@ -149,34 +162,30 @@ export default {
   display: flex;
   align-content: center;
   justify-content: center;
-
   padding: 0%;
-  background: url("../../assets/background16-9-2.jpg");
-    background-repeat:cover;
-    background-size:auto;
-    height :100%;
+  background: url('../../assets/background16-9-2.jpg');
+  background-size:cover;
+  background-repeat :none;
+  height: 100%;
 }
 
-.box-card {
+&.is-mobile
+  display none
 
+.el-button
+  width auto
+  height auto
+
+.box-card {
   align-self: center;
   height: auto;
   width: 25%;
-   border: 0px dashed rgb(40, 40, 40);
+  border: 0px dashed rgb(40, 40, 40);
   background-color: rgba(255, 255, 255, 0.7);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
 }
-/* .forget{
-  margin-top: 3%;
-}
-.forget-input{
-  margin:1%;
-}
-.forget-button{
-  margin: 1%;
-} */
 
 .box-card:hover {
   box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);
