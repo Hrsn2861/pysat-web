@@ -1,7 +1,7 @@
 import store from '@/store'
 
 const { body } = document
-const WIDTH = 1350 // refer to Bootstrap's responsive design
+const WIDTH = 1600 // refer to Bootstrap's responsive design
 
 // default is 992
 
