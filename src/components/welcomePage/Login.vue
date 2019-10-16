@@ -21,15 +21,19 @@
 
         <transition name="fade">
           <el-row v-if="forgetVisible" class="forget">
-            <el-form-item label="验证码" prop="identity">
-            <el-input class="forget-input"  placeholder="验证码"></el-input>
+            <el-form-item label="手机号" prop="identity">
+            <el-input class="forget-input"  placeholder="手机号"></el-input>
             </el-form-item>
-            <el-form-item label="用户名" prop="identity">
+            <el-form-item label="新密码" prop="identity">
             <el-input class="forget-input"  placeholder="新密码"></el-input>
             </el-form-item>
+			<el-form-item label="验证码" prop="identity">
+			<el-input class="forget-input"  placeholder="验证码"></el-input>
+			</el-form-item>
 
-            <el-button @click="forgetVisible = false">取 消</el-button>
+            <el-button class="forget-button" type="primary">发送验证码</el-button>
             <el-button class="forget-button" type="primary">更 新</el-button>
+			<el-button @click="forgetVisible = false">取 消</el-button>
             <!-- TODO :发送消息 -->
           </el-row>
         </transition>
