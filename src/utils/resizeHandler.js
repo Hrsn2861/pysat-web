@@ -1,7 +1,9 @@
 import store from '@/store'
 
 const { body } = document
-const WIDTH = 992 // refer to Bootstrap's responsive design
+const WIDTH = 1600 // refer to Bootstrap's responsive design
+
+// default is 992
 
 export default {
   watch: {
@@ -30,6 +32,9 @@ export default {
       if (!document.hidden) {
         const isMobile = this.isMobile()
         store.dispatch('ToggleDevice', isMobile ? 'mobile' : 'desktop')
+
+        console.log('Change to ' + this.$store.state.device)
+        console.log('SidebarOpened:  ' + this.$store.state.sidebar.opened)
 
         if (isMobile) {
           store.dispatch('CloseSideBar')

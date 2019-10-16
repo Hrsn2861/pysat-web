@@ -1,19 +1,19 @@
 <template>
   <div class="main-div">
-    <div id="welcome">
-      <!-- <h2>Welcome to PYSAT</h2> -->
+    <div id="welcome" v-bind:class="{ 'is-mobile': isMobile}">
+      <h2>Welcome to</h2>
     </div>
-    <!-- <div id="pysat">
+    <div id="pysat" v-bind:class="{ 'is-mobile': isMobile}">
       <h3>派塞特</h3>
-    </div> -->
-    <!-- <div id="navi">
+    </div>
+    <div id="navi">
       <el-breadcrumb separator="  ">
         <el-breadcrumb-item :to="{ path: 'login'}">Log in</el-breadcrumb-item>
         <br />
         <el-breadcrumb-item :to="{ path: 'signup'}">Sign up</el-breadcrumb-item>
         <br />
       </el-breadcrumb>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -29,16 +29,53 @@ export default {
   },
   beforeCreate () {
     checkSession(this, 'myinfo', '')
+  },
+  computed: {
+    isMobile () {
+      if (this.$store.state.device === 'mobile') {
+        // this.$message({
+        //   type: 'error',
+        //   message: '请调至能用的分辨率！！！！！！！',
+        //   duration: 2000
+        // })
+        return true
+      } else {
+        return false // 为整个组件添加一个is-mobile的class，然后返回对应的
+      }
+    }
   }
 }
 </script>
 
-<style scoped>
-#welcome {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+<style scoped lang="stylus">
+.main-div {
+  overflow: hidden;
+  width: 100%;
+  margin: 0%;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+
+  padding: 0%;
+  background: url('../../assets/background16-9-2.jpg');
+  background-size:cover;
+  background-repeat :none;
+    height :100%;
 }
+#welcome {
+  position: relative;
+}
+#pysat{
+  position: relative;
+  top: 30%;
+  right: 5%;
+}
+#navi{
+  top: 30%;
+  position: relative;
+}
+&.is-mobile
+  display none
 
 h1,
 h2 {
@@ -56,8 +93,8 @@ h2:hover {
 }
 h3 {
   font-weight: normal;
-  font-size: 50px;
-  color: white;
+  font-size: 100px;
+  color: whitesmoke;
   margin-top: 30%;
   user-select: none;
   transition-duration: 1s;
@@ -69,7 +106,7 @@ h3:hover {
   border: skyblue;
 }
 .el-breadcrumb {
-  font-size: 70px;
+  font-size: 60px;
   user-select: none;
   height: 60%;
 }

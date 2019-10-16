@@ -1,6 +1,6 @@
 <template>
   <div class="main-div">
-    <el-card class="box-card">
+    <el-card class="box-card" v-bind:class="{ 'is-mobile': isMobile}">
       <h1 style="user-select:none">注册成为一名派塞特er！</h1>
       <el-progress :percentage="percentage" :stroke-width="20" style="margin-bottom:4%;"></el-progress>
       <el-form :model="registerForm" :rules="registerRule" status-icon ref="registerForm">
@@ -138,7 +138,20 @@ export default {
   beforeCreate () {
     checkSession(this, 'myinfo', '')
   },
-  computed: {},
+  computed: {
+    isMobile () {
+      if (this.$store.state.device === 'mobile') {
+        this.$message({
+          type: 'error',
+          message: '请调至能用的分辨率！！！/PC端访问！！！',
+          duration: 2000
+        })
+        return true
+      } else {
+        return false // 为整个组件添加一个is-mobile的class，然后返回对应的
+      }
+    }
+  },
   methods: {
     format (percentage) {
       return percentage === 100 ? '满' : `${percentage}%`
@@ -287,7 +300,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="stylus">
 .main-div {
   height: 100%;
   width: 100%;
@@ -295,6 +308,11 @@ export default {
   display: flex;
   align-content: center;
   justify-content: center;
+  padding: 0%;
+  background: url('../../assets/background16-9-2.jpg');
+  background-size:cover;
+  background-repeat :none;
+  height: 100%;
 }
 #steps {
   height: 80%;
@@ -314,14 +332,9 @@ export default {
   user-select: none;
   text-align: center;
 }
+&.is-mobile
+  display none
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 1.5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
 .box-card {
   align-self: center;
   height: auto;

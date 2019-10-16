@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-     Proudly presented by CTRL group Copyright @ 2019 - 2099
+     Proudly presented by CTRL group ｜ Copyright @ 2019 - 2099
   </div>
 </template>
 
@@ -17,4 +17,5 @@ export default {
     font-size 14px
     text-align center
     color #777
+    user-select: none;
 </style>

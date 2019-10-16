@@ -66,39 +66,14 @@ export default {
   }
 
   .el-main {
-    background: url("../../assets/background16-9-2.jpg");
-    background-repeat: space;
-    background-size: cover;
+
     height :100%;
+    color: #333;
+    padding: 0;
   }
 
   body > .el-container {
     margin-bottom: 40px;
   }
 
-  .slide-right-enter-active,
-  .slide-right-leave-active{
-    /* will-change: transform; */
-    transition: all 1s;
-    /* will-change:scroll-position; */
-    /* will-change: contents; */
-    /* will-change: unset; */
-    overflow: hidden !important;
-
-  }
-  .slide-right-enter {
-    opacity: 0;
-    /* transform: scale(0.95); */
-
-    transform: scale(0.8), translate3d(0 , -4%, 0) ;
-      overflow: hidden !important;
-
-  }
-  .slide-right-leave-active {
-    opacity: 0;
-    transform: scale(0.95);
-    transform: translate3d( 0, 4%, 0);
-      overflow: hidden !important;
-
-  }
 </style>
