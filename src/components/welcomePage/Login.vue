@@ -125,7 +125,7 @@ export default {
                 this.$router.push('myinfo')
                 // this.$router.go()
               } else {
-                console.log(this.$store.getters.getUserToken)
+                //console.log(this.$store.getters.getUserToken)
 
                 this.$message.error(`${res.data.msg}`)
                 return false
