@@ -1,5 +1,5 @@
 <template>
-  <div class="main-div">
+  <div class="main-div" v-loading="isMobile">
     <div id="welcome" v-bind:class="{ 'is-mobile': isMobile}">
       <h2>Welcome to</h2>
     </div>
