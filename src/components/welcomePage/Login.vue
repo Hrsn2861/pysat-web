@@ -93,7 +93,7 @@ export default {
       if (this.$store.state.device === 'mobile') {
         this.$message({
           type: 'error',
-          message: '请调至能用的分辨率！！！！！！！',
+          message: '请调至能用的分辨率！！！/PC端访问！！！',
           duration: 2000
         })
         return true
