@@ -1,18 +1,17 @@
 <template>
   <div class="header">
     <div class="logo" :class="{'is-active':isActive}">
-      <img src="@/assets/icon_white.png" height="30px" @click="handleMenu">
+      <img src="@/assets/icon_white.png" height="30px" @click="handleMenu" />
       PYSAT控制中心
     </div>
     <div class="navbar">
-
       <!-- <el-col class="my-search">
         <el-input
           placeholder="请输入内容"
           suffix-icon="el-icon-search"
           v-model="input1"
         ></el-input>
-      </el-col> -->
+      </el-col>-->
       <el-menu
         class="menu"
         mode="horizontal"
@@ -21,9 +20,9 @@
         active-text-color="#ffd04b"
       >
         <el-menu-item index="1" @click="goIndex()">首页</el-menu-item>
-        <el-menu-item index="2" @click="goSignup()" v-if="iflogin">注册</el-menu-item>
-        <el-menu-item index="3" @click="goLogin()" v-if="iflogin">登陆</el-menu-item>
-        <el-menu-item index="4">
+        <el-menu-item index="2" @click="goSignup()" v-if="isLogged">注册</el-menu-item>
+        <el-menu-item index="3" @click="goLogin()" v-if="isLogged">登陆</el-menu-item>
+        <el-menu-item index="4" v-if="!isMobile">
           <a href="https://www.ele.me" target="_blank">摸我</a>
         </el-menu-item>
         <el-menu-item index="5" @click="logOut()">这不重要</el-menu-item>
@@ -37,40 +36,48 @@
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click="logOut()">这不重要</el-dropdown-item>
         </el-dropdown-menu>
-      </el-dropdown> -->
+      </el-dropdown>-->
     </div>
   </div>
 </template>
 
 <script>
-import {logout} from '@/utils/session.js'
+import { logout } from '@/utils/session.js'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Header',
   data () {
     return {
-      menuBtn: 'el-icon-newfont-caidan',
-      iflogin: true
-
+      menuBtn: 'el-icon-newfont-caidan'
     }
   },
 
   computed: {
+    isMobile () {
+      if (this.$store.state.device === 'mobile') {
+        return true
+      } else {
+        return false
+      }
+    },
     // 如果左侧菜单打开，则旋转btn180度
     isActive () {
       return !this.$store.getters.sidebar.opened
+    },
+    isLogged () {
+      // 检查是否已经登陆，如果已经登陆，那么user就会被设置好了，根据user返回是否显示登陆注册按钮
+      return this.$store.getters.getUser === null
     }
   },
   watch: {
-    getUser: function (u) { // li就是改变后的wifiList值
+    getUser: function (u) {
+      // li就是改变后的wifiList值
       //  this.getAllId(u); //调用别的函数
       console.log('改变', u)
     }
   },
   methods: {
-    ...mapGetters([
-      'getUser'
-    ]),
+    ...mapGetters(['getUser']),
 
     handleMenu () {
       this.$store.dispatch('ToggleSideBar')
@@ -99,12 +106,13 @@ export default {
   height: 50px;
   display: flex;
   background: #272727;
-  .my-search{
-    margin-left : 50% !important;
+
+  .my-search {
+    margin-left: 50% !important;
     height: 90% !important;
     width: 20%;
-
   }
+
   .logo {
     width: 200px;
     height: 50px;
@@ -116,6 +124,7 @@ export default {
     font-weight: 600;
     transition: 0.4s ease;
     overflow: hidden;
+
     &.is-active {
       width: 64px;
     }
@@ -124,31 +133,33 @@ export default {
       padding: 10px 10px 0px 0;
     }
   }
+
   .logo.is-active {
     transform: rotateY(180deg);
-    transition-duration:1s;
+    transition-duration: 1s;
   }
 
   .el-menu {
     height: 49px;
     margin-left: auto;
     margin-right: 20px;
-    border:0px solid red;
-    .el-menu-item{
+    border: 0px solid red;
+
+    .el-menu-item {
       height: 49px;
       display: flex;
       align-items: center;
     }
-    .el-submenu{
+
+    .el-submenu {
       height: 49px;
-      boarder 0px;
+      boarder: 0px;
       display: flex;
       align-items: center;
     }
   }
 
   .navbar {
-
     flex: 1;
     display: flex;
     align-items: center;
