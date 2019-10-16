@@ -1,41 +1,41 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-form label-position="left" :model="formLogin" :rules="rules" ref="formLogin" >
+      <el-form label-position="left" :model="formLogin" :rules="rules" ref="formLogin">
         <!-- $refs 只在组件渲染完成后才填充，并且它是非响应式的。它仅仅作为一个直接访问子组件的应急方案——应当避免在模版或计算属性中使用 $refs 。 -->
         <transition name="fade">
           <el-row v-if="!forgetVisible" class="login">
-        <el-form-item label="用户名" prop="identity">
-          <el-input v-model="formLogin.identity"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="formLogin.password" type="password"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="login">登录</el-button>
-          <el-button @click="resetForm">重置</el-button>
-          <el-button type="warning" @click="forgetVisible=!forgetVisible">忘记密码</el-button>
-        </el-form-item>
-        </el-row>
+            <el-form-item label="用户名" prop="identity">
+              <el-input v-model="formLogin.identity"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" prop="password">
+              <el-input v-model="formLogin.password" type="password"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="login">登录</el-button>
+              <el-button @click="resetForm">重置</el-button>
+              <el-button type="warning" @click="forgetVisible=!forgetVisible">忘记密码</el-button>
+            </el-form-item>
+          </el-row>
         </transition>
       </el-form>
-	  
-      <el-form label-position="left" :model="formForgetpwd" ref="formForgetpwd" >
+
+      <el-form label-position="left" :model="formForgetpwd" ref="formForgetpwd">
         <transition name="fade">
           <el-row v-if="forgetVisible" class="forget">
             <el-form-item label="手机号" prop="identity">
-            <el-input v-model="formForgetpwd.phone" class="forget-input"  placeholder="手机号"></el-input>
+              <el-input v-model="formForgetpwd.phone" class="forget-input" placeholder="手机号"></el-input>
             </el-form-item>
             <el-form-item label="新密码" prop="identity">
-            <el-input v-model="formForgetpwd.newpwd" class="forget-input"  placeholder="新密码"></el-input>
+              <el-input v-model="formForgetpwd.newpwd" class="forget-input" placeholder="新密码"></el-input>
             </el-form-item>
-			<el-form-item label="验证码" prop="identity">
-			<el-input v-model="formForgetpwd.CAPTCHA" class="forget-input"  placeholder="验证码"></el-input>
-			</el-form-item>
+            <el-form-item label="验证码" prop="identity">
+              <el-input v-model="formForgetpwd.CAPTCHA" class="forget-input" placeholder="验证码"></el-input>
+            </el-form-item>
 
             <el-button class="forget-button" type="primary" @click="sendCAPTCHA">发送验证码</el-button>
             <el-button class="forget-button" type="primary" @click="updatePwd">更 新</el-button>
-			<el-button @click="forgetVisible = false; resetForm()">取 消</el-button>
+            <el-button @click="forgetVisible = false; resetForm()">取 消</el-button>
             <!-- TODO :发送消息 -->
           </el-row>
         </transition>
@@ -125,7 +125,7 @@ export default {
                 this.$router.push('myinfo')
                 // this.$router.go()
               } else {
-                //console.log(this.$store.getters.getUserToken)
+                // console.log(this.$store.getters.getUserToken)
 
                 this.$message.error(`${res.data.msg}`)
                 return false
@@ -138,59 +138,59 @@ export default {
         }
       })
     },
-	
-	sendCAPTCHA() {
-		let tmpdata = {
-			token: this.$store.getters.getUserToken,
-			phone: this.formForgetpwd.phone
-		}
-		console.log(tmpdata)
-		myPost(
-		  'api/user/sign/verify',
-		  tmpdata,
-		  res => {
-		    if (res.data.status === 1) {
-		      this.$message.success(`${res.data.msg}`)
-		    } else {
-		      this.$message.error(`${res.data.msg}`)
-		    }
-		  },
-		  err => {
-		    this.$message.error(`${err.message}`, 'ERROR!')
-		  }
-		)
-	},
-	
-	updatePwd() {
-		let tmpdata = {
-			token: this.$store.getters.getUserToken,
-			password: Encrypt(this.formForgetpwd.newpwd),
-			CAPTCHA: this.formForgetpwd.CAPTCHA
-		}
-		//console.log(this.formForgetpwd.newpwd)
-		console.log(tmpdata)
-		myPost(
-		  'api/user/sign/passwd',
-		  tmpdata,
-		  res => {
-		    if (res.data.status === 1) {
-		      this.$message.success(`${res.data.msg}`)
-			  this.forgetVisible = false
-		    } else {
-		      this.$message.error(`${res.data.msg}`)
-		    }
-		  },
-		  err => {
-		    this.$message.error(`${err.message}`, 'ERROR!')
-		  }
-		)		
-	},
-	
+
+    sendCAPTCHA () {
+      let tmpdata = {
+        token: this.$store.getters.getUserToken,
+        phone: this.formForgetpwd.phone
+      }
+      console.log(tmpdata)
+      myPost(
+        'api/user/sign/verify',
+        tmpdata,
+        res => {
+          if (res.data.status === 1) {
+            this.$message.success(`${res.data.msg}`)
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
+    },
+
+    updatePwd () {
+      let tmpdata = {
+        token: this.$store.getters.getUserToken,
+        password: Encrypt(this.formForgetpwd.newpwd),
+        CAPTCHA: this.formForgetpwd.CAPTCHA
+      }
+      // console.log(this.formForgetpwd.newpwd)
+      console.log(tmpdata)
+      myPost(
+        'api/user/sign/passwd',
+        tmpdata,
+        res => {
+          if (res.data.status === 1) {
+            this.$message.success(`${res.data.msg}`)
+            this.forgetVisible = false
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
+    },
+
     // 表单重置
     resetForm () {
       // console.log('session')
-      this.$refs['formLogin'].resetFields();
-	  this.$refs['formForgetpwd'].resetFields();
+      this.$refs['formLogin'].resetFields()
+      this.$refs['formForgetpwd'].resetFields()
     }
   },
   beforeCreate () {
@@ -210,17 +210,16 @@ export default {
 
   padding: 0%;
   background: url("../../assets/background16-9-2.jpg");
-    background-repeat:cover;
-    background-size:auto;
-    height :100%;
+  background-repeat: cover;
+  background-size: auto;
+  height: 100%;
 }
 
 .box-card {
-
   align-self: center;
   height: auto;
   width: 25%;
-   border: 0px dashed rgb(40, 40, 40);
+  border: 0px dashed rgb(40, 40, 40);
   background-color: rgba(255, 255, 255, 0.7);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
