@@ -18,7 +18,9 @@
         </el-form-item>
         </el-row>
         </transition>
-
+      </el-form>
+	  
+      <el-form label-position="left" :model="formForgetpwd" ref="formForgetpwd" >
         <transition name="fade">
           <el-row v-if="forgetVisible" class="forget">
             <el-form-item label="手机号" prop="identity">
