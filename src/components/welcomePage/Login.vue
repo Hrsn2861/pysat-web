@@ -26,6 +26,9 @@
             <el-form-item label="手机号" prop="identity">
               <el-input v-model="formForgetpwd.phone" class="forget-input" placeholder="手机号"></el-input>
             </el-form-item>
+            <el-form-item label="用户名" prop="identity">
+              <el-input v-model="formForgetpwd.username" class="forget-input" placeholder="用户名"></el-input>
+            </el-form-item>
             <el-form-item label="新密码" prop="identity">
               <el-input v-model="formForgetpwd.newpwd" class="forget-input" placeholder="新密码" type="password"></el-input>
             </el-form-item>
@@ -90,6 +93,7 @@ export default {
       },
       formForgetpwd: {
         phone: '',
+        username: '',
         newpwd: '',
         CAPTCHA: ''
       },
@@ -177,6 +181,7 @@ export default {
     updatePwd () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
+        username: this.formForgetpwd.username,
         password: Encrypt(this.formForgetpwd.newpwd),
         CAPTCHA: this.formForgetpwd.CAPTCHA
       }

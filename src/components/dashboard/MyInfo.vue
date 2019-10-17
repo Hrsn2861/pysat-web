@@ -64,7 +64,7 @@
       <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible ">
         <el-button type="danger" @click="logOut()">登出</el-button>
         <el-button type="primary" @click="changePwdVisible = !changePwdVisible">修改密码</el-button>
-        <el-button type="primary" @click="changePhoneVisible = true; sendCAPTCHA()">修改手机号码</el-button>
+        <el-button type="primary" @click="changePhoneVisible = true">修改手机号码</el-button>
         <el-button type="warning" @click="changeInfo()" >{{updateButtonText}}</el-button>
 
       </el-row>
@@ -83,9 +83,9 @@
         <div v-if="changePhoneVisible" class="change">
           <el-input class="change-input" v-model="phone.CAPTCHA" placeholder="验证码"></el-input>
           <el-input class="change-input" v-model="phone.newnumber" placeholder="新号码"></el-input>
-          <el-button @click="changePhoneVisible = false" class="change-button">取消</el-button>
+          <el-button id="update-btn" type="primary" @click="sendCAPTCHA" class="change-button">发送验证码</el-button>&nbsp;
           <el-button id="update-btn" type="primary" @click="changePhone" class="change-button">更新</el-button>
-          <!-- TODO :发送消息 -->
+          <el-button @click="changePhoneVisible = false" class="change-button">取消</el-button>
         </div>
       </transition>
     </el-card>
@@ -297,6 +297,7 @@ export default {
         res => {
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
+            console.log('send CAPTCHA succeed')
           } else {
             this.$message.error(`${res.data.msg}`)
           }
