@@ -2,7 +2,7 @@
   <div
     class="header"
     v-loading.fullscreen.lock="isMobile"
-    element-loading-text="请修改您的显示分辨率"
+    element-loading-text="爲了您的用戶體驗，請修改您的顯示分辨率"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.8)"
   >

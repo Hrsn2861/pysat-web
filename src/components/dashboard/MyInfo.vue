@@ -13,8 +13,8 @@
           type="flex"
           justify="center"
           style="height:auto !important; user-select: none;"
-        >点击头像就可以修改头像啦！</el-row>
-        <transition name="fade">
+        >現在不可以修改頭像！</el-row>
+        <!-- <transition name="fade">
           <el-row
             type="flex"
             justify="center"
@@ -28,11 +28,11 @@
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
             >
-              <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <img class="el-icon-plus avatar-uploader-icon" />
+
             </el-upload>
           </el-row>
-        </transition>
+        </transition> -->
       </div>
       <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible ">
         <el-col class="my-info">
