@@ -287,7 +287,7 @@ export default {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         // username: this.username,
-        phone: this.phonenumber
+        phone: this.phone.newnumber
       }
       console.log(tmpdata)
       myPost(
