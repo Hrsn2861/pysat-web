@@ -41,13 +41,13 @@
           <center><h1>个人信息</h1></center>
           <el-form ref="myInfo" label-width="100px">
             <el-form-item label="用户名">
-              <el-input class="my-info-item" v-model="username" placeholder="" :disabled="changeInfoVisible"></el-input>
+              <el-input class="my-info-item" v-model="username" placeholder="" :disabled="true"></el-input>
             </el-form-item>
             <el-form-item label="电话号码">
-              <el-input class="my-info-item" v-model="phonenumber" placeholder="" :disabled="changeInfoVisible"></el-input>
+              <el-input class="my-info-item" v-model="phonenumber" placeholder="" :disabled="true"></el-input>
             </el-form-item>
             <el-form-item label="Email">
-              <el-input class="my-info-item" v-model="email" placeholder="" :disabled="changeInfoVisible"></el-input>
+              <el-input class="my-info-item" v-model="email" placeholder="填了也没用" :disabled="changeInfoVisible"></el-input>
             </el-form-item>
             <el-form-item label="学校">
               <el-input class="my-info-item" v-model="school" placeholder="" :disabled="changeInfoVisible"></el-input>
@@ -104,7 +104,7 @@ export default {
     return {
       username: 'None',
       phonenumber: 'None',
-      email: 'None',
+      email: '填了也没用',
       school: 'None',
       realname: 'None',
       motto: 'None',
@@ -149,9 +149,11 @@ export default {
           if (res.data.status === 1) {
             this.username = res.data.data.user.username
             this.phonenumber = res.data.data.user.phone
-
             this.school = res.data.data.user.school
             this.realname = res.data.data.user.realname
+            this.motto = res.data.data.user.motto
+            this.permission = res.data.data.user.permission
+            console.log('PERMISSION: ' + this.permission)
           }
         },
         err => {
@@ -245,16 +247,39 @@ export default {
     },
     changeInfo () {
       if (this.changeInfoVisible === true) {
+        console.log('changeinfovisible set false')
         this.changeInfoVisible = false
         // let olddata = {
-
         // }
         // 判断olddata和新data相同吗
+        // 这里不用加东西吧
         this.updateButtonText = '更新!'
       } else {
-        this.changeInfoVisible = true
         // send API
-        this.updateButtonText = '修改信息!'
+        console.log('changeinfovisible set true')
+        let tmpdata = {
+          token: this.$store.getters.getUserToken,
+          username: this.username,
+          realname: this.realname,
+          school: this.school,
+          motto: this.motto,
+          permission: this.permission
+        }
+        myPost('/api/user/info/modify',
+          tmpdata,
+          res => {
+            if (res.data.status === 1) {
+              this.$message.success(`${res.data.msg}`)
+              this.changeInfoVisible = true
+              this.updateButtonText = '修改信息!'
+            } else {
+              this.$message.error(`${res.data.msg}`)
+            }
+          },
+          err => {
+            this.$message.error(`${err.message}`, 'ERROR!')
+          }
+        )
       }
     },
 
