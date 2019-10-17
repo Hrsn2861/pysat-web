@@ -39,33 +39,41 @@
         <!-- TODO CSS is too difficult -->
         <el-col class="my-info">
           <center><h1>个人信息</h1></center>
-          <el-input class="my-info-item" v-model="username" placeholder="用户名"></el-input>
-          <el-input class="my-info-item" v-model="phonenumber" placeholder="电话号码"></el-input>
-          <el-input class="my-info-item" v-model="email" placeholder="Email"></el-input>
-          <el-input class="my-info-item" v-model="school" placeholder="学校"></el-input>
-          <el-input class="my-info-item" v-model="realname" placeholder="真实姓名"></el-input>
+          <el-form ref="myInfo" label-width="100px">
+            <el-form-item label="用户名">
+              <el-input class="my-info-item" v-model="username" placeholder="" :disabled="true"></el-input>
+            </el-form-item>
+            <el-form-item label="电话号码">
+              <el-input class="my-info-item" v-model="phonenumber" placeholder="" :disabled="true"></el-input>
+            </el-form-item>
+            <el-form-item label="Email">
+              <el-input class="my-info-item" v-model="email" placeholder="填了也没用" :disabled="changeInfoVisible"></el-input>
+            </el-form-item>
+            <el-form-item label="学校">
+              <el-input class="my-info-item" v-model="school" placeholder="" :disabled="changeInfoVisible"></el-input>
+            </el-form-item>
+            <el-form-item label="真实姓名">
+              <el-input class="my-info-item" v-model="realname" placeholder="" :disabled="changeInfoVisible"></el-input>
+            </el-form-item>
+            <el-form-item label="座右铭" style="margin-bottom:2%;">
+              <el-input class="my-info-item" v-model="motto" placeholder="" :disabled="changeInfoVisible"></el-input>
+            </el-form-item>
+          </el-form>
         </el-col>
       </el-row>
       <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible ">
         <el-button type="danger" @click="logOut()">登出</el-button>
         <el-button type="primary" @click="changePwdVisible = !changePwdVisible">修改密码</el-button>
-        <el-button type="primary" @click="changePhoneVisible = true; sendCAPTCHA()">修改手机号码</el-button>
+        <el-button type="primary" @click="changePhoneVisible = true">修改手机号码</el-button>
+        <el-button type="warning" @click="changeInfo()" >{{updateButtonText}}</el-button>
 
-        <!-- <el-dialog class="my-dialog" title="修改密码" :visible.sync="changePassWdVisible" width="30%">
-          <el-input v-model="passwd.oldpasswd" placeholder="请输入旧密码"></el-input>
-          <el-input v-model="passwd.newpasswd" placeholder="请输入新密码"></el-input>
-          <span slot="footer" class="dialog-footer">
-            <el-button @click="changePassWdVisible = false">取 消</el-button>
-            <el-button type="primary" @click="changePassWdVisible = false">更 新</el-button>
-          </span>
-        </el-dialog>-->
       </el-row>
 
       <transition name="fade">
         <div v-if="changePwdVisible" class="change">
 
-            <el-input class="change-input" v-model="pwd.oldpwd" placeholder="旧密码"></el-input>
-            <el-input class="change-input" v-model="pwd.newpwd" placeholder="新密码"></el-input>
+            <el-input class="change-input" v-model="pwd.oldpwd" placeholder="旧密码" type="password"></el-input>
+            <el-input class="change-input" v-model="pwd.newpwd" placeholder="新密码" type="password"></el-input>
             <el-button @click="changePwdVisible = false" class="change-button">取消</el-button>
             <el-button type="primary" @click="changePwd" class="change-button">更新</el-button>
         </div>
@@ -75,9 +83,9 @@
         <div v-if="changePhoneVisible" class="change">
           <el-input class="change-input" v-model="phone.CAPTCHA" placeholder="验证码"></el-input>
           <el-input class="change-input" v-model="phone.newnumber" placeholder="新号码"></el-input>
+          <el-button id="update-btn" type="primary" @click="sendCAPTCHA" class="change-button">发送验证码</el-button>&nbsp;
+          <el-button id="update-btn" type="primary" @click="changePhone" class="change-button">更新</el-button>
           <el-button @click="changePhoneVisible = false" class="change-button">取消</el-button>
-          <el-button type="primary" @click="changePhone" class="change-button">更新</el-button>
-          <!-- TODO :发送消息 -->
         </div>
       </transition>
     </el-card>
@@ -96,12 +104,15 @@ export default {
     return {
       username: 'None',
       phonenumber: 'None',
-      email: 'None',
+      email: '填了也没用',
       school: 'None',
       realname: 'None',
+      motto: 'None',
       changeAvatarVisible: false,
       changePwdVisible: false,
       changePhoneVisible: false,
+      changeInfoVisible: true,
+      updateButtonText: '修改信息!',
       imageURL: require('../../assets/icon.png'),
 
       pwd: {
@@ -138,9 +149,11 @@ export default {
           if (res.data.status === 1) {
             this.username = res.data.data.user.username
             this.phonenumber = res.data.data.user.phone
-
             this.school = res.data.data.user.school
             this.realname = res.data.data.user.realname
+            this.motto = res.data.data.user.motto
+            this.permission = res.data.data.user.permission
+            console.log('PERMISSION: ' + this.permission)
           }
         },
         err => {
@@ -232,6 +245,43 @@ export default {
         }
       )
     },
+    changeInfo () {
+      if (this.changeInfoVisible === true) {
+        console.log('changeinfovisible set false')
+        this.changeInfoVisible = false
+        // let olddata = {
+        // }
+        // 判断olddata和新data相同吗
+        // 这里不用加东西吧
+        this.updateButtonText = '更新!'
+      } else {
+        // send API
+        console.log('changeinfovisible set true')
+        let tmpdata = {
+          token: this.$store.getters.getUserToken,
+          username: this.username,
+          realname: this.realname,
+          school: this.school,
+          motto: this.motto,
+          permission: this.permission
+        }
+        myPost('/api/user/info/modify',
+          tmpdata,
+          res => {
+            if (res.data.status === 1) {
+              this.$message.success(`${res.data.msg}`)
+              this.changeInfoVisible = true
+              this.updateButtonText = '修改信息!'
+            } else {
+              this.$message.error(`${res.data.msg}`)
+            }
+          },
+          err => {
+            this.$message.error(`${err.message}`, 'ERROR!')
+          }
+        )
+      }
+    },
 
     sendCAPTCHA () {
       let tmpdata = {
@@ -247,6 +297,7 @@ export default {
         res => {
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
+            console.log('send CAPTCHA succeed')
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -289,9 +340,9 @@ export default {
   align-self: center;
   padding: 1%;
   height: auto;
-  width: 25%;
+  width: 50%;
   border: 0px dashed rgb(40, 40, 40);
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
@@ -299,14 +350,9 @@ export default {
 .box-card:hover {
   box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);
 }
-.my-dialog {
-  align-self: center;
 
-  border: 0px dashed rgb(40, 40, 40);
-  background-color: rgba(40, 102, 236, 0.37);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-  transition: box-shadow 0.3s ease-in-out !important;
-  transition-duration: 1s;
+.el-form-item{
+  margin: 2%;
 }
 
 .change {
@@ -320,13 +366,6 @@ export default {
 }
 .change-button{
   margin: 0%;
-}
-
-.my-info {
-  margin-bottom: 3%;
-}
-.my-info-item {
-  margin: 1%;
 }
 
 .avatar-uploader .el-upload {
