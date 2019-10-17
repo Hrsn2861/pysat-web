@@ -21,14 +21,13 @@
 
 <script>
 import autoJumpToInfoMixin from '@/utils/sessionUtils/autoJumpToInfoHandler.js'
-import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
 
 export default {
   name: 'Index',
   data () {
     return {}
   },
-  mixins: [autoJumpToInfoMixin, checkMobileMixin]
+  mixins: [autoJumpToInfoMixin]
 }
 </script>
 
