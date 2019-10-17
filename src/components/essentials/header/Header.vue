@@ -1,5 +1,11 @@
 <template>
-  <div class="header">
+  <div
+    class="header"
+    v-loading.fullscreen.lock="isMobile"
+    element-loading-text="请修改您的显示分辨率"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)"
+  >
     <div class="logo" :class="{'is-active':isActive}">
       <img src="@/assets/icon_white.png" height="30px" @click="handleMenu" />
       PYSAT控制中心
@@ -42,9 +48,11 @@
 </template>
 
 <script>
-import { logout } from '@/utils/session.js'
+import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
+import ResizeMixin from '@/utils/resolutionUtils/resizeHandler'
 import { mapGetters } from 'vuex'
 export default {
+  mixins: [checkMobileMixin, ResizeMixin],
   name: 'Header',
   data () {
     return {
@@ -81,11 +89,6 @@ export default {
 
     handleMenu () {
       this.$store.dispatch('ToggleSideBar')
-    },
-    async logOut () {
-      console.log('Test')
-      await logout(this)
-      this.$router.go(0) // 刷新页面
     },
     goLogin () {
       this.$router.push('login')

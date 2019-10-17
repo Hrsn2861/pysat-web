@@ -64,10 +64,12 @@
 
 <script>
 import { Encrypt } from '@/utils/crypt.js'
-import { myPost } from '@/utils/request.js'
-import { checkSession } from '@/utils/session.js'
+import { myPost } from '@/utils/requestFunc.js'
+
+import checkSessionMixin from '@/utils/sessionUtils/checkSessionHandler'
 
 export default {
+  mixins: [checkSessionMixin],
   name: 'Signup',
   data () {
     var validateUser = (rule, value, cb) => {
@@ -132,23 +134,6 @@ export default {
         pwd: [{ validator: validatePwd, trigger: 'blur' }],
         checkPwd: [{ validator: validateCheckPwd, trigger: 'blur' }],
         phonenumber: [{ validator: checkPhoneNumber, trigger: 'blur' }]
-      }
-    }
-  },
-  beforeCreate () {
-    checkSession(this, 'myinfo', '')
-  },
-  computed: {
-    isMobile () {
-      if (this.$store.state.device === 'mobile') {
-        this.$message({
-          type: 'error',
-          message: '请调至能用的分辨率！！！/PC端访问！！！',
-          duration: 2000
-        })
-        return true
-      } else {
-        return false // 为整个组件添加一个is-mobile的class，然后返回对应的
       }
     }
   },

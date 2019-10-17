@@ -35,8 +35,6 @@
         </transition>
       </div>
       <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible ">
-        <!-- FIXME I don't know why local src pic is not allowd -->
-        <!-- TODO CSS is too difficult -->
         <el-col class="my-info">
           <center><h1>个人信息</h1></center>
           <el-form ref="myInfo" label-width="100px">
@@ -94,12 +92,20 @@
 </template>
 
 <script>
-import { checkSession, logout } from '@/utils/session.js'
-import { myGet, myPost } from '@/utils/request.js'
+import { myGet, myPost } from '@/utils/requestFunc.js'
 import { Encrypt } from '@/utils/crypt.js'
+import checkSessionMixin from '@/utils/sessionUtils/checkSessionHandler'
+import checkSession from '@/utils/sessionUtils/sessionFunc.js'
 
 export default {
   name: 'MyInfo',
+  mixins: [checkSessionMixin],
+  beforeCreate () {
+    checkSession(this, '', '/')
+  }, // 这里的beforeCreate需要把mixin里的东西进行重载，在正确的情况下需要返回到主页
+  mounted: function () {
+    this.getMyInfo()
+  },
   data () {
     return {
       currentInfo: {
@@ -138,22 +144,13 @@ export default {
       }
     }
   },
-  beforeCreate () {
-    checkSession(this, '', '/')
-  },
-  mounted: function () {
-    this.getmyinfo()
-  },
+
   methods: {
     changeAvatar () {},
     // logOut () {
     //   logout()
     //   this.$router.push('/login')
     // },     //必须加this才可以！!!
-    async logOut () {
-      await logout(this)
-      this.$router.go(0) // 刷新页面
-    },
     setformInfo () {
       this.formInfo.username = this.currentInfo.username
       this.formInfo.phone = this.currentInfo.phone
@@ -180,7 +177,7 @@ export default {
       this.formChangephone.CAPTCHA = ''
     },
 
-    getmyinfo () {
+    getMyInfo () {
       myGet(
         '/api/user/info/get',
         { token: this.$store.getters.getUserToken },
