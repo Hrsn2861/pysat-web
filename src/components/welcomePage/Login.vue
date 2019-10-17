@@ -1,7 +1,13 @@
 <template>
-  <div class="main-div">
+  <div
+    class="main-div"
+    v-loading.fullscreen.lock="isMobile"
+    element-loading-text="请修改您的显示分辨率"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)"
+  >
     <el-card class="box-card" v-bind:class="{ 'is-mobile': isMobile}">
-      <el-form label-position="left" :model="formLogin" :rules="rules" ref="formLogin" >
+      <el-form label-position="left" :model="formLogin" :rules="rules" ref="formLogin">
         <!-- $refs 只在组件渲染完成后才填充，并且它是非响应式的。它仅仅作为一个直接访问子组件的应急方案——应当避免在模版或计算属性中使用 $refs 。 -->
         <transition name="fade">
           <el-row v-if="!forgetVisible" class="login">
@@ -30,7 +36,12 @@
               <el-input v-model="formForgetpwd.username" class="forget-input" placeholder="用户名"></el-input>
             </el-form-item>
             <el-form-item label="新密码" prop="identity">
-              <el-input v-model="formForgetpwd.newpwd" class="forget-input" placeholder="新密码" type="password"></el-input>
+              <el-input
+                v-model="formForgetpwd.newpwd"
+                class="forget-input"
+                placeholder="新密码"
+                type="password"
+              ></el-input>
             </el-form-item>
             <el-form-item label="验证码" prop="identity">
               <el-input v-model="formForgetpwd.CAPTCHA" class="forget-input" placeholder="验证码"></el-input>
@@ -58,10 +69,12 @@
 
 <script type="text/javascript">
 import { Encrypt } from '@/utils/crypt.js'
-import { myPost } from '@/utils/request.js'
-import { checkSession } from '@/utils/session.js'
+import { myPost } from '@/utils/requestFunc.js'
+import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
+import autoJumpToInfoMixin from '@/utils/sessionUtils/autoJumpToInfoHandler'
 
 export default {
+  mixins: [checkMobileMixin, autoJumpToInfoMixin],
   data () {
     let checkidentity = (rule, value, cb) => {
       // var pattern = /^1[3456789]\d{9}$/;
@@ -104,18 +117,6 @@ export default {
     }
   },
   computed: {
-    isMobile () {
-      if (this.$store.state.device === 'mobile') {
-        this.$message({
-          type: 'error',
-          message: '请调至能用的分辨率！！！/PC端访问！！！',
-          duration: 2000
-        })
-        return true
-      } else {
-        return false // 为整个组件添加一个is-mobile的class，然后返回对应的
-      }
-    }
   },
   methods: {
     // 向登录接口发起请求
@@ -140,10 +141,7 @@ export default {
                 })
                 // 登录成功 跳转至首页
                 this.$router.push('myinfo')
-                // this.$router.go()
               } else {
-                // console.log(this.$store.getters.getUserToken)
-
                 this.$message.error(`${res.data.msg}`)
                 return false
               }
@@ -161,7 +159,7 @@ export default {
         token: this.$store.getters.getUserToken,
         phone: this.formForgetpwd.phone
       }
-      console.log(tmpdata)
+
       myPost(
         'api/user/sign/verify',
         tmpdata,
@@ -185,8 +183,7 @@ export default {
         password: Encrypt(this.formForgetpwd.newpwd),
         CAPTCHA: this.formForgetpwd.CAPTCHA
       }
-      // console.log(this.formForgetpwd.newpwd)
-      console.log(tmpdata)
+
       myPost(
         'api/user/sign/passwd',
         tmpdata,
@@ -206,13 +203,9 @@ export default {
 
     // 表单重置
     resetForm () {
-      // console.log('session')
       this.$refs['formLogin'].resetFields()
       this.$refs['formForgetpwd'].resetFields()
     }
-  },
-  beforeCreate () {
-    checkSession(this, 'myinfo', '')
   }
 }
 </script>
@@ -227,17 +220,19 @@ export default {
   justify-content: center;
   padding: 0%;
   background: url('../../assets/background16-9-2.jpg');
-  background-size:cover;
-  background-repeat :none;
+  background-size: cover;
+  background-repeat: none;
   height: 100%;
 }
 
-&.is-mobile
-  display none
+&.is-mobile {
+  display: none;
+}
 
-.el-button
-  width auto
-  height auto
+.el-button {
+  width: auto;
+  height: auto;
+}
 
 .box-card {
   align-self: center;

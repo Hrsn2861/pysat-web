@@ -13,8 +13,8 @@
           type="flex"
           justify="center"
           style="height:auto !important; user-select: none;"
-        >点击头像就可以修改头像啦！</el-row>
-        <transition name="fade">
+        >現在不可以修改頭像！</el-row>
+        <!-- <transition name="fade">
           <el-row
             type="flex"
             justify="center"
@@ -28,15 +28,13 @@
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
             >
-              <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <img class="el-icon-plus avatar-uploader-icon" />
+
             </el-upload>
           </el-row>
-        </transition>
+        </transition> -->
       </div>
       <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible ">
-        <!-- FIXME I don't know why local src pic is not allowd -->
-        <!-- TODO CSS is too difficult -->
         <el-col class="my-info">
           <center><h1>个人信息</h1></center>
           <el-form ref="myInfo" label-width="100px">
@@ -94,12 +92,23 @@
 </template>
 
 <script>
-import { checkSession, logout } from '@/utils/session.js'
-import { myGet, myPost } from '@/utils/request.js'
+import { myGet, myPost } from '@/utils/requestFunc.js'
 import { Encrypt } from '@/utils/crypt.js'
+
+import {checkSession, logout} from '@/utils/sessionUtils/sessionFunc'
 
 export default {
   name: 'MyInfo',
+  beforeCreate () {
+    checkSession(this, '', '/')
+  },
+  // 这里的beforeCreate需要把mixin里的东西进行重载，在正确的情况下需要返回到主页
+  // 这里看起来如果我引入了beforeCreate的Mixin，vue-router会给我报一个warning，显示重复跳转
+  // 事实证明这里并没有覆盖掉beforeCreate
+  // 混入对象的钩子将在组件自身钩子之前调用。
+  mounted: function () {
+    this.getMyInfo()
+  },
   data () {
     return {
       currentInfo: {
@@ -138,22 +147,19 @@ export default {
       }
     }
   },
-  beforeCreate () {
-    checkSession(this, '', '/')
-  },
-  mounted: function () {
-    this.getmyinfo()
-  },
+
   methods: {
+
+    async logOut () {
+      await logout(this)
+      this.$router.go(0) // 刷新页面
+    },
+
     changeAvatar () {},
     // logOut () {
     //   logout()
     //   this.$router.push('/login')
     // },     //必须加this才可以！!!
-    async logOut () {
-      await logout(this)
-      this.$router.go(0) // 刷新页面
-    },
     setformInfo () {
       this.formInfo.username = this.currentInfo.username
       this.formInfo.phone = this.currentInfo.phone
@@ -180,7 +186,7 @@ export default {
       this.formChangephone.CAPTCHA = ''
     },
 
-    getmyinfo () {
+    getMyInfo () {
       myGet(
         '/api/user/info/get',
         { token: this.$store.getters.getUserToken },
@@ -237,7 +243,7 @@ export default {
         oldpassword: Encrypt(this.formChangepwd.oldpwd),
         newpassword: Encrypt(this.formChangepwd.newpwd)
       }
-      console.log(tmpdata)
+
       myPost(
         'api/user/sign/modify',
         tmpdata,
@@ -262,7 +268,7 @@ export default {
         phone: this.formChangephone.phone,
         CAPTCHA: this.formChangephone.CAPTCHA
       }
-      console.log(tmpdata)
+
       myPost(
         'api/user/info/setphone',
         tmpdata,
@@ -284,16 +290,11 @@ export default {
     },
     changeInfo () {
       if (this.changeInfoVisible === true) {
-        console.log('changeinfovisible set false')
         this.changeInfoVisible = false
-        // let olddata = {
-        // }
-        // 判断olddata和新data相同吗
-        // 这里不用加东西吧
         this.updateButtonText = '更新!'
       } else {
         // send API
-        console.log('changeinfovisible set true')
+
         let tmpdata = {
           token: this.$store.getters.getUserToken,
           // username: this.username,
@@ -306,7 +307,6 @@ export default {
           tmpdata,
           res => {
             if (res.data.status === 1) {
-              console.log(res.data)
               this.$message.success(`${res.data.msg}`)
               this.changeInfoVisible = true
               this.updateButtonText = '修改信息!'
@@ -330,7 +330,7 @@ export default {
         // username: this.username,
         phone: this.formChangephone.phone
       }
-      console.log(tmpdata)
+
       myPost(
         // 'api/user/sign/retrieve',
         'api/user/sign/verify',

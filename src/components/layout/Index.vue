@@ -27,10 +27,10 @@ import Breadcrumb from '@/components/essentials/breadcrumb/Breadcrumb'
 import Footer from '@/components/essentials/footer/Footer'
 import Siderbar from '@/components/essentials/sidebar/Sidebar'
 import Scrolltotop from '@/components/essentials/scrolltotop/Scrolltotop'
-import ResizeMixin from '@/utils/resizeHandler'
-
+import ResizeMixin from '@/utils/resolutionUtils/resizeHandler'
 export default {
   name: 'Index',
+  mixins: [ResizeMixin],
   data () {
     return {
       transitionName: 'slide-right'
@@ -43,7 +43,6 @@ export default {
     Siderbar,
     Scrolltotop
   },
-  mixins: [ResizeMixin],
   computed: {
   },
   created () {
@@ -66,7 +65,7 @@ export default {
   }
 
   .el-main {
-
+    overflow: hidden
     height :100%;
     color: #333;
     padding: 0;

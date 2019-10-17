@@ -13,13 +13,17 @@
         <i class="el-icon-service"></i>
         <span slot="title">个人信息</span>
       </el-menu-item>
+      <el-menu-item index="/admin" >
+        <i class="el-icon-s-custom"></i>
+        <span slot="title">用戶管理</span>
+      </el-menu-item>
       <el-menu-item index="/hangout" >
         <i class="el-icon-view"></i>
-        <span slot="title">随便逛逛</span>
+        <span slot="title">隨便逛逛</span>
       </el-menu-item>
       <el-submenu index="/charts">
         <template slot="title">
-          <i class="el-icon-view"></i>
+          <i class="el-icon-caret-right"></i>
           <span slot="title">这不重要</span>
         </template>
         <el-menu-item index="/charts/diagram">ZBZY</el-menu-item>

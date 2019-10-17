@@ -1,5 +1,7 @@
 <template>
-  <div class="main-div" v-loading="isMobile">
+  <div
+    class="main-div"
+  >
     <div id="welcome" v-bind:class="{ 'is-mobile': isMobile}">
       <h2>Welcome to</h2>
     </div>
@@ -18,67 +20,53 @@
 </template>
 
 <script>
-
-import {checkSession} from '@/utils/session.js'
+import autoJumpToInfoMixin from '@/utils/sessionUtils/autoJumpToInfoHandler.js'
+import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
 
 export default {
-
   name: 'Index',
   data () {
     return {}
   },
-  beforeCreate () {
-    checkSession(this, 'myinfo', '')
-  },
-  computed: {
-    isMobile () {
-      if (this.$store.state.device === 'mobile') {
-        // this.$message({
-        //   type: 'error',
-        //   message: '请调至能用的分辨率！！！！！！！',
-        //   duration: 2000
-        // })
-        return true
-      } else {
-        return false // 为整个组件添加一个is-mobile的class，然后返回对应的
-      }
-    }
-  }
+  mixins: [autoJumpToInfoMixin, checkMobileMixin]
 }
 </script>
 
 <style scoped lang="stylus">
 .main-div {
-  overflow: hidden;
+  overflow: hidden !important;
   width: 100%;
   margin: 0%;
   display: flex;
   align-content: center;
   justify-content: center;
-
   padding: 0%;
   background: url('../../assets/background16-9-2.jpg');
-  background-size:cover;
-  background-repeat :none;
-    height :100%;
+  background-size: cover;
+  background-repeat: none;
+  height: 100%;
 }
+
 #welcome {
   position: relative;
 }
-#pysat{
+
+#pysat {
   position: relative;
   top: 30%;
   right: 5%;
 }
-#navi{
+
+#navi {
   top: 30%;
   position: relative;
 }
-&.is-mobile
-  display none
 
-h1,
-h2 {
+&.is-mobile {
+  display: none;
+}
+
+h1, h2 {
   font-weight: normal;
   font-size: 150px;
   color: white;
@@ -86,11 +74,13 @@ h2 {
   user-select: none;
   transition-duration: 2s;
 }
+
 h2:hover {
   transform: scale(1.01);
   transition-duration: 0.5s;
   color: gainsboro;
 }
+
 h3 {
   font-weight: normal;
   font-size: 100px;
@@ -99,12 +89,13 @@ h3 {
   user-select: none;
   transition-duration: 1s;
 }
+
 h3:hover {
   transform: scale(1.05);
   transition-duration: 2s;
-
   border: skyblue;
 }
+
 .el-breadcrumb {
   font-size: 60px;
   user-select: none;

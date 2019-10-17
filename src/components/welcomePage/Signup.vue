@@ -64,10 +64,13 @@
 
 <script>
 import { Encrypt } from '@/utils/crypt.js'
-import { myPost } from '@/utils/request.js'
-import { checkSession } from '@/utils/session.js'
+import { myPost } from '@/utils/requestFunc.js'
+
+import autoJumpToInfoMixin from '@/utils/sessionUtils/autoJumpToInfoHandler'
+import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
 
 export default {
+  mixins: [autoJumpToInfoMixin, checkMobileMixin],
   name: 'Signup',
   data () {
     var validateUser = (rule, value, cb) => {
@@ -135,23 +138,6 @@ export default {
       }
     }
   },
-  beforeCreate () {
-    checkSession(this, 'myinfo', '')
-  },
-  computed: {
-    isMobile () {
-      if (this.$store.state.device === 'mobile') {
-        this.$message({
-          type: 'error',
-          message: '请调至能用的分辨率！！！/PC端访问！！！',
-          duration: 2000
-        })
-        return true
-      } else {
-        return false // 为整个组件添加一个is-mobile的class，然后返回对应的
-      }
-    }
-  },
   methods: {
     format (percentage) {
       return percentage === 100 ? '满' : `${percentage}%`
@@ -200,7 +186,6 @@ export default {
       }
       myPost('api/user/sign/verify', data,
         res => {
-          // console.log(res)
           this.$message.error(`${res.data.msg}`)
           this.step++
         },
@@ -213,8 +198,6 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // var md5 = require('md5-node')
-          // console.log(this.registerForm.pwd)
           let data = {
             username: this.registerForm.userName,
             password: Encrypt(this.registerForm.pwd),

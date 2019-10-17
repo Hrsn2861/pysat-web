@@ -33,9 +33,6 @@ export default {
         const isMobile = this.isMobile()
         store.dispatch('ToggleDevice', isMobile ? 'mobile' : 'desktop')
 
-        console.log('Change to ' + this.$store.state.device)
-        console.log('SidebarOpened:  ' + this.$store.state.sidebar.opened)
-
         if (isMobile) {
           store.dispatch('CloseSideBar')
         }

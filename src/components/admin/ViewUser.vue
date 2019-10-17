@@ -1,12 +1,27 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-carousel height="400px">
-        <el-carousel-item v-for="item in 4" :key="item">
-          <center><h1>{{ item }}</h1></center>
-          <center><h1>這裏也許有什麽推薦</h1></center>
-        </el-carousel-item>
-      </el-carousel>
+      <el-table :data="tableData" style="width:100%" height="500" :highlight-current-row="true" >
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column fixed prop="date" label="日期" width="150"></el-table-column>
+        <el-table-column prop="name" label="用戶" width="120"></el-table-column>
+        <el-table-column prop="province" label="省份" width="120"></el-table-column>
+        <el-table-column prop="city" label="市区" width="120"></el-table-column>
+        <el-table-column prop="url" label="URL" width="300"></el-table-column>
+        <el-table-column prop="zip" label="邮编" width="120"></el-table-column>
+        <el-table-column prop="rating" label="打分" width="150">
+          <el-rate></el-rate>
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" width="100">
+          <template>
+            <el-button type="text" size="small">查看</el-button>
+            <el-button type="text" size="small">编辑</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-button type="text" @click="addUser()">点击添加新用户</el-button>
+      <el-button type="text" >封禁用戶</el-button>
+      <el-button type="text" >...</el-button>
     </el-card>
   </div>
 </template>
@@ -76,26 +91,4 @@ export default {
   background-repeat: none;
   height: 100%;
 }
-h1{
-    font-size: 100px;
-    user-select: none;
-
-}
-.el-carousel__item h3 {
-    display: flex;
-
-    color: #475669;
-    font-size: 14px;
-    opacity: 0.75;
-    line-height: 150px;
-    margin: 0;
-  }
-
-  .el-carousel__item:nth-child(2n) {
-     background-color: #99a9bf;
-  }
-
-  .el-carousel__item:nth-child(2n+1) {
-     background-color: #d3dce6;
-  }
 </style>

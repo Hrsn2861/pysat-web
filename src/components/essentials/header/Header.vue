@@ -1,5 +1,11 @@
 <template>
-  <div class="header">
+  <div
+    class="header"
+    v-loading.fullscreen.lock="isMobile"
+    element-loading-text="爲了您的用戶體驗，請修改您的顯示分辨率"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)"
+  >
     <div class="logo" :class="{'is-active':isActive}">
       <img src="@/assets/icon_white.png" height="30px" @click="handleMenu" />
       PYSAT控制中心
@@ -42,9 +48,11 @@
 </template>
 
 <script>
-import { logout } from '@/utils/session.js'
+import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
+
 import { mapGetters } from 'vuex'
 export default {
+  mixins: [checkMobileMixin],
   name: 'Header',
   data () {
     return {
@@ -53,13 +61,6 @@ export default {
   },
 
   computed: {
-    isMobile () {
-      if (this.$store.state.device === 'mobile') {
-        return true
-      } else {
-        return false
-      }
-    },
     // 如果左侧菜单打开，则旋转btn180度
     isActive () {
       return !this.$store.getters.sidebar.opened
@@ -70,22 +71,13 @@ export default {
     }
   },
   watch: {
-    getUser: function (u) {
-      // li就是改变后的wifiList值
-      //  this.getAllId(u); //调用别的函数
-      console.log('改变', u)
-    }
+
   },
   methods: {
     ...mapGetters(['getUser']),
 
     handleMenu () {
       this.$store.dispatch('ToggleSideBar')
-    },
-    async logOut () {
-      console.log('Test')
-      await logout(this)
-      this.$router.go(0) // 刷新页面
     },
     goLogin () {
       this.$router.push('login')

@@ -1,4 +1,4 @@
-import {myPost, myGet} from './request.js'
+import {myPost, myGet} from '../requestFunc.js'
 
 // async 和 await保证在同一线程内执行（本来axios.get会跑到新的线程里面执行）
 // 在外面如果用 async await可以保证同步执行
@@ -7,8 +7,8 @@ import {myPost, myGet} from './request.js'
 export async function checkSession (context, loggedUrl, unloggedUrl) {
   let toStart = false
   let logged = false
-  console.log('hello')
-  console.log(context.$store.getters.getUserToken)
+  // console.log('hello')
+  // console.log(context.$store.getters.getUserToken)
   await myGet('api/session/check', {token: context.$store.getters.getUserToken},
     res => {
       if (res.data.status === 1) {

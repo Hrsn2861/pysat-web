@@ -6,6 +6,7 @@ import Signup from '@/components/welcomePage/Signup.vue'
 import Login from '@/components/welcomePage/Login.vue'
 import Navi from '@/components/welcomePage/Navigation.vue'
 import MyInfo from '@/components/dashboard/MyInfo.vue'
+import ViewUser from '@/components/admin/ViewUser.vue'
 import Hangout from '@/components/browse/Hangout.vue'
 
 Vue.use(Router)
@@ -33,6 +34,10 @@ export default new Router({
         {
           path: 'myinfo',
           component: MyInfo
+        },
+        {
+          path: 'admin',
+          component: ViewUser
         },
         {
           path: 'hangout',
