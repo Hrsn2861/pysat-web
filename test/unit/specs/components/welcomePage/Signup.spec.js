@@ -1,5 +1,4 @@
 import Signup from '@/components/welcomePage/Signup'
-
 import Vuex from 'vuex'
 import { mount, createLocalVue } from 'vue-test-utils'
 
@@ -22,41 +21,66 @@ describe('testing signup.vue', () => {
       actions
     })
   })
-  it('testing func', () => {
+  const mockFn = jest.fn()
+  it('注册账号', () => {
     const wrapper = mount(Signup, {
       store,
       localVue
     })
-    // format
-    expect(wrapper.vm.format(100)).toEqual('满')
-    // userValidate
-    wrapper.vm.registerForm.userName = ''
-    expect(wrapper.vm.userValidate()).toBe(false)
-    wrapper.vm.registerForm.userName = 'Xianyu'
-    expect(wrapper.vm.userValidate()).toBe(true)
-    // password
-    wrapper.vm.registerForm.pwd = 'abc'
-    expect(wrapper.vm.pwdValidate()).toBe(false)
-    wrapper.vm.registerForm.pwd = 'Abcdefgh10'
-    expect(wrapper.vm.pwdValidate()).toBe(true)
-    wrapper.vm.registerForm.checkPwd = 'Abcdefgh1'
-    expect(wrapper.vm.checkPwdValidate()).toBe(false)
-    wrapper.vm.registerForm.checkPwd = 'Abcdefgh10'
-    expect(wrapper.vm.checkPwdValidate()).toBe(true)
-    // phone number
-    wrapper.vm.registerForm.phonenumber = '1333333333'
-    expect(wrapper.vm.phonenumberValidate()).toBe(false)
-    wrapper.vm.registerForm.phonenumber = '13911950052'
-    expect(wrapper.vm.phonenumberValidate()).toBe(true)
-    // next
+    wrapper.setMethods({
+      getCaptcha: mockFn,
+      submitForm: mockFn
+    })
+    let checkAfterClickButton = (expectedStep) => {
+      wrapper.find('el-button').trigger('click')
+      expect(wrapper.vm.step).toEqual(expectedStep)
+    }
     wrapper.vm.step = 1
-    wrapper.vm.next()
-    expect(wrapper.vm.percentage).toEqual(99)
-    wrapper.vm.step = 7
-    wrapper.vm.next()
-    expect(wrapper.vm.step).toEqual(6)
-    // prev
-    wrapper.vm.prev()
-    expect(wrapper.vm.step).toEqual(5)
+    // 用户名不能为空
+    wrapper.vm.registerForm.userName = ''
+    checkAfterClickButton(1)
+    // 用户名长度为3-10
+    wrapper.vm.registerForm.userName = 'AB'
+    checkAfterClickButton(1)
+    wrapper.vm.registerForm.userName = 'ABCDEFGHIJKL'
+    checkAfterClickButton(1)
+    // 第一步完成
+    wrapper.vm.registerForm.userName = 'ABCD'
+    checkAfterClickButton(2)
+    // 密码不能为空
+    wrapper.vm.registerForm.pwd = ''
+    checkAfterClickButton(2)
+    // 密码需要大小写和数字，且特殊符号只含~!@&%#_，且位数6-20
+    wrapper.vm.registerForm.pwd = '13Aa'
+    checkAfterClickButton(2)
+    wrapper.vm.registerForm.pwd = 'quyeruiewrAFASFAS6237462'
+    checkAfterClickButton(2)
+    wrapper.vm.registerForm.pwd = 'abcdefg'
+    checkAfterClickButton(2)
+    wrapper.vm.registerForm.pwd = '$$$$$$$'
+    checkAfterClickButton(2)
+    wrapper.vm.registerForm.pwd = 'ABcd123'
+    checkAfterClickButton(3)
+    // 确认密码
+    wrapper.vm.registerForm.checkPwd = ''
+    checkAfterClickButton(3)
+    wrapper.vm.registerForm.checkPwd = 'Abcd123'
+    checkAfterClickButton(3)
+    wrapper.vm.registerForm.checkPwd = 'ABcd123'
+    checkAfterClickButton(4)
+    // 手机号输入正确
+    wrapper.vm.registerForm.phonenumber = ''
+    checkAfterClickButton(4)
+    wrapper.vm.registerForm.phonenumber = '12306'
+    checkAfterClickButton(4)
+    wrapper.vm.registerForm.phonenumber = '13306123062'
+    checkAfterClickButton(5)
+    // 验证码
+    wrapper.find('el-button').trigger('click')
+    expect(mockFn).toBeCalled()
+    wrapper.vm.step++
+    // 提交
+    wrapper.find('el-button').trigger('click')
+    expect(mockFn).toHaveBeenCalledTimes(2)
   })
 })
