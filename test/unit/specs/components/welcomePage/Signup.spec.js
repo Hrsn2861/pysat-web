@@ -52,5 +52,11 @@ describe('testing signup.vue', () => {
     wrapper.vm.step = 1
     wrapper.vm.next()
     expect(wrapper.vm.percentage).toEqual(99)
+    wrapper.vm.step = 7
+    wrapper.vm.next()
+    expect(wrapper.vm.step).toEqual(6)
+    // prev
+    wrapper.vm.prev()
+    expect(wrapper.vm.step).toEqual(5)
   })
 })
