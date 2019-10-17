@@ -27,7 +27,7 @@
               <el-input v-model="formForgetpwd.phone" class="forget-input" placeholder="手机号"></el-input>
             </el-form-item>
             <el-form-item label="新密码" prop="identity">
-              <el-input v-model="formForgetpwd.newpwd" class="forget-input" placeholder="新密码"></el-input>
+              <el-input v-model="formForgetpwd.newpwd" class="forget-input" placeholder="新密码" type="password"></el-input>
             </el-form-item>
             <el-form-item label="验证码" prop="identity">
               <el-input v-model="formForgetpwd.CAPTCHA" class="forget-input" placeholder="验证码"></el-input>

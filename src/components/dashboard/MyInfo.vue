@@ -72,8 +72,8 @@
       <transition name="fade">
         <div v-if="changePwdVisible" class="change">
 
-            <el-input class="change-input" v-model="pwd.oldpwd" placeholder="旧密码"></el-input>
-            <el-input class="change-input" v-model="pwd.newpwd" placeholder="新密码"></el-input>
+            <el-input class="change-input" v-model="pwd.oldpwd" placeholder="旧密码" type="password"></el-input>
+            <el-input class="change-input" v-model="pwd.newpwd" placeholder="新密码" type="password"></el-input>
             <el-button @click="changePwdVisible = false" class="change-button">取消</el-button>
             <el-button type="primary" @click="changePwd" class="change-button">更新</el-button>
         </div>
