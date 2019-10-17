@@ -41,22 +41,22 @@
           <center><h1>个人信息</h1></center>
           <el-form ref="myInfo" label-width="100px">
             <el-form-item label="用户名">
-              <el-input class="my-info-item" v-model="username" placeholder="" :disabled="true"></el-input>
+              <el-input class="my-info-item" v-model="formInfo.username" placeholder="" :disabled="true"></el-input>
             </el-form-item>
             <el-form-item label="电话号码">
-              <el-input class="my-info-item" v-model="phonenumber" placeholder="" :disabled="true"></el-input>
+              <el-input class="my-info-item" v-model="formInfo.phone" placeholder="" :disabled="true"></el-input>
             </el-form-item>
             <el-form-item label="Email">
-              <el-input class="my-info-item" v-model="email" placeholder="填了也没用" :disabled="changeInfoVisible"></el-input>
+              <el-input class="my-info-item" v-model="formInfo.email" placeholder="填了也没用" :disabled="changeInfoVisible"></el-input>
             </el-form-item>
             <el-form-item label="学校">
-              <el-input class="my-info-item" v-model="school" placeholder="" :disabled="changeInfoVisible"></el-input>
+              <el-input class="my-info-item" v-model="formInfo.school" placeholder="" :disabled="changeInfoVisible"></el-input>
             </el-form-item>
             <el-form-item label="真实姓名">
-              <el-input class="my-info-item" v-model="realname" placeholder="" :disabled="changeInfoVisible"></el-input>
+              <el-input class="my-info-item" v-model="formInfo.realname" placeholder="" :disabled="changeInfoVisible"></el-input>
             </el-form-item>
             <el-form-item label="座右铭" style="margin-bottom:2%;">
-              <el-input class="my-info-item" v-model="motto" placeholder="" :disabled="changeInfoVisible"></el-input>
+              <el-input class="my-info-item" v-model="formInfo.motto" placeholder="" :disabled="changeInfoVisible"></el-input>
             </el-form-item>
           </el-form>
         </el-col>
@@ -72,8 +72,8 @@
       <transition name="fade">
         <div v-if="changePwdVisible" class="change">
 
-            <el-input class="change-input" v-model="pwd.oldpwd" placeholder="旧密码" type="password"></el-input>
-            <el-input class="change-input" v-model="pwd.newpwd" placeholder="新密码" type="password"></el-input>
+            <el-input class="change-input" v-model="formChangepwd.oldpwd" placeholder="旧密码" type="password"></el-input>
+            <el-input class="change-input" v-model="formChangepwd.newpwd" placeholder="新密码" type="password"></el-input>
             <el-button @click="changePwdVisible = false" class="change-button">取消</el-button>
             <el-button type="primary" @click="changePwd" class="change-button">更新</el-button>
         </div>
@@ -81,8 +81,8 @@
 
       <transition name="fade">
         <div v-if="changePhoneVisible" class="change">
-          <el-input class="change-input" v-model="phone.CAPTCHA" placeholder="验证码"></el-input>
-          <el-input class="change-input" v-model="phone.newnumber" placeholder="新号码"></el-input>
+          <el-input class="change-input" v-model="formChangephone.CAPTCHA" placeholder="验证码"></el-input>
+          <el-input class="change-input" v-model="formChangephone.phone" placeholder="新号码"></el-input>
           <el-button id="update-btn" type="primary" @click="sendCAPTCHA" class="change-button">发送验证码</el-button>&nbsp;
           <el-button id="update-btn" type="primary" @click="changePhone" class="change-button">更新</el-button>
           <el-button @click="changePhoneVisible = false" class="change-button">取消</el-button>
@@ -102,12 +102,25 @@ export default {
   name: 'MyInfo',
   data () {
     return {
-      username: 'None',
-      phonenumber: 'None',
-      email: '填了也没用',
-      school: 'None',
-      realname: 'None',
-      motto: 'None',
+      currentInfo: {
+        username: 'None',
+        phone: 'None',
+        email: '填了也没用',
+        school: 'None',
+        realname: 'None',
+        motto: 'None'
+      },
+
+      formInfo: {
+        username: 'None',
+        phone: 'None',
+        email: '填了也没用',
+        school: 'None',
+        realname: 'None',
+        motto: 'None'
+      },
+
+      permission: '',
       changeAvatarVisible: false,
       changePwdVisible: false,
       changePhoneVisible: false,
@@ -115,13 +128,13 @@ export default {
       updateButtonText: '修改信息!',
       imageURL: require('../../assets/icon.png'),
 
-      pwd: {
+      formChangepwd: {
         oldpwd: '',
         newpwd: ''
       },
-      phone: {
+      formChangephone: {
         CAPTCHA: '',
-        newnumber: ''
+        phone: ''
       }
     }
   },
@@ -141,17 +154,44 @@ export default {
       await logout(this)
       this.$router.go(0) // 刷新页面
     },
+    setformInfo () {
+      this.formInfo.username = this.currentInfo.username
+      this.formInfo.phone = this.currentInfo.phone
+      this.formInfo.email = this.currentInfo.email
+      this.formInfo.school = this.currentInfo.school
+      this.formInfo.realname = this.currentInfo.realname
+      this.formInfo.motto = this.currentInfo.motto
+    },
+
+    setcurrentInfo () {
+      this.currentInfo.username = this.formInfo.username
+      this.currentInfo.phone = this.formInfo.phone
+      this.currentInfo.email = this.formInfo.email
+      this.currentInfo.school = this.formInfo.school
+      this.currentInfo.realname = this.formInfo.realname
+      this.currentInfo.motto = this.formInfo.motto
+    },
+    resetChangepwd () {
+      this.formChangepwd.oldpwd = ''
+      this.formChangepwd.newpwd = ''
+    },
+    resetChangephone () {
+      this.formChangephone.phone = ''
+      this.formChangephone.CAPTCHA = ''
+    },
+
     getmyinfo () {
       myGet(
         '/api/user/info/get',
         { token: this.$store.getters.getUserToken },
         res => {
           if (res.data.status === 1) {
-            this.username = res.data.data.user.username
-            this.phonenumber = res.data.data.user.phone
-            this.school = res.data.data.user.school
-            this.realname = res.data.data.user.realname
-            this.motto = res.data.data.user.motto
+            this.currentInfo.username = res.data.data.user.username
+            this.currentInfo.phone = res.data.data.user.phone
+            this.currentInfo.school = res.data.data.user.school
+            this.currentInfo.realname = res.data.data.user.realname
+            this.currentInfo.motto = res.data.data.user.motto
+            this.setformInfo()
             this.permission = res.data.data.user.permission
             console.log('PERMISSION: ' + this.permission)
           }
@@ -194,8 +234,8 @@ export default {
     changePwd () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
-        oldpassword: Encrypt(this.pwd.oldpwd),
-        newpassword: Encrypt(this.pwd.newpwd)
+        oldpassword: Encrypt(this.formChangepwd.oldpwd),
+        newpassword: Encrypt(this.formChangepwd.newpwd)
       }
       console.log(tmpdata)
       myPost(
@@ -203,11 +243,9 @@ export default {
         tmpdata,
         res => {
           if (res.data.status === 1) {
-            this.pwd.oldpwd = this.pwd.newpwd
             this.$message.success(`${res.data.msg}`)
             this.changePwdVisible = false
-            this.pwd.oldpwd = ''
-            this.pwd.newpwd = ''
+            this.resetChangepwd()
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -221,8 +259,8 @@ export default {
     changePhone () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
-        phone: this.phone.newnumber,
-        CAPTCHA: this.phone.CAPTCHA
+        phone: this.formChangephone.phone,
+        CAPTCHA: this.formChangephone.CAPTCHA
       }
       console.log(tmpdata)
       myPost(
@@ -230,12 +268,11 @@ export default {
         tmpdata,
         res => {
           if (res.data.status === 1) {
-            this.phonenumber = this.phone.newnumber
+            this.currentInfo.phone = this.formChangephone.phone
+            this.formInfo.phone = this.currentInfo.phone
             this.$message.success(`${res.data.msg}`)
             this.changePhoneVisible = false
-            this.phone.CAPTCHA = ''
-            this.phone.newnumber = ''
-            this.phonenumber = this.phone.newnumber
+            this.resetChangephone()
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -260,24 +297,28 @@ export default {
         let tmpdata = {
           token: this.$store.getters.getUserToken,
           // username: this.username,
-          realname: this.realname,
-          school: this.school,
-          motto: this.motto
+          realname: this.formInfo.realname,
+          school: this.formInfo.school,
+          motto: this.formInfo.motto
           // permission: this.permission
         }
         myPost('/api/user/info/modify',
           tmpdata,
           res => {
             if (res.data.status === 1) {
+              console.log(res.data)
               this.$message.success(`${res.data.msg}`)
               this.changeInfoVisible = true
               this.updateButtonText = '修改信息!'
+              this.setcurrentInfo()
             } else {
               this.$message.error(`${res.data.msg}`)
+              this.setformInfo()
             }
           },
           err => {
             this.$message.error(`${err.message}`, 'ERROR!')
+            this.setformInfo()
           }
         )
       }
@@ -287,7 +328,7 @@ export default {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         // username: this.username,
-        phone: this.phone.newnumber
+        phone: this.formChangephone.phone
       }
       console.log(tmpdata)
       myPost(
