@@ -30,7 +30,7 @@
 export default {
   methods: {
     handleClick (row) {
-      console.log(row)
+      console.log('click from Hangout.vue')
     },
     addUser () {
       this.tableData.push(

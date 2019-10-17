@@ -1,7 +1,6 @@
 <template>
   <div
     class="main-div"
-
   >
     <div id="welcome" v-bind:class="{ 'is-mobile': isMobile}">
       <h2>Welcome to</h2>
@@ -21,14 +20,15 @@
 </template>
 
 <script>
-import checkSessionMixin from '@/utils/sessionUtils/checkSessionHandler.js'
+import autoJumpToInfoMixin from '@/utils/sessionUtils/autoJumpToInfoHandler.js'
+import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
 
 export default {
   name: 'Index',
   data () {
     return {}
   },
-  mixins: [checkSessionMixin]
+  mixins: [autoJumpToInfoMixin, checkMobileMixin]
 }
 </script>
 

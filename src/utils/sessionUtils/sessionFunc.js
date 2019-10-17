@@ -7,8 +7,8 @@ import {myPost, myGet} from '../requestFunc.js'
 export async function checkSession (context, loggedUrl, unloggedUrl) {
   let toStart = false
   let logged = false
-  console.log('hello')
-  console.log(context.$store.getters.getUserToken)
+  // console.log('hello')
+  // console.log(context.$store.getters.getUserToken)
   await myGet('api/session/check', {token: context.$store.getters.getUserToken},
     res => {
       if (res.data.status === 1) {

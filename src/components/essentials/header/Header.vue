@@ -49,10 +49,10 @@
 
 <script>
 import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
-import ResizeMixin from '@/utils/resolutionUtils/resizeHandler'
+
 import { mapGetters } from 'vuex'
 export default {
-  mixins: [checkMobileMixin, ResizeMixin],
+  mixins: [checkMobileMixin],
   name: 'Header',
   data () {
     return {
@@ -61,13 +61,6 @@ export default {
   },
 
   computed: {
-    isMobile () {
-      if (this.$store.state.device === 'mobile') {
-        return true
-      } else {
-        return false
-      }
-    },
     // 如果左侧菜单打开，则旋转btn180度
     isActive () {
       return !this.$store.getters.sidebar.opened
@@ -78,11 +71,7 @@ export default {
     }
   },
   watch: {
-    getUser: function (u) {
-      // li就是改变后的wifiList值
-      //  this.getAllId(u); //调用别的函数
-      console.log('改变', u)
-    }
+
   },
   methods: {
     ...mapGetters(['getUser']),

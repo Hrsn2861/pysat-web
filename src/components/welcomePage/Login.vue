@@ -71,10 +71,10 @@
 import { Encrypt } from '@/utils/crypt.js'
 import { myPost } from '@/utils/requestFunc.js'
 import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
-import checkSessionMixin from '@/utils/sessionUtils/checkSessionHandler'
+import autoJumpToInfoMixin from '@/utils/sessionUtils/autoJumpToInfoHandler'
 
 export default {
-  mixins: [checkMobileMixin, checkSessionMixin],
+  mixins: [checkMobileMixin, autoJumpToInfoMixin],
   data () {
     let checkidentity = (rule, value, cb) => {
       // var pattern = /^1[3456789]\d{9}$/;
@@ -141,10 +141,7 @@ export default {
                 })
                 // 登录成功 跳转至首页
                 this.$router.push('myinfo')
-                // this.$router.go()
               } else {
-                // console.log(this.$store.getters.getUserToken)
-
                 this.$message.error(`${res.data.msg}`)
                 return false
               }
@@ -162,7 +159,7 @@ export default {
         token: this.$store.getters.getUserToken,
         phone: this.formForgetpwd.phone
       }
-      console.log(tmpdata)
+
       myPost(
         'api/user/sign/verify',
         tmpdata,
@@ -186,8 +183,7 @@ export default {
         password: Encrypt(this.formForgetpwd.newpwd),
         CAPTCHA: this.formForgetpwd.CAPTCHA
       }
-      // console.log(this.formForgetpwd.newpwd)
-      console.log(tmpdata)
+
       myPost(
         'api/user/sign/passwd',
         tmpdata,
@@ -207,7 +203,6 @@ export default {
 
     // 表单重置
     resetForm () {
-      // console.log('session')
       this.$refs['formLogin'].resetFields()
       this.$refs['formForgetpwd'].resetFields()
     }

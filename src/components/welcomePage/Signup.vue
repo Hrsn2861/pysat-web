@@ -66,10 +66,11 @@
 import { Encrypt } from '@/utils/crypt.js'
 import { myPost } from '@/utils/requestFunc.js'
 
-import checkSessionMixin from '@/utils/sessionUtils/checkSessionHandler'
+import autoJumpToInfoMixin from '@/utils/sessionUtils/autoJumpToInfoHandler'
+import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
 
 export default {
-  mixins: [checkSessionMixin],
+  mixins: [autoJumpToInfoMixin, checkMobileMixin],
   name: 'Signup',
   data () {
     var validateUser = (rule, value, cb) => {
@@ -185,7 +186,6 @@ export default {
       }
       myPost('api/user/sign/verify', data,
         res => {
-          // console.log(res)
           this.$message.error(`${res.data.msg}`)
           this.step++
         },
@@ -198,8 +198,6 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // var md5 = require('md5-node')
-          // console.log(this.registerForm.pwd)
           let data = {
             username: this.registerForm.userName,
             password: Encrypt(this.registerForm.pwd),

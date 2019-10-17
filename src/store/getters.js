@@ -1,7 +1,6 @@
 export const getters = {
 // 如果本地的vuex的state没了，先从localStorage获取
   getUserToken: (state) => {
-    // console.log('TEST')
     if (!state.token) {
       if (localStorage.getItem('token') != null) {
         state.token = localStorage.token
