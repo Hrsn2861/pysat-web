@@ -1,10 +1,6 @@
 <template>
   <div
     class="main-div"
-    v-loading.fullscreen.lock="isMobile"
-    element-loading-text="请修改您的显示分辨率"
-    element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(0, 0, 0, 0.8)"
   >
     <el-card class="box-card" v-bind:class="{ 'is-mobile': isMobile}">
       <el-form label-position="left" :model="formLogin" :rules="rules" ref="formLogin">
@@ -70,11 +66,10 @@
 <script type="text/javascript">
 import { Encrypt } from '@/utils/crypt.js'
 import { myPost } from '@/utils/requestFunc.js'
-import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
 import autoJumpToInfoMixin from '@/utils/sessionUtils/autoJumpToInfoHandler'
 
 export default {
-  mixins: [checkMobileMixin, autoJumpToInfoMixin],
+  mixins: [autoJumpToInfoMixin],
   data () {
     let checkidentity = (rule, value, cb) => {
       // var pattern = /^1[3456789]\d{9}$/;
