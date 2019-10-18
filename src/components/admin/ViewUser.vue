@@ -4,7 +4,7 @@
       <el-table :data="tableData" style="width:100%" height="500">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="username" label="用戶" width="120"></el-table-column>
-        <el-table-column prop="motto" label="座右铭" width="120"></el-table-column>
+        <el-table-column prop="motto" label="座右铭" :resizable="true"></el-table-column>
         <el-table-column prop="permission" label="用户权限" width="120"></el-table-column>
         <el-table-column prop="rating" label="打分" width="150">
           <el-rate></el-rate>
@@ -18,6 +18,7 @@
       </el-table>
       <el-button type="text" @click="addUser()">点击添加新用户</el-button>
       <el-button type="text">封禁用戶</el-button>
+      <el-button type="text" @click="getUserList()">刷新名单</el-button>
       <el-button type="text">...</el-button>
     </el-card>
   </div>
@@ -25,13 +26,18 @@
 
 <script>
 import { myGet } from '@/utils/requestFunc.js'
+import {checkSession} from '@/utils/sessionUtils/sessionFunc'
+
 export default {
+  beforeCreate () {
+    checkSession(this, '/admin', '/')
+  },
   mounted: function () {
     this.getUserList()
   },
   methods: {
     viewCurrentUser (index, row) {
-      console.log(row.username)
+      console.log('View user index: ', index)
       this.$router.push({name: 'myinfo', params: {username: row.username}})
     },
     getUserList () {
@@ -44,7 +50,7 @@ export default {
         },
         res => {
           if (res.data.status === 1) {
-            console.log(res.data.data)
+            // console.log(res.data.data)
             this.tableData = res.data.data.userlist
           }
         },
@@ -62,12 +68,10 @@ export default {
     },
     addUser () {
       this.tableData.push({
-        date: '2016-05-02',
-        name: '陈旭',
-        province: '福建',
-        city: '福州',
-        url: 'www.chenxunb',
-        zip: 2333
+
+        username: '陈旭',
+        motto: '陈旭牛逼',
+        permission: 0
       })
     }
   },

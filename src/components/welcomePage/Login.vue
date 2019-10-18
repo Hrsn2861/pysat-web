@@ -136,7 +136,7 @@ export default {
                   duration: 2000
                 })
                 // 登录成功 跳转至首页
-                this.$router.push({path: 'myinfo', params: {username: '___default'}})
+                this.$router.push({name: 'myinfo', params: {username: '___default'}})
               } else {
                 this.$message.error(`${res.data.msg}`)
                 return false

@@ -10,6 +10,11 @@ import ViewUser from '@/components/admin/ViewUser.vue'
 import Hangout from '@/components/browse/Hangout.vue'
 
 Vue.use(Router)
+const originalPush = Router.prototype.push
+Router.prototype.push = function push (location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+// 这段代码是为了避免重复点击相同的位置会报错
 
 export default new Router({
   routes: [
@@ -32,6 +37,7 @@ export default new Router({
           component: Navi
         },
         {
+          // 默认的username是___default
           path: 'myinfo/:username',
           name: 'myinfo',
           component: MyInfo

@@ -2,13 +2,13 @@
   <div
     class="header"
     v-loading.fullscreen.lock="isMobile"
-    element-loading-text="爲了您的用戶體驗，請修改您的顯示分辨率"
+    element-loading-text="请至PC端访问/反复点击‘win’ + ‘=’，你就可以开始PYSAT之旅啦"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.8)"
   >
     <div class="logo" :class="{'is-active':isActive}">
       <img src="@/assets/icon_white.png" height="30px" @click="handleMenu" />
-      PYSAT控制中心
+      PYSAT
     </div>
     <div class="navbar">
       <!-- <el-col class="my-search">
@@ -49,7 +49,7 @@
 
 <script>
 import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
-
+import {logout} from '@/utils/sessionUtils/sessionFunc'
 import { mapGetters } from 'vuex'
 export default {
   mixins: [checkMobileMixin],
@@ -74,6 +74,11 @@ export default {
 
   },
   methods: {
+    async logOut () {
+      await logout(this)
+      this.$router.go(0) // 刷新页面
+    },
+
     ...mapGetters(['getUser']),
 
     handleMenu () {

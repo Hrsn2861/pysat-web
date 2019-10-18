@@ -1,6 +1,7 @@
 <template>
-  <div class="sidebar">
+  <div class="sidebar" >
     <el-menu
+      v-if="!isLogged"
       :default-active="activeIndex"
       router
       class="el-menu-vertical-demo"
@@ -66,6 +67,10 @@ export default {
         return '/tables/details'
       }
       return thisRoutPath
+    },
+    isLogged () {
+      // 检查是否已经登陆，如果已经登陆，那么user就会被设置好了，根据user返回是否显示登陆注册按钮
+      return this.$store.getters.getUser === null
     }
   },
   methods: {
@@ -75,6 +80,8 @@ export default {
 
 <style scoped>
   .sidebar {
+    height: 100%;
+    min-height: 100vh;
     background-color: rgb(84, 92, 100);
   }
   .el-menu-vertical-demo:not(.el-menu--collapse) {

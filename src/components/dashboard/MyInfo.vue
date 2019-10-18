@@ -59,7 +59,7 @@
           </el-form>
         </el-col>
       </el-row>
-      <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible ">
+      <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible && !isViewing ">
         <el-button type="danger" @click="logOut()">登出</el-button>
         <el-button type="primary" @click="changePwdVisible = !changePwdVisible">修改密码</el-button>
         <el-button type="primary" @click="changePhoneVisible = true">修改手机号码</el-button>
@@ -98,7 +98,7 @@ import { Encrypt } from '@/utils/crypt.js'
 import {checkSession, logout} from '@/utils/sessionUtils/sessionFunc'
 
 export default {
-  props: ['username'],
+  props: ['username'], // 呃， props没有用？？？？
   name: 'MyInfo',
   beforeCreate () {
     checkSession(this, '', '/')
@@ -108,10 +108,13 @@ export default {
   // 事实证明这里并没有覆盖掉beforeCreate
   // 混入对象的钩子将在组件自身钩子之前调用。
   mounted: function () {
-    console.log(this.$route.params.username)
+    console.log('params.username: ', this.$route.params.username)
     if (this.$route.params.username === '___default') {
-      this.getMyInfo('')
+      let tmp = ''
+      this.isViewing = false
+      this.getMyInfo(tmp)
     } else {
+      this.isViewing = true
       this.getMyInfo(this.$route.params.username)
     }
   },
@@ -134,7 +137,7 @@ export default {
         realname: 'None',
         motto: 'None'
       },
-
+      isViewing: true,
       permission: '',
       changeAvatarVisible: false,
       changePwdVisible: false,
@@ -160,12 +163,7 @@ export default {
       await logout(this)
       this.$router.go(0) // 刷新页面
     },
-
     changeAvatar () {},
-    // logOut () {
-    //   logout()
-    //   this.$router.push('/login')
-    // },     //必须加this才可以！!!
     setformInfo () {
       this.formInfo.username = this.currentInfo.username
       this.formInfo.phone = this.currentInfo.phone
@@ -193,11 +191,15 @@ export default {
     },
 
     getMyInfo (queryUser) {
+      var queryJson = {
+        token: this.$store.getters.getUserToken
+      }
+      if (queryUser !== '') {
+        queryJson['username'] = queryUser
+      } // 陈旭的接口定义是不检查‘’，所以前端检查这个
       myGet(
         '/api/user/info/get',
-        { token: this.$store.getters.getUserToken,
-          username: queryUser
-        },
+        queryJson,
         res => {
           if (res.data.status === 1) {
             this.currentInfo.username = res.data.data.user.username

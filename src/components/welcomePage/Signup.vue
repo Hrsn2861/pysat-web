@@ -67,9 +67,10 @@ import { Encrypt } from '@/utils/crypt.js'
 import { myPost } from '@/utils/requestFunc.js'
 
 import autoJumpToInfoMixin from '@/utils/sessionUtils/autoJumpToInfoHandler'
+import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
 
 export default {
-  mixins: [autoJumpToInfoMixin],
+  mixins: [autoJumpToInfoMixin, checkMobileMixin],
   name: 'Signup',
   data () {
     var validateUser = (rule, value, cb) => {
