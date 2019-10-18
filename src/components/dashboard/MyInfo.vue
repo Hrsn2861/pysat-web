@@ -98,6 +98,7 @@ import { Encrypt } from '@/utils/crypt.js'
 import {checkSession, logout} from '@/utils/sessionUtils/sessionFunc'
 
 export default {
+  props: ['username'],
   name: 'MyInfo',
   beforeCreate () {
     checkSession(this, '', '/')
@@ -107,7 +108,12 @@ export default {
   // 事实证明这里并没有覆盖掉beforeCreate
   // 混入对象的钩子将在组件自身钩子之前调用。
   mounted: function () {
-    this.getMyInfo()
+    console.log(this.$route.params.username)
+    if (this.$route.params.username === '___default') {
+      this.getMyInfo('')
+    } else {
+      this.getMyInfo(this.$route.params.username)
+    }
   },
   data () {
     return {
@@ -186,10 +192,12 @@ export default {
       this.formChangephone.CAPTCHA = ''
     },
 
-    getMyInfo () {
+    getMyInfo (queryUser) {
       myGet(
         '/api/user/info/get',
-        { token: this.$store.getters.getUserToken },
+        { token: this.$store.getters.getUserToken,
+          username: queryUser
+        },
         res => {
           if (res.data.status === 1) {
             this.currentInfo.username = res.data.data.user.username

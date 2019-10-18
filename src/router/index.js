@@ -32,8 +32,10 @@ export default new Router({
           component: Navi
         },
         {
-          path: 'myinfo',
+          path: 'myinfo/:username',
+          name: 'myinfo',
           component: MyInfo
+
         },
         {
           path: 'admin',

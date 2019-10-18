@@ -1,34 +1,62 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-table :data="tableData" style="width:100%" height="500" :highlight-current-row="true" >
+      <el-table :data="tableData" style="width:100%" height="500">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column fixed prop="date" label="日期" width="150"></el-table-column>
-        <el-table-column prop="name" label="用戶" width="120"></el-table-column>
-        <el-table-column prop="province" label="省份" width="120"></el-table-column>
-        <el-table-column prop="city" label="市区" width="120"></el-table-column>
-        <el-table-column prop="url" label="URL" width="300"></el-table-column>
-        <el-table-column prop="zip" label="邮编" width="120"></el-table-column>
+        <el-table-column prop="username" label="用戶" width="120"></el-table-column>
+        <el-table-column prop="motto" label="座右铭" width="120"></el-table-column>
+        <el-table-column prop="permission" label="用户权限" width="120"></el-table-column>
         <el-table-column prop="rating" label="打分" width="150">
           <el-rate></el-rate>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="100">
-          <template>
-            <el-button type="text" size="small">查看</el-button>
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="viewCurrentUser(scope.$index, scope.row)">查看</el-button>
             <el-button type="text" size="small">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-button type="text" @click="addUser()">点击添加新用户</el-button>
-      <el-button type="text" >封禁用戶</el-button>
-      <el-button type="text" >...</el-button>
+      <el-button type="text">封禁用戶</el-button>
+      <el-button type="text">...</el-button>
     </el-card>
   </div>
 </template>
 
 <script>
+import { myGet } from '@/utils/requestFunc.js'
 export default {
+  mounted: function () {
+    this.getUserList()
+  },
   methods: {
+    viewCurrentUser (index, row) {
+      console.log(row.username)
+      this.$router.push({name: 'myinfo', params: {username: row.username}})
+    },
+    getUserList () {
+      myGet(
+        '/api/user/list/get',
+        {
+          token: this.$store.getters.getUserToken,
+          show_invalid: true,
+          manager_first: true
+        },
+        res => {
+          if (res.data.status === 1) {
+            console.log(res.data.data)
+            this.tableData = res.data.data.userlist
+          }
+        },
+        err => {
+          this.$message({
+            type: 'error',
+            message: err,
+            duration: 1000
+          })
+        }
+      )
+    },
     handleClick (row) {
       console.log('click from Hangout.vue')
     },
@@ -48,12 +76,6 @@ export default {
     return {
       tableData: [
         {
-          date: '2016-05-02',
-          name: '陈旭',
-          province: '福建',
-          city: '福州',
-          url: 'www.chenxunb',
-          zip: 2333
         }
       ]
     }

@@ -66,10 +66,11 @@
 <script type="text/javascript">
 import { Encrypt } from '@/utils/crypt.js'
 import { myPost } from '@/utils/requestFunc.js'
+import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
 import autoJumpToInfoMixin from '@/utils/sessionUtils/autoJumpToInfoHandler'
 
 export default {
-  mixins: [autoJumpToInfoMixin],
+  mixins: [autoJumpToInfoMixin, checkMobileMixin],
   data () {
     let checkidentity = (rule, value, cb) => {
       // var pattern = /^1[3456789]\d{9}$/;
@@ -135,7 +136,7 @@ export default {
                   duration: 2000
                 })
                 // 登录成功 跳转至首页
-                this.$router.push('myinfo')
+                this.$router.push({path: 'myinfo', params: {username: '___default'}})
               } else {
                 this.$message.error(`${res.data.msg}`)
                 return false

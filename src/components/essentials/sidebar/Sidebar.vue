@@ -9,7 +9,7 @@
       text-color="#fff"
       active-text-color="#ffd04b"
     >
-      <el-menu-item index="/myinfo" >
+      <el-menu-item index="/myinfo/___default" >
         <i class="el-icon-service"></i>
         <span slot="title">个人信息</span>
       </el-menu-item>
