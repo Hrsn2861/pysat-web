@@ -6,6 +6,7 @@ export default{
     checkSession(this, 'myinfo', '')
     // 混入对象的钩子将在组件自身钩子之前调用。
     // 钩子都会被调用
+    // 这里只可以处理myinfo的跳转
   },
   methods: {
     async logOut () {
