@@ -209,6 +209,7 @@ export default {
             this.currentInfo.motto = res.data.data.user.motto
             this.setformInfo()
             this.permission = res.data.data.user.permission
+            localStorage.setItem('permission', res.data.data.user.permission)
             console.log('PERMISSION: ' + this.permission)
           }
         },

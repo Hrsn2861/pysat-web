@@ -12,7 +12,7 @@
         <el-table-column fixed="right" label="操作" width="100">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="viewCurrentUser(scope.$index, scope.row)">查看</el-button>
-            <el-button type="text" size="small">编辑</el-button>
+            <el-button type="text" size="small" v-if="permission>1">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -83,7 +83,8 @@ export default {
       tableData: [
         {
         }
-      ]
+      ],
+      permission: localStorage.getItem('permission')
     }
   }
 }
