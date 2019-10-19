@@ -50,8 +50,10 @@ export default {
         },
         res => {
           if (res.data.status === 1) {
-            // console.log(res.data.data)
+            console.log(res.data.data)
             this.tableData = res.data.data.userlist
+          } else {
+            this.$message.error(`${res.data.msg}`)
           }
         },
         err => {
