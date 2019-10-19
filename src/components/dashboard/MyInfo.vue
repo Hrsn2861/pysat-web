@@ -57,7 +57,7 @@
               <el-input class="my-info-item" v-model="formInfo.motto" placeholder="" :disabled="changeInfoVisible"></el-input>
             </el-form-item>
             <el-form-item label="权限" style="margin-bottom:2%;">
-              <el-select v-model="hisPermission" placeholder="请选择">
+              <el-select v-model="formInfo.permission" placeholder="请选择">
                 <el-option class="my-info-item" v-for="item in permissionOptions" :key="item.value" :label="item.label" :value="item.value" :disabled="!changePermissionEnable"></el-option>
               </el-select>
             </el-form-item>
@@ -130,7 +130,8 @@ export default {
         email: '填了也没用',
         school: 'None',
         realname: 'None',
-        motto: 'None'
+        motto: 'None',
+        permission: 0
       },
 
       formInfo: {
@@ -139,11 +140,11 @@ export default {
         email: '填了也没用',
         school: 'None',
         realname: 'None',
-        motto: 'None'
+        motto: 'None',
+        permission: 0
       },
 
       myPermission: '',
-      hisPermission: '',
       isSelf: false, // 判断是不是自己的信息
 
       changeAvatarVisible: false,
@@ -152,7 +153,7 @@ export default {
       changeInfoVisible: true,
       changePermissionEnable: false,
       updateButtonText: '修改信息',
-      changePermissionButtonText: '修改权限！',
+      changePermissionButtonText: '修改权限',
 
       imageURL: require('../../assets/icon.png'),
 
@@ -199,6 +200,7 @@ export default {
       this.formInfo.school = this.currentInfo.school
       this.formInfo.realname = this.currentInfo.realname
       this.formInfo.motto = this.currentInfo.motto
+      this.formInfo.permission = this.currentInfo.permission
     },
 
     setcurrentInfo () {
@@ -208,6 +210,7 @@ export default {
       this.currentInfo.school = this.formInfo.school
       this.currentInfo.realname = this.formInfo.realname
       this.currentInfo.motto = this.formInfo.motto
+      this.currentInfo.permission = this.formInfo.permission
     },
     resetChangepwd () {
       this.formChangepwd.oldpwd = ''
@@ -235,8 +238,9 @@ export default {
             this.currentInfo.school = res.data.data.user.school
             this.currentInfo.realname = res.data.data.user.realname
             this.currentInfo.motto = res.data.data.user.motto
+            this.currentInfo.permission = res.data.data.user.permission
             this.setformInfo()
-            this.hisPermission = res.data.data.user.permission
+
             if (!localStorage.hasOwnProperty('permission')) { // 赋予permission
               localStorage.setItem('permission', res.data.data.user.permission)
             }
@@ -336,19 +340,14 @@ export default {
         this.changeInfoVisible = false
         this.updateButtonText = '更新信息'
       } else {
-        // send API
-
         let tmpdata = {
           token: this.$store.getters.getUserToken,
-          // username: this.username,
           realname: this.formInfo.realname,
           school: this.formInfo.school,
           motto: this.formInfo.motto
-          // permission: this.permission
         }
         if (!this.isSelf) {
           tmpdata['username'] = this.formInfo.username
-          // tmpdata['permission'] = Number(this.myPermission)
         }
         myPost('/api/user/info/modify',
           tmpdata,
@@ -378,26 +377,22 @@ export default {
         return
       }
       if (!this.changePermissionEnable) {
-        if (this.hisPermission >= this.myPermission) { // 如果要改的人的权限原本就不低于自己
+        if (this.currentInfo.permission >= this.myPermission) { // 如果要改的人的权限原本就不低于自己
           this.$message.error('您的权限太低了！')
           return
         }
         this.changePermissionEnable = true
-        this.updateButtonText = '更新权限!'
+        this.changePermissionButtonText = '更新权限！'
       } else {
-        // send API
-        if (this.hisPermission >= this.myPermission) { // 只能改成比自己低的某个权限
+        if (this.formInfo.permission >= this.myPermission) { // 只能改成比自己低的某个权限
           this.$message.error('您只能赋予别人低于自己的权限！')
           this.setformInfo()
           return
         }
         let tmpdata = {
           token: this.$store.getters.getUserToken,
-          username: this.username,
-          // realname: this.formInfo.realname,
-          // school: this.formInfo.school,
-          // motto: this.formInfo.motto
-          permission: this.permission
+          username: this.formInfo.username,
+          permission: this.formInfo.permission
         }
         myPost('/api/user/info/modify',
           tmpdata,
@@ -406,7 +401,8 @@ export default {
             if (res.data.status === 1) {
               this.$message.success(`${res.data.msg}`)
               this.changePermissionEnable = false
-              this.updateButtonText = '修改权限！'
+              this.changePermissionButtonText = '修改权限'
+              this.setcurrentInfo()
             } else {
               this.$message.error(`${res.data.msg}`)
               this.setformInfo()
