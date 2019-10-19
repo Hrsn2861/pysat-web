@@ -56,6 +56,11 @@
             <el-form-item label="座右铭" style="margin-bottom:2%;">
               <el-input class="my-info-item" v-model="formInfo.motto" placeholder="" :disabled="changeInfoVisible"></el-input>
             </el-form-item>
+            <el-form-item label="权限" style="margin-bottom:2%;">
+              <el-select v-model="hisPermission" placeholder="请选择">
+                <el-option class="my-info-item" v-for="item in permissionOptions" :key="item.value" :label="item.label" :value="item.value" :disabled="!changePermissionEnable"></el-option>
+              </el-select>
+            </el-form-item>
           </el-form>
         </el-col>
       </el-row>
@@ -64,7 +69,7 @@
         <el-button type="primary" @click="changePwdVisible = true" v-if="isSelf || myPermission >= 8">修改密码</el-button>
         <el-button type="primary" @click="changePhoneVisible = true" v-if="isSelf || myPermission >= 8">修改手机号码</el-button>
         <el-button type="primary" @click="changeInfo()" v-if="isSelf || myPermission >= 8">{{updateButtonText}}</el-button>
-        <el-button type="warning" @click="changePhoneVisible = true" v-if="myPermission >= 4">修改权限！</el-button>
+        <el-button type="warning" @click="changePermission()" v-if="myPermission >= 4">{{changePermissionButtonText}}</el-button>
       </el-row>
 
       <transition name="fade">
@@ -145,7 +150,10 @@ export default {
       changePwdVisible: false,
       changePhoneVisible: false,
       changeInfoVisible: true,
+      changePermissionEnable: false,
       updateButtonText: '修改信息',
+      changePermissionButtonText: '修改权限！',
+
       imageURL: require('../../assets/icon.png'),
 
       formChangepwd: {
@@ -155,7 +163,23 @@ export default {
       formChangephone: {
         CAPTCHA: '',
         phone: ''
-      }
+      },
+      permissionOptions: [{
+        value: 0,
+        label: '封禁用户'
+      }, {
+        value: 1,
+        label: '普通用户'
+      }, {
+        value: 2,
+        label: '高级用户'
+      }, {
+        value: 4,
+        label: '管理员'
+      }, {
+        value: 8,
+        label: '新世界的神'
+      }]
     }
   },
 
@@ -310,7 +334,7 @@ export default {
     changeInfo () {
       if (this.changeInfoVisible === true) {
         this.changeInfoVisible = false
-        this.updateButtonText = '更新!'
+        this.updateButtonText = '更新信息'
       } else {
         // send API
 
@@ -333,8 +357,56 @@ export default {
             if (res.data.status === 1) {
               this.$message.success(`${res.data.msg}`)
               this.changeInfoVisible = true
-              this.updateButtonText = '修改信息!'
+              this.updateButtonText = '修改信息'
               this.setcurrentInfo()
+            } else {
+              this.$message.error(`${res.data.msg}`)
+              this.setformInfo()
+            }
+          },
+          err => {
+            this.$message.error(`${err.message}`, 'ERROR!')
+            this.setformInfo()
+          }
+        )
+      }
+    },
+
+    changePermission () {
+      if (this.isSelf) { // 不能修改自己的权限
+        this.$message.error('您不能修改自己的权限！')
+        return
+      }
+      if (!this.changePermissionEnable) {
+        if (this.hisPermission >= this.myPermission) { // 如果要改的人的权限原本就不低于自己
+          this.$message.error('您的权限太低了！')
+          return
+        }
+        this.changePermissionEnable = true
+        this.updateButtonText = '更新权限!'
+      } else {
+        // send API
+        if (this.hisPermission >= this.myPermission) { // 只能改成比自己低的某个权限
+          this.$message.error('您只能赋予别人低于自己的权限！')
+          this.setformInfo()
+          return
+        }
+        let tmpdata = {
+          token: this.$store.getters.getUserToken,
+          username: this.username,
+          // realname: this.formInfo.realname,
+          // school: this.formInfo.school,
+          // motto: this.formInfo.motto
+          permission: this.permission
+        }
+        myPost('/api/user/info/modify',
+          tmpdata,
+          res => {
+            console.log(tmpdata)
+            if (res.data.status === 1) {
+              this.$message.success(`${res.data.msg}`)
+              this.changePermissionEnable = false
+              this.updateButtonText = '修改权限！'
             } else {
               this.$message.error(`${res.data.msg}`)
               this.setformInfo()
