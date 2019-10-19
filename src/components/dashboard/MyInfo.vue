@@ -13,7 +13,7 @@
           type="flex"
           justify="center"
           style="height:auto !important; user-select: none;"
-        >現在不可以修改頭像！</el-row>
+        >現在不可以修改頭像！呵呵</el-row>
         <!-- <transition name="fade">
           <el-row
             type="flex"
@@ -59,12 +59,12 @@
           </el-form>
         </el-col>
       </el-row>
-      <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible && !isViewing ">
-        <el-button type="danger" @click="logOut()">登出</el-button>
-        <el-button type="primary" @click="changePwdVisible = !changePwdVisible">修改密码</el-button>
-        <el-button type="primary" @click="changePhoneVisible = true">修改手机号码</el-button>
-        <el-button type="warning" @click="changeInfo()" >{{updateButtonText}}</el-button>
-
+      <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible">
+        <el-button type="danger" @click="logOut()" v-if="isSelf">登出</el-button>
+        <el-button type="primary" @click="changePwdVisible = true" v-if="isSelf || myPermission >= 8">修改密码</el-button>
+        <el-button type="primary" @click="changePhoneVisible = true" v-if="isSelf || myPermission >= 8">修改手机号码</el-button>
+        <el-button type="primary" @click="changeInfo()" v-if="isSelf || myPermission >= 8">{{updateButtonText}}</el-button>
+        <el-button type="warning" @click="changePhoneVisible = true" v-if="myPermission >= 4">修改权限！</el-button>
       </el-row>
 
       <transition name="fade">
@@ -137,14 +137,15 @@ export default {
         motto: 'None'
       },
 
-      permission: '',
+      myPermission: '',
+      hisPermission: '',
       isSelf: false, // 判断是不是自己的信息
 
       changeAvatarVisible: false,
       changePwdVisible: false,
       changePhoneVisible: false,
       changeInfoVisible: true,
-      updateButtonText: '修改信息!',
+      updateButtonText: '修改信息',
       imageURL: require('../../assets/icon.png'),
 
       formChangepwd: {
@@ -161,6 +162,8 @@ export default {
   methods: {
 
     async logOut () {
+      localStorage.removeItem('permission')
+      localStorage.removeItem('identity')
       await logout(this)
       this.$router.go(0) // 刷新页面
     },
@@ -209,12 +212,13 @@ export default {
             this.currentInfo.realname = res.data.data.user.realname
             this.currentInfo.motto = res.data.data.user.motto
             this.setformInfo()
+            this.hisPermission = res.data.data.user.permission
             if (!localStorage.hasOwnProperty('permission')) { // 赋予permission
               localStorage.setItem('permission', res.data.data.user.permission)
             }
-            this.permission = localStorage.getItem('permission')
+            this.myPermission = localStorage.getItem('permission')
 
-            console.log('PERMISSION: ' + this.permission)
+            console.log('myPERMISSION: ' + this.myPermission)
           }
         },
         err => {
@@ -318,9 +322,14 @@ export default {
           motto: this.formInfo.motto
           // permission: this.permission
         }
+        if (!this.isSelf) {
+          tmpdata['username'] = this.formInfo.username
+          // tmpdata['permission'] = Number(this.myPermission)
+        }
         myPost('/api/user/info/modify',
           tmpdata,
           res => {
+            console.log(tmpdata)
             if (res.data.status === 1) {
               this.$message.success(`${res.data.msg}`)
               this.changeInfoVisible = true
