@@ -11,8 +11,8 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="100">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="viewCurrentUser(scope.$index, scope.row)">查看</el-button>
-            <el-button type="text" size="small" v-if="permission>1">编辑</el-button>
+            <el-button type="text" size="small" @click="viewCurrentUser(scope.$index, scope.row, 'view')">查看</el-button>
+            <el-button type="text" size="small" v-if="permission>1" @click="editCurrentUser(scope.$index, scope.row, 'edit')">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -36,10 +36,14 @@ export default {
     this.getUserList()
   },
   methods: {
-    viewCurrentUser (index, row) {
+    viewCurrentUser (index, row, mode) {
       console.log('View user index: ', index)
-      this.$router.push({name: 'myinfo', params: {username: row.username}})
+      this.$router.push({name: 'myinfo', params: {username: row.username, mode: mode}})
     },
+    editCurrentUser (index, row, mode) {
+      this.$router.push({name: 'myinfo', params: {username: row.username, mode: mode}})
+    },
+
     getUserList () {
       myGet(
         '/api/user/list/get',

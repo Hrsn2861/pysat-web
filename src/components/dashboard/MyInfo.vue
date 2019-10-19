@@ -107,14 +107,13 @@ export default {
   // 这里看起来如果我引入了beforeCreate的Mixin，vue-router会给我报一个warning，显示重复跳转
   // 事实证明这里并没有覆盖掉beforeCreate
   // 混入对象的钩子将在组件自身钩子之前调用。
-  mounted: function () {
+  mounted: function () { // 感觉通过url中的username是否为空来进行后续判断有点蛋疼...把username存到localStorage应该会好一点...
     console.log('params.username: ', this.$route.params.username)
-    if (this.$route.params.username === '___default') {
-      let tmp = ''
-      this.isViewing = false
-      this.getMyInfo(tmp)
+    if (this.$route.params.username === '___default' || this.$route.params.username === localStorage['identity']) {
+      this.isSelf = true
+      this.getMyInfo('')
     } else {
-      this.isViewing = true
+      this.isSelf = false
       this.getMyInfo(this.$route.params.username)
     }
   },
@@ -137,8 +136,10 @@ export default {
         realname: 'None',
         motto: 'None'
       },
-      isViewing: true,
+
       permission: '',
+      isSelf: false, // 判断是不是自己的信息
+
       changeAvatarVisible: false,
       changePwdVisible: false,
       changePhoneVisible: false,
@@ -194,7 +195,7 @@ export default {
       var queryJson = {
         token: this.$store.getters.getUserToken
       }
-      if (queryUser !== '') {
+      if (!this.isSelf) { // 如果不是自己，则username不为空
         queryJson['username'] = queryUser
       } // 陈旭的接口定义是不检查‘’，所以前端检查这个
       myGet(
@@ -208,8 +209,11 @@ export default {
             this.currentInfo.realname = res.data.data.user.realname
             this.currentInfo.motto = res.data.data.user.motto
             this.setformInfo()
-            this.permission = res.data.data.user.permission
-            localStorage.setItem('permission', res.data.data.user.permission)
+            if (!localStorage.hasOwnProperty('permission')) { // 赋予permission
+              localStorage.setItem('permission', res.data.data.user.permission)
+            }
+            this.permission = localStorage.getItem('permission')
+
             console.log('PERMISSION: ' + this.permission)
           }
         },
