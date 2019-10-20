@@ -10,6 +10,7 @@ import ViewUser from '@/components/admin/ViewUser.vue'
 import Hangout from '@/components/browse/Hangout.vue'
 import Overview from '@/components/browse/Overview.vue'
 import StarProgram from '@/components/star/Program.vue'
+import StarUpload from '@/components/star/Upload.vue'
 
 // import { start } from 'repl'
 
@@ -62,6 +63,10 @@ export default new Router({
         {
           path: 'star/program',
           component: StarProgram
+        },
+        {
+          path: 'star/upload',
+          component: StarUpload
         }
       ]
     }

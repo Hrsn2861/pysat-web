@@ -27,6 +27,7 @@
         <el-menu-item index="/star/program">星上程序</el-menu-item>
         <el-menu-item >上传队列</el-menu-item>
         <el-menu-item >我的程序</el-menu-item>
+        <el-menu-item index="/star/upload" >上传程序</el-menu-item>
       </el-submenu>
 
       <el-submenu>
