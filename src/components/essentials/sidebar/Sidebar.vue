@@ -19,14 +19,15 @@
         <i class="el-icon-view"></i>
         <span slot="title">隨便逛逛</span>
       </el-menu-item>
-      <el-submenu index="/stars">
+      <el-submenu index="/star">
         <template slot="title">
           <i class="el-icon-star-on"></i>
           <span slot="title">星上程序</span>
         </template>
-        <el-menu-item >星上程序</el-menu-item>
+        <el-menu-item index="/star/program">星上程序</el-menu-item>
         <el-menu-item >上传队列</el-menu-item>
         <el-menu-item >我的程序</el-menu-item>
+        <el-menu-item index="/star/upload" >上传程序</el-menu-item>
       </el-submenu>
 
       <el-submenu>

@@ -9,6 +9,10 @@ import MyInfo from '@/components/dashboard/MyInfo.vue'
 import ViewUser from '@/components/admin/ViewUser.vue'
 import Hangout from '@/components/browse/Hangout.vue'
 import Overview from '@/components/browse/Overview.vue'
+import StarProgram from '@/components/star/Program.vue'
+import StarUpload from '@/components/star/Upload.vue'
+
+// import { start } from 'repl'
 
 Vue.use(Router)
 const originalPush = Router.prototype.push
@@ -55,6 +59,14 @@ export default new Router({
         {
           path: 'overview',
           component: Overview
+        },
+        {
+          path: 'star/program',
+          component: StarProgram
+        },
+        {
+          path: 'star/upload',
+          component: StarUpload
         }
       ]
     }
