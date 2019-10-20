@@ -29,7 +29,7 @@ import {checkSession} from '@/utils/sessionUtils/sessionFunc'
 
 export default {
   beforeCreate () {
-    checkSession(this, '/admin', '/')
+    checkSession(this, '', '/')
   },
   mounted: function () {
     this.getUserList()

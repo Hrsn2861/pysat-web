@@ -155,7 +155,7 @@ export default {
       updateButtonText: '修改信息',
       changePermissionButtonText: '修改权限',
 
-      imageURL: require('../../assets/icon.png'),
+      imageURL: require('../../assets/cx.png'),
 
       formChangepwd: {
         oldpwd: '',
