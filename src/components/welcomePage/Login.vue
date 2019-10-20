@@ -138,7 +138,8 @@ export default {
                 // 首先把username存到localStorage里面！！！登出的时候也要把它清掉！
                 localStorage.setItem('identity', this.formLogin.identity) // identity：强调其唯一性、主键性
                 // 登录成功 跳转至首页
-                this.$router.push({name: 'myinfo', params: {username: '___default'}})
+                this.$router.push('overview')
+                // this.$router.push({name: 'myinfo', params: {username: '___default'}})
               } else {
                 this.$message.error(`${res.data.msg}`)
                 return false
