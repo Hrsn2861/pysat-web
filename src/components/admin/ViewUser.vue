@@ -12,7 +12,6 @@
         <el-table-column fixed="right" label="操作" width="100">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="viewCurrentUser(scope.$index, scope.row)">查看</el-button>
-            <el-button type="text" size="small">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -40,6 +39,7 @@ export default {
       console.log('View user index: ', index)
       this.$router.push({name: 'myinfo', params: {username: row.username}})
     },
+
     getUserList () {
       myGet(
         '/api/user/list/get',
@@ -50,8 +50,10 @@ export default {
         },
         res => {
           if (res.data.status === 1) {
-            // console.log(res.data.data)
+            console.log(res.data.data)
             this.tableData = res.data.data.userlist
+          } else {
+            this.$message.error(`${res.data.msg}`)
           }
         },
         err => {
@@ -81,7 +83,8 @@ export default {
       tableData: [
         {
         }
-      ]
+      ],
+      permission: localStorage.getItem('permission')
     }
   }
 }

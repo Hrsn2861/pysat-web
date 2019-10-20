@@ -13,7 +13,7 @@
           type="flex"
           justify="center"
           style="height:auto !important; user-select: none;"
-        >現在不可以修改頭像！</el-row>
+        >現在不可以修改頭像！呵呵</el-row>
         <!-- <transition name="fade">
           <el-row
             type="flex"
@@ -56,15 +56,20 @@
             <el-form-item label="座右铭" style="margin-bottom:2%;">
               <el-input class="my-info-item" v-model="formInfo.motto" placeholder="" :disabled="changeInfoVisible"></el-input>
             </el-form-item>
+            <el-form-item label="权限" style="margin-bottom:2%;">
+              <el-select v-model="formInfo.permission" placeholder="请选择">
+                <el-option class="my-info-item" v-for="item in permissionOptions" :key="item.value" :label="item.label" :value="item.value" :disabled="!changePermissionEnable"></el-option>
+              </el-select>
+            </el-form-item>
           </el-form>
         </el-col>
       </el-row>
-      <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible && !isViewing ">
-        <el-button type="danger" @click="logOut()">登出</el-button>
-        <el-button type="primary" @click="changePwdVisible = !changePwdVisible">修改密码</el-button>
-        <el-button type="primary" @click="changePhoneVisible = true">修改手机号码</el-button>
-        <el-button type="warning" @click="changeInfo()" >{{updateButtonText}}</el-button>
-
+      <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible">
+        <el-button type="danger" @click="logOut()" v-if="isSelf">登出</el-button>
+        <el-button type="primary" @click="changePwdVisible = true" v-if="isSelf || myPermission >= 8">修改密码</el-button>
+        <el-button type="primary" @click="changePhoneVisible = true" v-if="isSelf || myPermission >= 8">修改手机号码</el-button>
+        <el-button type="primary" @click="changeInfo()" v-if="isSelf || myPermission >= 8">{{updateButtonText}}</el-button>
+        <el-button type="warning" @click="changePermission()" v-if="myPermission >= 4">{{changePermissionButtonText}}</el-button>
       </el-row>
 
       <transition name="fade">
@@ -107,14 +112,13 @@ export default {
   // 这里看起来如果我引入了beforeCreate的Mixin，vue-router会给我报一个warning，显示重复跳转
   // 事实证明这里并没有覆盖掉beforeCreate
   // 混入对象的钩子将在组件自身钩子之前调用。
-  mounted: function () {
-    console.log('params ', this.$route.params.username)
-    if (this.$route.params.username === '___default') {
-      let tmp = ''
-      this.isViewing = false
-      this.getMyInfo(tmp)
+  mounted: function () { // 感觉通过url中的username是否为空来进行后续判断有点蛋疼...把username存到localStorage应该会好一点...
+    console.log('params.username: ', this.$route.params.username)
+    if (this.$route.params.username === '___default' || this.$route.params.username === localStorage['identity']) {
+      this.isSelf = true
+      this.getMyInfo('')
     } else {
-      this.isViewing = true
+      this.isSelf = false
       this.getMyInfo(this.$route.params.username)
     }
   },
@@ -126,7 +130,8 @@ export default {
         email: '填了也没用',
         school: 'None',
         realname: 'None',
-        motto: 'None'
+        motto: 'None',
+        permission: 0
       },
 
       formInfo: {
@@ -135,15 +140,21 @@ export default {
         email: '填了也没用',
         school: 'None',
         realname: 'None',
-        motto: 'None'
+        motto: 'None',
+        permission: 0
       },
-      isViewing: true,
-      permission: '',
+
+      myPermission: '',
+      isSelf: false, // 判断是不是自己的信息
+
       changeAvatarVisible: false,
       changePwdVisible: false,
       changePhoneVisible: false,
       changeInfoVisible: true,
-      updateButtonText: '修改信息!',
+      changePermissionEnable: false,
+      updateButtonText: '修改信息',
+      changePermissionButtonText: '修改权限',
+
       imageURL: require('../../assets/icon.png'),
 
       formChangepwd: {
@@ -153,13 +164,31 @@ export default {
       formChangephone: {
         CAPTCHA: '',
         phone: ''
-      }
+      },
+      permissionOptions: [{
+        value: 0,
+        label: '封禁用户'
+      }, {
+        value: 1,
+        label: '普通用户'
+      }, {
+        value: 2,
+        label: '高级用户'
+      }, {
+        value: 4,
+        label: '管理员'
+      }, {
+        value: 8,
+        label: '新世界的神'
+      }]
     }
   },
 
   methods: {
 
     async logOut () {
+      localStorage.removeItem('permission')
+      localStorage.removeItem('identity')
       await logout(this)
       this.$router.go(0) // 刷新页面
     },
@@ -171,6 +200,7 @@ export default {
       this.formInfo.school = this.currentInfo.school
       this.formInfo.realname = this.currentInfo.realname
       this.formInfo.motto = this.currentInfo.motto
+      this.formInfo.permission = this.currentInfo.permission
     },
 
     setcurrentInfo () {
@@ -180,6 +210,7 @@ export default {
       this.currentInfo.school = this.formInfo.school
       this.currentInfo.realname = this.formInfo.realname
       this.currentInfo.motto = this.formInfo.motto
+      this.currentInfo.permission = this.formInfo.permission
     },
     resetChangepwd () {
       this.formChangepwd.oldpwd = ''
@@ -194,7 +225,7 @@ export default {
       var queryJson = {
         token: this.$store.getters.getUserToken
       }
-      if (queryUser !== '') {
+      if (!this.isSelf) { // 如果不是自己，则username不为空
         queryJson['username'] = queryUser
       } // 陈旭的接口定义是不检查‘’，所以前端检查这个
       myGet(
@@ -207,9 +238,15 @@ export default {
             this.currentInfo.school = res.data.data.user.school
             this.currentInfo.realname = res.data.data.user.realname
             this.currentInfo.motto = res.data.data.user.motto
+            this.currentInfo.permission = res.data.data.user.permission
             this.setformInfo()
-            this.permission = res.data.data.user.permission
-            console.log('PERMISSION: ' + this.permission)
+
+            if (!localStorage.hasOwnProperty('permission')) { // 赋予permission
+              localStorage.setItem('permission', res.data.data.user.permission)
+            }
+            this.myPermission = localStorage.getItem('permission')
+
+            console.log('myPERMISSION: ' + this.myPermission)
           }
         },
         err => {
@@ -301,25 +338,70 @@ export default {
     changeInfo () {
       if (this.changeInfoVisible === true) {
         this.changeInfoVisible = false
-        this.updateButtonText = '更新!'
+        this.updateButtonText = '更新信息'
       } else {
-        // send API
-
         let tmpdata = {
           token: this.$store.getters.getUserToken,
-          // username: this.username,
           realname: this.formInfo.realname,
           school: this.formInfo.school,
           motto: this.formInfo.motto
-          // permission: this.permission
+        }
+        if (!this.isSelf) {
+          tmpdata['username'] = this.formInfo.username
         }
         myPost('/api/user/info/modify',
           tmpdata,
           res => {
+            console.log(tmpdata)
             if (res.data.status === 1) {
               this.$message.success(`${res.data.msg}`)
               this.changeInfoVisible = true
-              this.updateButtonText = '修改信息!'
+              this.updateButtonText = '修改信息'
+              this.setcurrentInfo()
+            } else {
+              this.$message.error(`${res.data.msg}`)
+              this.setformInfo()
+            }
+          },
+          err => {
+            this.$message.error(`${err.message}`, 'ERROR!')
+            this.setformInfo()
+          }
+        )
+      }
+    },
+
+    changePermission () {
+      if (this.isSelf) { // 不能修改自己的权限
+        this.$message.error('您不能修改自己的权限！')
+        return
+      }
+      if (!this.changePermissionEnable) {
+        if (this.currentInfo.permission >= this.myPermission) { // 如果要改的人的权限原本就不低于自己
+          this.$message.error('您的权限太低了！')
+          return
+        }
+        this.changePermissionEnable = true
+        this.changePermissionButtonText = '更新权限！'
+      } else {
+        if (this.formInfo.permission >= this.myPermission) { // 只能改成比自己低的某个权限
+          this.$message.error('您只能赋予别人低于自己的权限！')
+          this.setformInfo()
+          return
+        }
+        let tmpdata = {
+          token: this.$store.getters.getUserToken,
+          username: this.formInfo.username,
+          permission: this.formInfo.permission
+        }
+        myPost('/api/user/info/modify',
+          tmpdata,
+          res => {
+            console.log(tmpdata)
+            if (res.data.status === 1) {
+              this.$message.success(`${res.data.msg}`)
+              this.changePermissionEnable = false
+              this.changePermissionButtonText = '修改权限'
               this.setcurrentInfo()
             } else {
               this.$message.error(`${res.data.msg}`)
