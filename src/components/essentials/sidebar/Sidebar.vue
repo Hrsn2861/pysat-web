@@ -10,6 +10,10 @@
       text-color="#fff"
       active-text-color="#ffd04b"
     >
+      <el-menu-item index="/overview" >
+        <i class="el-icon-s-grid"></i>
+        <span slot="title">概览</span>
+      </el-menu-item>
       <el-menu-item index="/myinfo/___default" >
         <i class="el-icon-service"></i>
         <span slot="title">个人信息</span>

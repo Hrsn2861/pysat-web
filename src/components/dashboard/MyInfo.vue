@@ -108,7 +108,7 @@ export default {
   // 事实证明这里并没有覆盖掉beforeCreate
   // 混入对象的钩子将在组件自身钩子之前调用。
   mounted: function () {
-    console.log('params.username: ', this.$route.params.username)
+    console.log('params ', this.$route.params.username)
     if (this.$route.params.username === '___default') {
       let tmp = ''
       this.isViewing = false

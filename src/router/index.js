@@ -8,6 +8,7 @@ import Navi from '@/components/welcomePage/Navigation.vue'
 import MyInfo from '@/components/dashboard/MyInfo.vue'
 import ViewUser from '@/components/admin/ViewUser.vue'
 import Hangout from '@/components/browse/Hangout.vue'
+import Overview from '@/components/browse/Overview.vue'
 
 Vue.use(Router)
 const originalPush = Router.prototype.push
@@ -50,6 +51,10 @@ export default new Router({
         {
           path: 'hangout',
           component: Hangout
+        },
+        {
+          path: 'overview',
+          component: Overview
         }
       ]
     }
