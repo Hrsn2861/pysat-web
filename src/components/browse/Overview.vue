@@ -10,10 +10,10 @@
         <el-card class="box-card">
           <el-carousel
             indicator-position="outside"
-            style="width:40vw!important;margin:0%;padding:0%;"
+            style="width:42vw!important;height:15vw !important;overflow:hidden;margin:0%;padding:0%;"
           >
-            <el-carousel-item v-for="item in 3" :key="item">
-              <h1>不知道不知道</h1>
+            <el-carousel-item v-for="item in 3" :key="item" style="height:15vw !important;">
+              <h1>跑马灯不会做</h1>
             </el-carousel-item>
           </el-carousel>
         </el-card>
@@ -86,6 +86,7 @@ h1 {
   color: white;
   font-size: 5vh;
   user-select: none;
+  margin: 10%;
 }
 
 .box-card:hover,
