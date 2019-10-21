@@ -1,15 +1,16 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tabs v-model='activeName'>
-        <el-tab-pane label="全部" name="first">
-          <ProgramTable></ProgramTable>
+      <el-tabs v-model="activeTabName">
+        <el-tab-pane label="全部程序" name="tabAll">
+          <ProgramTable v-bind:displayData="TableData"></ProgramTable>
           <!-- TODO ： 使用PROPS把参数传进去 -->
+          <!-- 用了这个东西看起来只需要我们在这个页面获取到tableData，然后通过v-bind绑定到ProgramTable就可以呈现了 -->
         </el-tab-pane>
-        <el-tab-pane label="最新" name="second">
+        <el-tab-pane label="最新程序" name="tabNew">
           <ProgramTable></ProgramTable>
         </el-tab-pane>
-        <el-tab-pane label="最热" name="third">
+        <el-tab-pane label="最热程序" name="tabHot">
           <ProgramTable></ProgramTable>
         </el-tab-pane>
       </el-tabs>
@@ -31,7 +32,33 @@ export default {
   },
   data () {
     return {
-      activeName: 'first'
+      activeTabName: 'tabAll',
+      TableData: [
+        {
+          date: '2016-05-02',
+          user: '陈旭',
+          program: '计算机组成原理HW3',
+          avg_rating: 4.0
+        },
+        {
+          date: '2016-05-02',
+          user: '陈浩展',
+          program: '编译原理PA1-b',
+          avg_rating: 3.3
+        },
+        {
+          date: '2016-05-02',
+          user: '禹含',
+          program: '软件工程',
+          avg_rating: 2.7
+        },
+        {
+          date: '2016-05-02',
+          user: '庆语其',
+          program: '信号处理原理',
+          avg_rating: 3.6
+        }
+      ]
     }
   },
   methods: {
