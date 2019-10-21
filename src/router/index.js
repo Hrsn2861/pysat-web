@@ -11,6 +11,7 @@ import Hangout from '@/components/browse/Hangout.vue'
 import Overview from '@/components/browse/Overview.vue'
 import StarProgram from '@/components/star/Program.vue'
 import StarUpload from '@/components/star/Upload.vue'
+import Chat from '@/components/chat/ChatLayout.vue'
 
 // import { start } from 'repl'
 
@@ -67,6 +68,10 @@ export default new Router({
         {
           path: 'star/upload',
           component: StarUpload
+        },
+        {
+          path: 'chat',
+          component: Chat
         }
       ]
     }

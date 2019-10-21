@@ -1,5 +1,4 @@
 import * as types from './mutation-types'
-
 export const mutations = {
   // 这里的data指提交时：
   // 从/api/login传回的user对象，其中包含name,messeage等信息
@@ -46,6 +45,25 @@ export const mutations = {
   },
   [types.TOGGLE_DEVICE] (state, device) {
     state.device = device
+  },
+
+  // Chat-system mutations
+  [types.CHANGE_CURRENT_SESSION_ID] (state, id) {
+    state.chatSystem.currentSessionId = id
+  },
+  [types.ADD_MESSAGE] (state, msg) {
+    state.chatSystem.sessions[state.chatSystem.currentSessionId - 1].messages.push({
+      content: msg,
+      date: new Date(),
+      self: true // Self = true看起来是在向外发送消息
+    })
+  },
+  [types.INIT_DATA] (state) {
+    let data = localStorage.getItem('vue-chat-session')
+    // console.log(data)
+    if (data) {
+      state.chatSystem.sessions = JSON.parse(data)
+    }
   }
 }
 
