@@ -27,6 +27,7 @@ const actions = {
     commit(types.CHECKSESSION, data)
   },
 
+  // Used in responsive-view
   ToggleSideBar ({ commit }) {
     commit(types.TOGGLE_SIDEBAR)
   },
@@ -35,6 +36,17 @@ const actions = {
   },
   ToggleDevice ({ commit }, device) {
     commit(types.TOGGLE_DEVICE, device)
+  },
+
+  // Used in chat system
+  initData ({ commit }) {
+    commit(types.INIT_DATA)
+  },
+  addMessage ({ commit }, msg) {
+    commit(types.ADD_MESSAGE, msg)
+  },
+  changeCurrentSessionID ({ commit }, id) {
+    commit(types.CHANGE_CURRENT_SESSION_ID, id)
   }
 }
 

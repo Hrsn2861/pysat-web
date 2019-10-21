@@ -42,6 +42,10 @@
         <i class="el-icon-service"></i>
         <span slot="title">个人信息</span>
       </el-menu-item>
+      <el-menu-item index="/chat">
+        <i class="el-icon-message"></i>
+        <span slot="title">消息系统</span>
+      </el-menu-item>
       <el-menu-item >
         <i class="el-icon-s-opportunity"></i>
         <span slot="title">线上教程</span>
