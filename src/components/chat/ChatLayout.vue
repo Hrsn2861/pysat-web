@@ -19,7 +19,7 @@
 import card from '@/components/chat/Card.vue'
 import list from '@/components/chat/List.vue'
 import message from '@/components/chat/Message.vue'
-import usertext from '@/components/chat/Usertext.vue'
+import usertext from '@/components/chat/UserText.vue'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 
 export default {
