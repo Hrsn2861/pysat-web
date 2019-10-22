@@ -41,7 +41,7 @@ const state = {
         img: '../../assets/logo.png'
       },
       messages: [{
-        content: 'Hi，我是webpack哦',
+        content: 'Hi，这里是PYSAT官方，欢迎向我举报用户/提出意见',
         date: now
       }]
     }],

@@ -30,31 +30,36 @@ export default {
 
 <style lang="scss" scoped>
 #list {
+
+  $avatar-size: 35px;
+
   ul {
     padding: 0%;
   }
   li {
     list-style: none;
-    padding: 12px 15px;
-    border-bottom: 1px solid #292c33;
+    padding: 5px 15px;
+    border-bottom: 2px solid #292c33;
     cursor: pointer;
     &:hover {
-      background-color: rgba(255, 255, 255, 0.03);
+      background-color: rgba(255, 255, 255, 0.02);
+      transition-duration: 0.5s;
     }
-  }
-  li.active {
-    /*注意这个是.不是冒号:*/
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  .avatar {
-    border-radius: 2px;
-    width: 30px;
-    height: 30px;
-    vertical-align: middle;
-  }
-  .name {
-    display: inline-block;
-    margin-left: 15px;
+    &.active {
+      /*注意这个是.不是冒号:*/
+      background-color: rgba(255, 255, 255, 0.1);
+      transition-duration: 0.5s;
+    }
+    .avatar {
+      border-radius: 2px;
+      width: $avatar-size;
+      height: $avatar-size;
+      vertical-align: middle;
+    }
+    .name {
+      display: inline-block;
+      margin-left: 15px;
+    }
   }
 }
 </style>
