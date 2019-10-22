@@ -43,6 +43,7 @@ export default {
 
 <style lang="scss" scoped>
 #chat-layout {
+  user-select: none;
   padding: 0%;
   margin: 0%;
   width: 70vw;
