@@ -1,16 +1,16 @@
 <template>
   <el-row id="userarea">
-    <el-col :span="22">
-      <textarea placeholder="按 Ctrl + Enter 发送" v-model="content" v-on:keyup="addMessage"></textarea>
+    <el-col :span="24">
+      <textarea placeholder="这里输入消息，按 Enter 发送, 按 ctrl + Enter 替对面发送" v-model="content" v-on:keyup="addMessage"></textarea>
     </el-col>
-    <el-col :span="2" :offset="1">
+    <!-- <el-col :span="1" :offset="1" >
       <el-row>
-        <el-button round icon="el-icon-position" @click="addMessageFromButton()"></el-button>
+        <el-button icon="el-icon-position" @click="addMessageFromButton()"></el-button>
       </el-row>
       <el-row>
-        <el-button round icon="el-icon-loading" @click="addMessageOpposite()"></el-button>
+        <el-button icon="el-icon-loading" @click="addMessageOpposite()"></el-button>
       </el-row>
-    </el-col>
+    </el-col> -->
   </el-row>
   <!-- <div id="usertext">
     <textarea placeholder="按 Ctrl + Enter 发送" v-model="content" v-on:keyup="addMessage"></textarea>
@@ -41,8 +41,9 @@ export default {
     },
     addMessage (e) {
       if (e.ctrlKey && e.keyCode === 13 && this.content.length) {
-        this.$store.dispatch('addMessage', this.content)
-        this.content = ''
+        this.addMessageOpposite()
+      } else if (e.keyCode === 13 && this.content.length) {
+        this.addMessageFromButton()
       }
     }
   }
@@ -56,8 +57,8 @@ $button-num : 2;
 #userarea {
   position: absolute;
   bottom: 0;
-  right: 0;
-  width: 99.5%;
+  right: 2px;
+  width: 100%;
   height: 20%;
   display: flex;
   // border-top: solid 2px rgb(121, 120, 120);
@@ -70,22 +71,26 @@ $button-num : 2;
 
     width: 100%;
     border: 0;
-    background-color: rgba($color: rgb(255, 255, 255), $alpha: 0.1);
-    border: 4px solid rgb(39, 46, 54);
+    background-color: rgba($color: rgb(49, 49, 49), $alpha: 0.15);
+    // border: 10px solid rgb(39, 46, 54);
+    border-top: 15px solid rgb(39, 46, 54);
+    border-right: 0px;
     transition-duration: 1s;
     &:hover {
-      border: 4px solid rgb(32, 118, 216);
+      border-top: 15px solid rgb(32, 118, 216);
       transition-duration: 0.3s;
     }
     &:focus {
-      border: 4px solid rgb(241, 30, 146);
+      border-top: 15px solid rgb(241, 30, 146);
       transition-duration: 0.3s;
       outline: none;
-      background-color: rgba($color: #ffffff, $alpha: 0.7);
+      color: aliceblue;
+      background-color: rgba($color: rgb(49, 49, 49), $alpha: 0.8);
     }
     &:focus::placeholder {
+      color: rgb(167, 166, 166);
       transition-duration: 1s;
-      font-size: 0.8em;
+      font-size: 0.7em;
     }
   }
   .el-row {
@@ -95,11 +100,11 @@ $button-num : 2;
     justify-content: center;
 
     .el-button {
-      margin-right: 15%;
+      margin-right: 25%;
       padding: 2px;
       height: 80%;
-      width: 80%;
-      border: 4px solid rgb(48, 49, 51);
+      width: 100%;
+      border: 1px solid rgb(48, 49, 51);
       &:hover {
       border: 4px solid rgb(32, 118, 216);
       transition-duration: 0.3s;
