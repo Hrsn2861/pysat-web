@@ -24,6 +24,7 @@
 
 <script>
 import ChatMixin from './ChatMixin.js'
+import Velocity from 'velocity-animate'
 export default {
   mixins: [ChatMixin],
   name: 'message',

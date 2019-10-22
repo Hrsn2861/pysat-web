@@ -5,10 +5,10 @@
     </el-col>
     <el-col :span="2">
       <el-row>
-        <el-button type="primary" icon="el-icon-edit" @click="addMessageFromButton()">发送</el-button>
+        <el-button type="primary" icon="el-icon-position" @click="addMessageFromButton()"></el-button>
       </el-row>
       <el-row>
-        <el-button type="warning" @click="addMessageOpposite()">反向发送</el-button>
+        <el-button type="warning" icon="el-icon-loading" @click="addMessageOpposite()"></el-button>
       </el-row>
     </el-col>
   </el-row>
