@@ -7,6 +7,38 @@
 }
 
 
+.slide-up-self-enter-active,
+.slide-up-self-leave-active {
+  transition: all 0.5s;
+}
+.slide-up-self-enter{
+  opacity: 0;
+  transition-duration: 0.5s;
+  /* transform: translate3d( 0, 0, 100%); */
+  transform: translateX(100px);
+}
+.custom-appear{
+  opacity: 0;
+  transition-duration: 1s;
+}
+
+
+
+.appear-enter-active,
+.appear-leave-active {
+  transition: all 0.5s;
+}
+.appear-enter{
+  opacity: 0;
+  /* transform: translate3d( 0, 0, 100%); */
+}
+
+/* .slide-up-leave{
+  transform: translate3d( 0, 0, 100%);
+} */
+
+
+
 .slide-right-enter-active,
   .slide-right-leave-active{
 

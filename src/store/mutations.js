@@ -58,6 +58,13 @@ export const mutations = {
       self: true // Self = true看起来是在向外发送消息
     })
   },
+  [types.ADD_MESSAGE_OPPOSITE] (state, msg) {
+    state.chatSystem.sessions[state.chatSystem.currentSessionId - 1].messages.push({
+      content: msg,
+      date: new Date(),
+      self: false // Self = true看起来是在向外发送消息
+    })
+  },
   [types.INIT_DATA] (state) {
     let data = localStorage.getItem('vue-chat-session')
     // console.log(data)

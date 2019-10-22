@@ -45,6 +45,9 @@ const actions = {
   addMessage ({ commit }, msg) {
     commit(types.ADD_MESSAGE, msg)
   },
+  addMessageOpposite ({ commit }, msg) {
+    commit(types.ADD_MESSAGE_OPPOSITE, msg)
+  },
   changeCurrentSessionID ({ commit }, id) {
     commit(types.CHANGE_CURRENT_SESSION_ID, id)
   }

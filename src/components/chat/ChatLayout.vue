@@ -46,7 +46,7 @@ export default {
   padding: 0%;
   margin: 0%;
   width: 70vw;
-  height: 75vh;
+  height: 70vh;
   overflow: hidden;
   border-radius: 10px;
   .main {
@@ -61,7 +61,7 @@ export default {
   .sidebar {
     float: left;
     color: #f4f4f4;
-    background-color: #2e3238;
+    background-color: #272727;
     width: 200px;
   }
 }

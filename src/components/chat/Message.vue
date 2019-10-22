@@ -2,21 +2,27 @@
   <div id="message" v-scroll-bottom="sessions">
     <ul v-for="item in sessions" v-bind:key="item.id" v-if="currentSessionId===item.id">
       <!-- eslint-disable-next-line vue/require-v-for-key -->
-      <li v-for="(entry, index) in item.messages" v-bind:key="index" >
-        <p class="time">
-          <span>{{entry.date | time}}</span>
-        </p>
-        <div class="main" :class="{self:entry.self}">
-          <img class="avatar" src="../../assets/cx.png" alt />
-          <p class="text">{{entry.content}}</p>
-        </div>
-      </li>
+      <transition-group
+        v-on:appear="customAppear"
+        v-on:before-enter="customBeforeEnter"
+        v-on:enter="customEnter"
+      >
+        <li v-for="(entry, index) in item.messages" v-bind:key="index">
+          <p class="time">
+            <!-- <span>{{entry.date | time}}</span> -->
+            <span>{{entry.date|time}}</span>
+          </p>
+          <div class="main" :class="{self:entry.self}">
+            <img class="avatar" src="../../assets/cx.png" alt />
+            <p class="text">{{entry.content}}</p>
+          </div>
+        </li>
+      </transition-group>
     </ul>
   </div>
 </template>
 
 <script>
-
 import ChatMixin from './ChatMixin.js'
 export default {
   mixins: [ChatMixin],
@@ -26,12 +32,28 @@ export default {
       img: '../../src/assets/logo.png'
     }
   },
+  methods: {
+    // Velocity这个动画我已经在最外面的index.html引入了
+    customAppear: function (el, done) {
+      Velocity(el, { opacity: 0, fontSize: '1em' }, { duration: 0 })
+      Velocity(el, { opacity: 1, fontSize: '1em' }, { duration: 400 })
+    },
+    customBeforeEnter: function (el, done) {},
+
+    customEnter: function (el) {
+      // 大概这里指的是新的东西enter之后做的动画
+      Velocity(el, { opacity: 0 }, { duration: 0 })
+      Velocity(el, { opacity: 1 }, { duration: 400 })
+      Velocity(el, { opacity: 1, fontSize: '1.5em' }, { duration: 300 })
+      Velocity(el, { opacity: 1, fontSize: '1em' }, { duration: 300 })
+    }
+  },
   filters: {
     time (date) {
       if (date) {
         date = new Date(date)
       }
-      return `${date.getHours()}:${date.getMinutes()}`
+      return `${date.getMonth()}月${date.getDate()}日 ${date.getHours()}:${date.getMinutes()}`
     }
   },
   directives: {
@@ -49,13 +71,15 @@ export default {
 
 <style lang="scss" scoped>
 #message {
+  overflow-x: hidden;
   padding: 15px;
   max-height: 68%;
   overflow-y: scroll;
+  user-select: none;
   ul {
     list-style-type: none;
     li {
-      margin-bottom: 15px;
+      margin-bottom: 5px;
     }
   }
   .time {
@@ -67,43 +91,43 @@ export default {
       font-size: 15px;
       color: #fff;
       background-color: #dcdcdc;
-      border-radius: 2px;
+      border-radius: 5px;
     }
   }
   .main {
     .avatar {
       float: left;
-      margin: 0 10px 0 0;
-      border-radius: 3px;
-      width: 40px;
-      height: 40px;
-      // border: 1px solid rgba(40, 40, 40, 0.5)
+      margin: 0 15px 0 0;
+      border-radius: 6px;
+      width: 50px;
+      height: 50px;
+      // border: 2px solid rgba(0, 255, 255, 0.5)
     }
     .text {
       display: inline-block;
       padding: 0 10px;
       max-width: 80%;
       background-color: #fafafa;
-      border-radius: 4px;
-      line-height: 40px;
+      border-radius: 10px;
+      line-height: 50px;
     }
   }
   .self {
     text-align: right;
     .avatar {
       float: right;
-      margin: 0 0 0 10px;
-      border-radius: 3px;
-      width: 40px;
-      height: 40px;
+      margin: 0 0 0 15px;
+      border-radius: 6px;
+      width: 50px;
+      height: 50px;
     }
     .text {
       display: inline-block;
       padding: 0 10px;
       max-width: 80%;
-      background-color: #b2e281;
-      border-radius: 4px;
-      line-height: 40px;
+      background-color: #85bcf3;
+      border-radius: 10px;
+      line-height: 50px;
     }
   }
 }
