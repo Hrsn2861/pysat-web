@@ -3,12 +3,12 @@
     <el-col :span="22">
       <textarea placeholder="按 Ctrl + Enter 发送" v-model="content" v-on:keyup="addMessage"></textarea>
     </el-col>
-    <el-col :span="2">
+    <el-col :span="2" :offset="1">
       <el-row>
-        <el-button type="primary" icon="el-icon-position" @click="addMessageFromButton()"></el-button>
+        <el-button round icon="el-icon-position" @click="addMessageFromButton()"></el-button>
       </el-row>
       <el-row>
-        <el-button type="warning" icon="el-icon-loading" @click="addMessageOpposite()"></el-button>
+        <el-button round icon="el-icon-loading" @click="addMessageOpposite()"></el-button>
       </el-row>
     </el-col>
   </el-row>
@@ -66,29 +66,50 @@ $button-num : 2;
   }
   textarea {
     height: 80%;
-    padding: 2%;
+    padding: 1%;
+
     width: 100%;
     border: 0;
-    border: 2px solid rgb(39, 46, 54);
+    background-color: rgba($color: rgb(255, 255, 255), $alpha: 0.1);
+    border: 4px solid rgb(39, 46, 54);
+    transition-duration: 1s;
     &:hover {
-      border: 2px solid rgb(17, 93, 192);
+      border: 4px solid rgb(32, 118, 216);
       transition-duration: 0.3s;
     }
     &:focus {
-      border: 2px solid rgb(241, 30, 146);
+      border: 4px solid rgb(241, 30, 146);
       transition-duration: 0.3s;
+      outline: none;
+      background-color: rgba($color: #ffffff, $alpha: 0.7);
     }
     &:focus::placeholder {
       transition-duration: 1s;
-      font-size: 0.1em;
+      font-size: 0.8em;
     }
   }
   .el-row {
     height: 100% / $button-num;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .el-button {
-      height: 100%;
-      width: 100%;
+      margin-right: 15%;
+      padding: 2px;
+      height: 80%;
+      width: 80%;
+      border: 4px solid rgb(48, 49, 51);
+      &:hover {
+      border: 4px solid rgb(32, 118, 216);
+      transition-duration: 0.3s;
+      }
+      &:active {
+      border: 4px solid rgb(241, 30, 146);
+      transition-duration: 0.3s;
+      outline: none;
+    }
+
     }
   }
 }
