@@ -36,8 +36,8 @@ export default {
   methods: {
     // Velocity这个动画我已经在最外面的index.html引入了
     customAppear: function (el, done) {
-      Velocity(el, { opacity: 0, fontSize: '1em' }, { duration: 0 })
-      Velocity(el, { opacity: 1, fontSize: '1em' }, { duration: 400 })
+      Velocity(el, { opacity: 0 }, { duration: 0 })
+      Velocity(el, { opacity: 1 }, { duration: 400 })
     },
     customBeforeEnter: function (el, done) {},
 
@@ -45,8 +45,8 @@ export default {
       // 大概这里指的是新的东西enter之后做的动画
       Velocity(el, { opacity: 0 }, { duration: 0 })
       Velocity(el, { opacity: 1 }, { duration: 400 })
-      Velocity(el, { opacity: 1, fontSize: '1.5em' }, { duration: 300 })
-      Velocity(el, { opacity: 1, fontSize: '1em' }, { duration: 300 })
+      Velocity(el, { opacity: 1, fontSize: '1.3em' }, { duration: 300 })
+      // Velocity(el, { opacity: 1, fontSize: '1em' }, { duration: 300 })
     }
   },
   filters: {
