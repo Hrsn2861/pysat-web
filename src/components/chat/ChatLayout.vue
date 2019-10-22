@@ -1,6 +1,6 @@
 <template>
   <div class="main-div">
-    <el-card class="box-card">
+    <div class="box-card">
       <div id="chat-layout">
         <div class="sidebar">
           <card></card>
@@ -11,7 +11,7 @@
           <usertext></usertext>
         </div>
       </div>
-    </el-card>
+    </div>
   </div>
 </template>
 
@@ -46,8 +46,8 @@ export default {
   user-select: none;
   padding: 0%;
   margin: 0%;
-  width: 70vw;
-  height: 70vh;
+  width: 75vw;
+  height: 73vh;
   overflow: hidden;
   border-radius: 10px;
   .main {
@@ -68,6 +68,7 @@ export default {
 }
 
 .box-card {
+  border-radius: 15px;
   align-self: center;
   height: auto;
   width: auto;

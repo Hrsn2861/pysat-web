@@ -67,7 +67,7 @@ export default {
     }
     &:focus::placeholder {
       transition-duration: 1s;
-      font-size: 0.5mm;
+      font-size: 0.8em;
     }
   }
 }
