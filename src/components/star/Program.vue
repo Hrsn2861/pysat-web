@@ -1,17 +1,12 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tabs v-model="activeTabName">
-        <el-tab-pane label="全部程序" name="tabAll">
+      <el-tabs v-model="activeTabName" @tab-click="getProgramList()">
+        <el-tab-pane label="最新程序" name="tabNew" >
           <ProgramTable v-bind:displayData="TableData"></ProgramTable>
-          <!-- TODO ： 使用PROPS把参数传进去 -->
-          <!-- 用了这个东西看起来只需要我们在这个页面获取到tableData，然后通过v-bind绑定到ProgramTable就可以呈现了 -->
-        </el-tab-pane>
-        <el-tab-pane label="最新程序" name="tabNew">
-          <ProgramTable></ProgramTable>
         </el-tab-pane>
         <el-tab-pane label="最热程序" name="tabHot">
-          <ProgramTable></ProgramTable>
+          <ProgramTable v-bind:displayData="TableData"></ProgramTable>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -30,40 +25,35 @@ export default {
   beforeCreate () {
     checkSession(this, '', '/')
   },
+  mounted: function () {
+    this.getProgramList()
+  },
   data () {
     return {
-      activeTabName: 'tabAll',
+      activeTabName: 'tabNew',
       TableData: [
         {
-          date: '2016-05-02',
-          user: '陈旭',
-          program: '计算机组成原理HW3',
-          avg_rating: 4.0
+          upload_time: '2016-05-02',
+          author: '陈旭',
+          name: '面向陈旭程序设计基础',
+          likes: 250,
+          downloads: 250
         },
         {
-          date: '2016-05-02',
-          user: '陈浩展',
-          program: '编译原理PA1-b',
-          avg_rating: 3.3
-        },
-        {
-          date: '2016-05-02',
-          user: '禹含',
-          program: '软件工程',
-          avg_rating: 2.7
-        },
-        {
-          date: '2016-05-02',
-          user: '庆语其',
-          program: '信号处理原理',
-          avg_rating: 3.6
+          upload_time: '6102-05-02',
+          author: '顾掀宇',
+          name: '编译原理PA1-B',
+          likes: -100,
+          downloads: -100
         }
+
       ]
     }
   },
   methods: {
     // 啊这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
-    getProgramData (type) {
+    getProgramList () {
+      console.log(this.activeTabName)
     }
   }
 }

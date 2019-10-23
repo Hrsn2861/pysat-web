@@ -4,15 +4,16 @@
     style="width: 100%"
     :default-sort="{prop: 'date', order: 'descending'}"
   >
-    <el-table-column prop="date" label="日期" sortable width="180"></el-table-column>
-    <el-table-column prop="user" label="用户" width="180"></el-table-column>
-    <el-table-column prop="program" label="程序" :formatter="formatter" width="200"></el-table-column>
-    <el-table-column prop="avg_rating" label="分数"></el-table-column>
-    <el-table-column label="点赞" width="150">
-      <el-button  v-bind:class="{active : tableStatus.likeIconOn}" icon="el-icon-star-off" circle @click="likeOrDislike()"></el-button>
+    <el-table-column prop="upload_time" label="上传时间" width="180"></el-table-column>
+    <el-table-column prop="author" label="作者" width="180"></el-table-column>
+    <el-table-column prop="name" label="程序名" :formatter="formatter" width="200"></el-table-column>
+    <el-table-column prop="likes" label="点赞数" width="180"></el-table-column>
+    <el-table-column prop="downloads" label="下载数" ></el-table-column>
+    <el-table-column label="点赞" width="150" fixed="right">
+      <el-button  v-bind:class="{active : tableStatus.likeIconOn}" icon="el-icon-star-off" circle @click="Like()"></el-button>
     </el-table-column>
-    <el-table-column prop="avg_rating" label="打分" width="150">
-      <el-rate></el-rate>
+    <el-table-column label="下载" width="150" fixed="right">
+      <el-button  v-bind:class="{active : tableStatus.likeIconOn}" icon="el-icon-star-off" circle @click="Download()"></el-button>
     </el-table-column>
   </el-table>
 </template>
@@ -32,7 +33,7 @@ export default {
   },
   methods: {
     formatter (row, column) {
-      return row.program
+      return row.name
     },
     likeOrdislike () {
       // unimplemented()!
