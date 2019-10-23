@@ -5,7 +5,7 @@ import actions from './actions'
 import getters from './getters'
 
 Vue.use(Vuex)
-const now = new Date()
+// const now = new Date()
 
 const state = {
   token: '',
@@ -18,35 +18,16 @@ const state = {
   device: 'desktop',
 
   chatSystem: {
-    sessions: [{
-      id: 1,
-      user: {
-        name: '陈旭',
-        img: '../../assets/cx.png'
-      },
-      messages: [{
-        content: '我明天都是课',
-        date: now
-      }, {
-        content: '不过也无所谓',
-        date: now
-      }, {
-        content: '有人出来学习吗',
-        date: now
-      }]
-    }, {
-      id: 2,
-      user: {
-        name: 'PYSAT官方',
-        img: '../../assets/logo.png'
-      },
-      messages: [{
-        content: 'Hi，这里是PYSAT官方，欢迎向我举报用户/提出意见',
-        date: now
-      }]
-    }],
-    currentSessionId: 1,
-    filterKey: ''
+    sessions: [],
+    msgCount: 0, // 未读消息总数
+    currentSessionId: 0,
+    filterKey: '',
+    currentSession: {
+      chatUser: '',
+      totCount: 0,
+      nowCount: 0,
+      msgList: []
+    }
   }
 }
 

@@ -9,8 +9,8 @@
       >
         <!--   :class="[item.id === currentSessionId ? 'active':'']" -->
         <!-- <img class="avatar" :src="getImageFromURL(item.user.img)" :alt="item.user.name" /> -->
-        <img class="avatar" src="../../assets/cx.png" :alt="item.user.name" />
-        <p class="name">{{item.user.name}}</p>
+        <img class="avatar" src="../../assets/cx.png" :alt="item.id" />
+        <p class="name">{{item.user}}</p>
         <!-- <img :src="getImageFromURL(item.user.img)"> -->
       </li>
     </ul>

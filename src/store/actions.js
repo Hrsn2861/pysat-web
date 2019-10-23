@@ -8,6 +8,12 @@ const actions = {
   // }
   // 在.vue文件中通过store.dispatch('setToken') 即可触发状态改变了
   // 这里的data是因为提交mutations时需要获取从/api/login传回的user对象
+
+  // setUser canbe found in login.vue
+  setUser (context, identity) {
+    context.commit(types.SETUSER, identity)
+  },
+
   setToken (context, data) {
     context.commit(types.LOGIN, data)
   }, // 啊这里两种写法都对
@@ -39,16 +45,17 @@ const actions = {
   },
 
   // Used in chat system
-  initData ({ commit }) {
-    commit(types.INIT_DATA)
+  initData ({ commit }, data) {
+    commit(types.INIT_DATA, data)
   },
-  addMessage ({ commit }, msg) {
-    commit(types.ADD_MESSAGE, msg)
+  setCurrentSessionData ({commit}, data) {
+    commit(types.SET_CURRENT_SESSION_DATA, data)
   },
-  addMessageOpposite ({ commit }, msg) {
-    commit(types.ADD_MESSAGE_OPPOSITE, msg)
+
+  addMessageToCurrentSession ({ commit }, msg) {
+    commit(types.ADD_MESSAGE_TO_CURRENT_SESSION, msg)
   },
-  changeCurrentSessionID ({ commit }, id) {
+  changeCurrentSessionId ({ commit }, id) {
     commit(types.CHANGE_CURRENT_SESSION_ID, id)
   }
 }
