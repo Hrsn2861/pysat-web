@@ -1,10 +1,10 @@
 <template>
   <el-table
-    :data="tableData"
+    :data="displayData"
     style="width: 100%"
     :default-sort="{prop: 'date', order: 'descending'}"
   >
-    <el-table-column prop="submit_time" label="提交时间" width="180"></el-table-column>
+    <el-table-column prop="submit_time" label="提交时间" width="300"></el-table-column>
     <el-table-column prop="name" label="程序名" :formatter="formatter" width="200"></el-table-column>
     <el-table-column prop="author" label="作者" width="180"></el-table-column>
 
@@ -19,7 +19,6 @@ export default {
   data () {
     // TODO : 使用PROPS接受传递进来的table参数然后显示
     return {
-      tableData: this.displayData,
       tableStatus: {
         likeIconOn: false
       }
