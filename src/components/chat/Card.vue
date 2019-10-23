@@ -48,6 +48,7 @@ export default {
   .search {
     background: #26292e;
     height: 30px;
+    width: 75%;
     line-height: 30px;
     margin-top: 5px;
     // margin: 0%;
