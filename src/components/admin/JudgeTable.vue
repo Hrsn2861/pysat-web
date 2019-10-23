@@ -62,6 +62,10 @@ export default {
       return this.statusDict[row.status.toString()]
     },
     Download (index, row) {
+      if (row.status === 2) {
+        this.$message.error('您已经审核通过了！')
+        return
+      }
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         codeid: row.id
