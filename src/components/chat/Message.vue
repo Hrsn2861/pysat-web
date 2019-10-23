@@ -7,10 +7,10 @@
         v-on:enter="customEnter"
       >
         <li v-for="(entry, index) in currentSession" v-bind:key="index">
-          <p class="time">
+          <center><p class="time">
             <!-- <span>{{entry.date | time}}</span> -->
             <span>{{entry.date}}</span>
-          </p>
+          </p></center>
           <div class="main" :class="{self:entry.self}">
             <img class="avatar" src="../../assets/cx.png" alt />
             <p class="text">{{entry.content}}</p>
@@ -83,8 +83,9 @@ export default {
     }
   }
   .time {
-    text-align: center;
-    margin: 7px 0;
+    // text-align: center;
+    // margin: 0px 0;
+    // margin-top: 3px;
     > span {
       display: inline-block;
       padding: 0 18px;
@@ -92,6 +93,7 @@ export default {
       color: #fff;
       background-color: #dcdcdc;
       border-radius: 5px;
+      margin: 15px;
     }
   }
   .main {

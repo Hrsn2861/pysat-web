@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     addMessageFromButton () {
-      if (this.content.length) {
+      if (this.content.length !== 0) {
         let queryJson = {
           token: this.$store.getters.getUserToken,
           username: this.$store.getters.getUserNameFromSessionId,
@@ -65,7 +65,7 @@ export default {
     addMessage (e) {
       if (e.ctrlKey && e.keyCode === 13) {
         this.changeCurrentSessionId(this.currentSessionId)
-      } else if (e.keyCode === 13 && this.content.length) {
+      } else if (e.keyCode === 13 && this.content.length !== 0) {
         this.addMessageFromButton()
       }
     }
