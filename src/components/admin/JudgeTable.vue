@@ -122,7 +122,7 @@ export default {
               row.status = 2
             } else {
               row.status = -1
-              this.tableData.splice(index, 1)
+              this.displayData.splice(index, 1)
             }
           } else {
             this.$message.error(`${res.data.msg}`)
@@ -155,7 +155,7 @@ export default {
             console.log(res.data.data)
             // 需要更新row.status
             row.status = 3
-            this.tableData.splice(index, 1)
+            this.displayData.splice(index, 1)
           } else {
             this.$message.error(`${res.data.msg}`)
           }
