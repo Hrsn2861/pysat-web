@@ -28,13 +28,13 @@ export default {
         {
           submit_time: '2016-05-02',
           name: '面向陈旭程序设计基础',
-          status: '未通过审核',
+          status: -1,
           id: 'imchenxulaoshi'
         },
         {
           submit_time: '6102-05-02',
           name: '编译原理PA1-B',
-          status: '审核中',
+          status: 1,
           id: 'imxianyu'
         }
 

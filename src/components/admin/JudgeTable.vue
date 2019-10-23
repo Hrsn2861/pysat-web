@@ -7,7 +7,7 @@
     <el-table-column prop="submit_time" label="提交时间" width="180"></el-table-column>
     <el-table-column prop="author" label="作者" width="180"></el-table-column>
     <el-table-column prop="name" label="程序名" :formatter="formatter" width="200"></el-table-column>
-    <el-table-column prop="status" label="审核状态"  width="200"></el-table-column>
+    <el-table-column prop="status" label="审核状态"  width="200" :formatter="statusFormatter"></el-table-column>
 
     <el-table-column label="下载" width="150" fixed="right">
       <template slot-scope="scope">
@@ -45,12 +45,22 @@ export default {
       tableStatus: {
         likeIconOn: false
       },
-      buttonText: '下载'
+      statusDict: {
+        '-2': '未通过语法审核',
+        '-1': '未通过功能审核',
+        '0': '等待审核',
+        '1': '审核中',
+        '2': '通过审核',
+        '3': '已上传'
+      }
     }
   },
   methods: {
     formatter (row, column) {
       return row.name
+    },
+    statusFormatter (row, column) {
+      return this.statusDict[row.status.toString()]
     },
     Download (index, row) {
       let tmpdata = {
