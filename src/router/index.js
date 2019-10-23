@@ -7,9 +7,12 @@ import Login from '@/components/welcomePage/Login.vue'
 import Navi from '@/components/welcomePage/Navigation.vue'
 import MyInfo from '@/components/dashboard/MyInfo.vue'
 import ViewUser from '@/components/admin/ViewUser.vue'
+import Judge from '@/components/admin/Judge.vue'
 import Hangout from '@/components/browse/Hangout.vue'
 import Overview from '@/components/browse/Overview.vue'
 import StarProgram from '@/components/star/Program.vue'
+import StarQueue from '@/components/star/Queue.vue'
+import StarMine from '@/components/star/Mine.vue'
 import StarUpload from '@/components/star/Upload.vue'
 import Chat from '@/components/chat/ChatLayout.vue'
 
@@ -50,8 +53,12 @@ export default new Router({
 
         },
         {
-          path: 'admin',
+          path: 'admin/userlist',
           component: ViewUser
+        },
+        {
+          path: 'admin/judge',
+          component: Judge
         },
         {
           path: 'hangout',
@@ -64,6 +71,14 @@ export default new Router({
         {
           path: 'star/program',
           component: StarProgram
+        },
+        {
+          path: 'star/queue',
+          component: StarQueue
+        },
+        {
+          path: 'star/mine',
+          component: StarMine
         },
         {
           path: 'star/upload',
