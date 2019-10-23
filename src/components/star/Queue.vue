@@ -51,6 +51,7 @@ export default {
         tmpdata,
         res => {
           if (res.data.status === 1) {
+            console.log(res)
             console.log(res.data.data)
             this.tableData = res.data.data.codelist
           } else {

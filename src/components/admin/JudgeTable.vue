@@ -1,6 +1,6 @@
 <template>
   <el-table
-    :data="tableData"
+    :data="displayData"
     style="width: 100%"
     :default-sort="{prop: 'date', order: 'descending'}"
   >
@@ -41,7 +41,6 @@ export default {
   data () {
     // TODO : 使用PROPS接受传递进来的table参数然后显示
     return {
-      tableData: this.displayData,
       tableStatus: {
         likeIconOn: false
       },
