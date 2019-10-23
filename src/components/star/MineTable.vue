@@ -4,7 +4,7 @@
     style="width: 100%"
     :default-sort="{prop: 'date', order: 'descending'}"
   >
-    <el-table-column prop="submit_time" label="提交时间" width="180"></el-table-column>
+    <el-table-column prop="submit_time" label="提交时间" width="300"></el-table-column>
     <el-table-column prop="name" label="程序名" :formatter="formatter"></el-table-column>
     <el-table-column prop="status" label="审核状态" width="180" fixed="right" :formatter="statusFormatter"></el-table-column>
 
