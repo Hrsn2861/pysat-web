@@ -55,6 +55,7 @@ export default {
   },
   methods: {
     // 啊这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
+    // 好的，收到
     getProgramList () {
       console.log(this.activeTabName)
       let tmpdata = {

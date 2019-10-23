@@ -64,7 +64,26 @@ export default {
       )
     },
     Download (row) {
-      // unimplemented()!
+      let tmpdata = {
+        token: this.$store.getters.getUserToken,
+        codeid: row.codeid
+      }
+      console.log(tmpdata)
+      myGet(
+        '/api/program/user/download',
+        tmpdata,
+        res => {
+          if (res.data.status === 1) {
+            console.log(res.data.data)
+            this.tableData = res.data.data.codelist
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
     }
   }
 }
