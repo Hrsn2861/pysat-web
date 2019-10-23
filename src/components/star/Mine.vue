@@ -1,7 +1,7 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <MineTable v-bind:displayData="tableData"></MineTable>
+      <MineTable :displayData="tableData" ref="MineTable"></MineTable>
     </el-card>
   </div>
 </template>
@@ -51,8 +51,9 @@ export default {
         tmpdata,
         res => {
           if (res.data.status === 1) {
-            console.log(res.data.data)
             this.tableData = res.data.data.codelist
+            console.log(this.tableData)
+            console.log(this.$refs.MineTable.displayData)
           } else {
             this.$message.error(`${res.data.msg}`)
           }

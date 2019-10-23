@@ -47,7 +47,7 @@ export default {
         token: this.$store.getters.getUserToken
       }
       myGet(
-        '/api/program/list/mine',
+        '/api/program/list/inqueue',
         tmpdata,
         res => {
           if (res.data.status === 1) {
