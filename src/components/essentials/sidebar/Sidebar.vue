@@ -30,7 +30,7 @@
         <el-menu-item index="/star/upload" >上传程序</el-menu-item>
       </el-submenu>
 
-      <el-submenu>
+      <el-submenu v-if="permission >= 4">
         <template slot="title">
           <i class="el-icon-s-home"></i>
           <span slot="title">管理中心</span>
@@ -60,7 +60,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'Sidebar',
   data () {
-    return {}
+    return { permission: localStorage.getItem('permission') }
   },
   computed: {
     ...mapGetters(['sidebar']),
