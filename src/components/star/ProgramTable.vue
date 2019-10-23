@@ -10,14 +10,20 @@
     <el-table-column prop="likes" label="点赞数" width="180"></el-table-column>
     <el-table-column prop="downloads" label="下载数" ></el-table-column>
     <el-table-column label="点赞" width="150" fixed="right">
-      <el-button  v-bind:class="{active : tableStatus.likeIconOn}" icon="el-icon-star-off" circle @click="Like()"></el-button>
+      <template slot-scope="scope">
+        <el-button  v-bind:class="{active : tableStatus.likeIconOn}" icon="el-icon-star-off" circle @click="Like(scope.row)"></el-button>
+      </template>
     </el-table-column>
     <el-table-column label="下载" width="150" fixed="right">
-      <el-button  v-bind:class="{active : tableStatus.likeIconOn}" icon="el-icon-star-off" circle @click="Download()"></el-button>
+      <template slot-scope="scope">
+        <el-button  v-bind:class="{active : tableStatus.likeIconOn}" icon="el-icon-star-off" circle @click="Download(scope.row)"></el-button>
+      </template>
     </el-table-column>
   </el-table>
 </template>
 <script>
+import { myPost, myGet } from '@/utils/requestFunc.js'
+
 export default {
   props: [
     'displayData'
@@ -35,7 +41,29 @@ export default {
     formatter (row, column) {
       return row.name
     },
-    likeOrdislike () {
+    Like (row) {
+      let tmpdata = {
+        token: this.$store.getters.getUserToken,
+        codeid: row.codeid
+      }
+      console.log(tmpdata)
+      myPost(
+        '/api/program/user/like',
+        tmpdata,
+        res => {
+          if (res.data.status === 1) {
+            console.log(res.data.data)
+            this.tableData = res.data.data.codelist
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
+    },
+    Download (row) {
       // unimplemented()!
     }
   }
