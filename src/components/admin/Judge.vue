@@ -29,14 +29,21 @@ export default {
           submit_time: '2016-05-02',
           author: '陈旭',
           name: '面向陈旭程序设计基础',
-          status: -1,
+          status: 0,
           id: 'imchenxulaoshi'
         },
         {
           submit_time: '6102-05-02',
           author: '顾掀宇',
           name: '编译原理PA1-B',
-          status: -1,
+          status: 1,
+          id: 'imxianyu'
+        },
+        {
+          submit_time: '6102-05-02',
+          author: '陈浩展',
+          name: '大学生恋爱',
+          status: 2,
           id: 'imxianyu'
         }
 

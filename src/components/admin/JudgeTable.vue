@@ -102,7 +102,7 @@ export default {
         tmpdata.judge = 0
       }
       console.log(tmpdata)
-      myGet(
+      myPost(
         '/api/program/admin/judge',
         tmpdata,
         res => {
@@ -125,16 +125,36 @@ export default {
       )
     },
     Upload (index, row) {
+      // 首先应当已经审核通过，否则报错
+      // 上传成功后，需要从列表里面删掉
       if (row.status < 2) {
         this.$message.error('您应当先下载并审核通过该程序！')
         return
       }
-
       console.log('Upload')
       console.log(row.name)
-      // to be implemented
-      // 首先应当已经审核通过，否则报错
-      // 上传成功后，需要从列表里面删掉
+      let tmpdata = {
+        token: this.$store.getters.getUserToken,
+        codeid: row.id
+      }
+      console.log(tmpdata)
+      myPost(
+        '/api/program/admin/upload',
+        tmpdata,
+        res => {
+          if (res.data.status === 1) {
+            console.log(res.data.data)
+            // 需要更新row.status
+            row.status = 3
+            this.tableData.splice(index, 1)
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
     }
   }
 }
