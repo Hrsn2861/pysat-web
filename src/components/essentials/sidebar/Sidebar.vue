@@ -25,8 +25,8 @@
           <span slot="title">星上程序</span>
         </template>
         <el-menu-item index="/star/program">星上程序</el-menu-item>
-        <el-menu-item >上传队列</el-menu-item>
-        <el-menu-item >我的程序</el-menu-item>
+        <el-menu-item index="/star/queue">上传队列</el-menu-item>
+        <el-menu-item index="/star/mine">我的程序</el-menu-item>
         <el-menu-item index="/star/upload" >上传程序</el-menu-item>
       </el-submenu>
 
@@ -35,8 +35,8 @@
           <i class="el-icon-s-home"></i>
           <span slot="title">管理中心</span>
         </template>
-        <el-menu-item index="/admin">用户列表</el-menu-item>
-        <el-menu-item>待审程序</el-menu-item>
+        <el-menu-item index="/admin/userlist">用户列表</el-menu-item>
+        <el-menu-item index="/admin/judge">待审程序</el-menu-item>
       </el-submenu>
       <el-menu-item index="/myinfo/___default">
         <i class="el-icon-service"></i>

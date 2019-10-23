@@ -1,14 +1,7 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tabs v-model="activeTabName" @tab-click="getProgramList()">
-        <el-tab-pane label="最新程序" name="tabNew" >
-          <ProgramTable v-bind:displayData="tableData"></ProgramTable>
-        </el-tab-pane>
-        <el-tab-pane label="最热程序" name="tabHot">
-          <ProgramTable v-bind:displayData="tableData"></ProgramTable>
-        </el-tab-pane>
-      </el-tabs>
+      <QueueTable v-bind:displayData="tableData"></QueueTable>
     </el-card>
   </div>
 </template>
@@ -16,59 +9,45 @@
 <script>
 // import { myGet } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import ProgramTable from '@/components/star/ProgramTable.vue'
+import QueueTable from '@/components/star/QueueTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
 
 export default {
   components: {
-    ProgramTable
+    QueueTable
   },
   beforeCreate () {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.getProgramList()
+    this.getQueueList()
   },
   data () {
     return {
-      activeTabName: 'tabNew',
       tableData: [
         {
-          upload_time: '2016-05-02',
-          author: '陈旭',
+          submit_time: '2016-05-02',
           name: '面向陈旭程序设计基础',
-          likes: 250,
-          downloads: 250,
-          id: 'imchenxulaoshi'
+          author: '陈旭老师',
+          id: 'woshishuji'
         },
         {
-          upload_time: '6102-05-02',
-          author: '顾掀宇',
+          submit_time: '6102-05-02',
           name: '编译原理PA1-B',
-          likes: -100,
-          downloads: -100,
-          id: 'imxianyu'
+          author: '大牛顾掀宇',
+          id: 'woshidaniu'
         }
 
       ]
     }
   },
   methods: {
-    // 啊这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
-    // 好的，收到
-    getProgramList () {
-      console.log(this.activeTabName)
+    getQueueList () {
       let tmpdata = {
-        token: this.$store.getters.getUserToken,
-        type: -1
-      }
-      if (this.activeTabName === 'tabNew') {
-        tmpdata.type = 0
-      } else {
-        tmpdata.type = 1
+        token: this.$store.getters.getUserToken
       }
       myGet(
-        '/api/program/list/onstar',
+        '/api/program/list/mine',
         tmpdata,
         res => {
           if (res.data.status === 1) {
