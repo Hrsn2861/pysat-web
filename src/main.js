@@ -7,8 +7,9 @@ import store from './store/index.js'
 import ElementUI from 'element-ui'
 import VueResource from 'vue-resource'
 import axios from 'axios'
+
 import './assets/animation/transform.css'
-import 'element-ui/lib/theme-chalk/index.css'
+import 'element-ui/lib/theme-chalk/index.css' // import the styles
 Vue.use(VueResource)
 Vue.prototype.$axios = axios
 Vue.use(ElementUI)
