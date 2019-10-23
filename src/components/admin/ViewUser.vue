@@ -45,8 +45,8 @@ export default {
         '/api/user/list/get',
         {
           token: this.$store.getters.getUserToken,
-          show_invalid: true,
-          manager_first: true
+          show_invalid: 'true',
+          manager_first: 'true'
         },
         res => {
           if (res.data.status === 1) {
