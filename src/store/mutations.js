@@ -22,12 +22,15 @@ export const mutations = {
   // CHECKSESSION实际上用来设置用户数据
   [types.CHECKSESSION] (state, data) {
     // CheckSession获取过来的东西包含很多用户其它信息
-    state.user = data.user.username
-    localStorage.setItem('user', data.user.username)
+    if (!data.user === null) {
+      state.user = data.user.username
+      localStorage.setItem('identity', data.user.username)
+    }
   },
 
   [types.LOGOUT] (state) {
     state.user = null
+    localStorage.removeItem('identity')
   },
   [types.TESTFUNC] (state) { // For test only
     state.user = {
