@@ -44,7 +44,7 @@ export default {
     Like (row) {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
-        codeid: row.codeid
+        codeid: row.id
       }
       console.log(tmpdata)
       myPost(
@@ -53,7 +53,6 @@ export default {
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
-            this.tableData = res.data.data.codelist
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -66,7 +65,7 @@ export default {
     Download (row) {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
-        codeid: row.codeid
+        codeid: row.id
       }
       console.log(tmpdata)
       myGet(
@@ -75,7 +74,6 @@ export default {
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
-            this.tableData = res.data.data.codelist
           } else {
             this.$message.error(`${res.data.msg}`)
           }

@@ -39,7 +39,7 @@ export default {
           name: '面向陈旭程序设计基础',
           likes: 250,
           downloads: 250,
-          codeid: 'imchenxulaoshi'
+          id: 'imchenxulaoshi'
         },
         {
           upload_time: '6102-05-02',
@@ -47,7 +47,7 @@ export default {
           name: '编译原理PA1-B',
           likes: -100,
           downloads: -100,
-          codeid: 'imxianyu'
+          id: 'imxianyu'
         }
 
       ]
