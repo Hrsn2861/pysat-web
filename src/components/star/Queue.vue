@@ -1,7 +1,7 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <MineTable v-bind:displayData="tableData"></MineTable>
+      <QueueTable v-bind:displayData="tableData"></QueueTable>
     </el-card>
   </div>
 </template>
@@ -9,18 +9,18 @@
 <script>
 // import { myGet } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import MineTable from '@/components/star/MineTable.vue'
+import QueueTable from '@/components/star/QueueTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
 
 export default {
   components: {
-    MineTable
+    QueueTable
   },
   beforeCreate () {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.getMineList()
+    this.getQueueList()
   },
   data () {
     return {
@@ -28,21 +28,21 @@ export default {
         {
           submit_time: '2016-05-02',
           name: '面向陈旭程序设计基础',
-          status: '未通过审核',
-          id: 'imchenxulaoshi'
+          author: '陈旭老师',
+          id: 'woshishuji'
         },
         {
           submit_time: '6102-05-02',
           name: '编译原理PA1-B',
-          status: '审核中',
-          id: 'imxianyu'
+          author: '大牛顾掀宇',
+          id: 'woshidaniu'
         }
 
       ]
     }
   },
   methods: {
-    getMineList () {
+    getQueueList () {
       let tmpdata = {
         token: this.$store.getters.getUserToken
       }

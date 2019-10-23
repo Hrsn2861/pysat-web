@@ -35,8 +35,8 @@
           <i class="el-icon-s-home"></i>
           <span slot="title">管理中心</span>
         </template>
-        <el-menu-item index="/admin">用户列表</el-menu-item>
-        <el-menu-item>待审程序</el-menu-item>
+        <el-menu-item index="/admin/userlist">用户列表</el-menu-item>
+        <el-menu-item index="/admin/judge">待审程序</el-menu-item>
       </el-submenu>
       <el-menu-item index="/myinfo/___default">
         <i class="el-icon-service"></i>

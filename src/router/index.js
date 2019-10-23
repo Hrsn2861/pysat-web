@@ -7,6 +7,7 @@ import Login from '@/components/welcomePage/Login.vue'
 import Navi from '@/components/welcomePage/Navigation.vue'
 import MyInfo from '@/components/dashboard/MyInfo.vue'
 import ViewUser from '@/components/admin/ViewUser.vue'
+import Judge from '@/components/admin/Judge.vue'
 import Hangout from '@/components/browse/Hangout.vue'
 import Overview from '@/components/browse/Overview.vue'
 import StarProgram from '@/components/star/Program.vue'
@@ -52,8 +53,12 @@ export default new Router({
 
         },
         {
-          path: 'admin',
+          path: 'admin/userlist',
           component: ViewUser
+        },
+        {
+          path: 'admin/judge',
+          component: Judge
         },
         {
           path: 'hangout',

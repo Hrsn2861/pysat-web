@@ -5,8 +5,8 @@
     :default-sort="{prop: 'date', order: 'descending'}"
   >
     <el-table-column prop="submit_time" label="提交时间" width="180"></el-table-column>
-    <el-table-column prop="name" label="程序名" :formatter="formatter" width="200"></el-table-column>
-    <el-table-column prop="status" label="审核状态" width="180"></el-table-column>
+    <el-table-column prop="name" label="程序名" :formatter="formatter"></el-table-column>
+    <el-table-column prop="status" label="审核状态" width="180" fixed="right"></el-table-column>
 
     <el-table-column label="下载" width="150" fixed="right">
       <template slot-scope="scope">
