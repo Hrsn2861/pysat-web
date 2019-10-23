@@ -8,7 +8,7 @@
         </div>
         <div class="main">
           <message></message>
-          <usertext></usertext>
+          <usertext ></usertext>
         </div>
       </div>
     </div>
@@ -21,8 +21,10 @@ import list from '@/components/chat/List.vue'
 import message from '@/components/chat/Message.vue'
 import usertext from '@/components/chat/UserText.vue'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-
+import { myPost } from '@/utils/requestFunc.js'
+import ChatMixin from './ChatMixin.js'
 export default {
+  mixins: [ChatMixin],
   beforeCreate () {
     checkSession(this, '', '/')
   },
@@ -30,7 +32,34 @@ export default {
     return {}
   },
   mounted: function () {
-    this.$store.dispatch('initData')
+    this.getChatList()
+
+    // this.$store.dispatch('initData')
+    // TODO : initData in vuex using the api
+  },
+  methods: {
+    getChatList () {
+      let queryJson = {
+        token: this.$store.getters.getUserToken
+      }
+      myPost(
+        '/api/message/chat/list',
+        queryJson,
+        res => {
+          if (res.data.status === 1) {
+            this.$store.dispatch('initData', res.data.data)
+            this.changeCurrentSessionId(this.currentSessionId)
+          }
+        },
+        err => {
+          this.$message({
+            type: 'error',
+            message: err,
+            duration: 1000
+          })
+        }
+      )
+    }
   },
   components: {
     card,

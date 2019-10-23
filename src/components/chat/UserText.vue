@@ -1,7 +1,7 @@
 <template>
   <el-row id="userarea">
     <el-col :span="24">
-      <textarea placeholder="这里输入消息，按 Enter 发送, 按 ctrl + Enter 替对面发送" v-model="content" v-on:keyup="addMessage"></textarea>
+      <textarea placeholder="这里输入消息，按 Enter 发送, 按 Ctrl + Enter 刷新一下" v-model="content" v-on:keyup="addMessage"></textarea>
     </el-col>
     <!-- <el-col :span="1" :offset="1" >
       <el-row>
@@ -19,8 +19,11 @@
 </template>
 
 <script>
+import { myPost } from '@/utils/requestFunc.js'
+import ChatMixin from './ChatMixin.js'
 export default {
   name: 'uesrtext',
+  mixins: [ChatMixin],
   data () {
     return {
       content: ''
@@ -29,19 +32,39 @@ export default {
   methods: {
     addMessageFromButton () {
       if (this.content.length) {
-        this.$store.dispatch('addMessage', this.content)
+        let queryJson = {
+          token: this.$store.getters.getUserToken,
+          username: this.$store.getters.getUserNameFromSessionId,
+          content: this.content
+        }
+        myPost(
+          '/api/message/message/send',
+          queryJson,
+          res => {
+            if (res.data.status === 1) {
+              this.$message.success('发送成功！')
+              this.changeCurrentSessionId(this.currentSessionId)
+            } else {
+              this.$message.error('发送失败！')
+            }
+          },
+          err => {
+            this.$message({
+              type: 'error',
+              message: err,
+              duration: 1000
+            })
+          }
+
+        )
+        // this.$store.dispatch('addMessageToCurrentSession', this.content)
         this.content = ''
       }
     },
-    addMessageOpposite () {
-      if (this.content.length) {
-        this.$store.dispatch('addMessageOpposite', this.content)
-        this.content = ''
-      }
-    },
+
     addMessage (e) {
-      if (e.ctrlKey && e.keyCode === 13 && this.content.length) {
-        this.addMessageOpposite()
+      if (e.ctrlKey && e.keyCode === 13) {
+        this.changeCurrentSessionId(this.currentSessionId)
       } else if (e.keyCode === 13 && this.content.length) {
         this.addMessageFromButton()
       }

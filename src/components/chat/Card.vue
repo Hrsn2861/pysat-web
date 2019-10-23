@@ -7,22 +7,83 @@
       <p class="name">{{user.name}}</p>
     </header>
     <footer>
-      <input class="search" type="text" v-model="$store.state.filterKey" placeholder="搜索用户" />
+      <input class="search" type="text" v-model="$store.state.filterKey" placeholder="搜索用户" v-on:keyup="sendHello"/>
       <!-- <el-input v-model="input" placeholder="请输入内容"></el-input> -->
     </footer>
   </div>
 </template>
 
 <script>
+import { myPost } from '@/utils/requestFunc.js'
+import ChatMixin from './ChatMixin.js'
 export default {
   name: 'card',
+  mixins: [ChatMixin],
   data () {
     return {
       user: {
-        name: 'XianyuGu',
+        name: '',
         img: '../../assets/cx.png'
       }
     }
+  },
+  methods: {
+    sendHello (e) {
+      if (e.keyCode === 13) {
+        if (this.$store.state.filterKey.length) {
+          let queryJson = {
+            token: this.$store.getters.getUserToken,
+            username: this.$store.state.filterKey,
+            content: '你好'
+          }
+          myPost(
+            '/api/message/message/send',
+            queryJson,
+            res => {
+              if (res.data.status === 1) {
+                this.$message.success('发送成功！')
+                this.changeCurrentSessionId(this.currentSessionId)
+                let queryJson = {
+                  token: this.$store.getters.getUserToken
+                }
+                myPost(
+                  '/api/message/chat/list',
+                  queryJson,
+                  res => {
+                    if (res.data.status === 1) {
+                      this.$store.dispatch('initData', res.data.data)
+                      this.changeCurrentSessionId(this.currentSessionId)
+                    }
+                  },
+                  err => {
+                    this.$message({
+                      type: 'error',
+                      message: err,
+                      duration: 1000
+                    })
+                  }
+                )
+              } else {
+                this.$message.error('打招呼失败！')
+              }
+            },
+            err => {
+              this.$message({
+                type: 'error',
+                message: err,
+                duration: 1000
+              })
+            }
+          )
+          // this.$store.dispatch('addMessageToCurrentSession', this.content)
+          this.$store.state.filterKey = ''
+        }
+      }
+    }
+  },
+  mounted: function () {
+    console.log('From Card', this.$store.getters.getUser)
+    this.user.name = this.$store.getters.getUser
   }
 }
 </script>

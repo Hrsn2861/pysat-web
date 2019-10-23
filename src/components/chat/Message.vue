@@ -1,16 +1,15 @@
 <template>
   <div id="message" v-scroll-bottom="sessions">
-    <ul v-for="item in sessions" v-bind:key="item.id" v-if="currentSessionId===item.id">
-      <!-- eslint-disable-next-line vue/require-v-for-key -->
+    <ul>
       <transition-group
         v-on:appear="customAppear"
         v-on:before-enter="customBeforeEnter"
         v-on:enter="customEnter"
       >
-        <li v-for="(entry, index) in item.messages" v-bind:key="index">
+        <li v-for="(entry, index) in currentSession" v-bind:key="index">
           <p class="time">
             <!-- <span>{{entry.date | time}}</span> -->
-            <span>{{entry.date|time}}</span>
+            <span>{{entry.date}}</span>
           </p>
           <div class="main" :class="{self:entry.self}">
             <img class="avatar" src="../../assets/cx.png" alt />
@@ -45,7 +44,7 @@ export default {
       // 大概这里指的是新的东西enter之后做的动画
       Velocity(el, { opacity: 0 }, { duration: 0 })
       Velocity(el, { opacity: 1 }, { duration: 400 })
-      Velocity(el, { opacity: 1, fontSize: '1.3em' }, { duration: 300 })
+      // Velocity(el, { opacity: 1, fontSize: '1.3em' }, { duration: 300 })
       // Velocity(el, { opacity: 1, fontSize: '1em' }, { duration: 300 })
     }
   },
