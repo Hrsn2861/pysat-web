@@ -35,6 +35,8 @@
 import { myPost, myGet } from '@/utils/requestFunc.js'
 
 export default {
+  components: {
+  },
   props: [
     'displayData'
   ],
@@ -80,6 +82,7 @@ export default {
             // 需要更新row.status
             row.status = 1
             this.$message.success('开始审核！')
+            this.$emit('func', res.data.data.code)
           } else {
             this.$message.error(`${res.data.msg}`)
           }
