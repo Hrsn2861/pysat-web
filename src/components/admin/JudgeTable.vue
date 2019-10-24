@@ -11,22 +11,22 @@
 
     <el-table-column label="下载" width="150" fixed="right">
       <template slot-scope="scope">
-        <el-button type="text" @click="Download(scope.$index, scope.row)">下载</el-button>
+        <el-button @click="Download(scope.$index, scope.row)" circle icon="el-icon-download"></el-button>
       </template>
     </el-table-column>
         <el-table-column label="通过" width="150" fixed="right">
       <template slot-scope="scope">
-        <el-button type="text" @click="ApproveOrNot(scope.$index, scope.row, true)">通过</el-button>
+        <el-button  @click="ApproveOrNot(scope.$index, scope.row, true)" circle icon="el-icon-check"></el-button>
       </template>
     </el-table-column>
         <el-table-column label="不通过" width="150" fixed="right">
     <template slot-scope="scope">
-        <el-button type="text" @click="ApproveOrNot(scope.$index, scope.row, false)">不通过</el-button>
+        <el-button @click="ApproveOrNot(scope.$index, scope.row, false)" circle icon="el-icon-close"></el-button>
       </template>
     </el-table-column>
     <el-table-column label="上传" width="150" fixed="right">
       <template slot-scope="scope">
-        <el-button type="text" @click="Upload(scope.$index, scope.row)">上传</el-button>
+        <el-button @click="Upload(scope.$index, scope.row)" circle icon="el-icon-upload"></el-button>
       </template>
     </el-table-column>
   </el-table>

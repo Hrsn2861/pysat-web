@@ -11,12 +11,12 @@
     <el-table-column prop="downloads" label="下载数" ></el-table-column>
     <el-table-column label="点赞" width="150" fixed="right">
       <template slot-scope="scope">
-        <el-button  v-bind:class="{active : tableStatus.likeIconOn}" icon="el-icon-star-off" circle @click="Like(scope.row)"></el-button>
+        <el-button  v-bind:class="{active : scope.row.liked}" icon="el-icon-star-off" circle @click="Like(scope.row)"></el-button>
       </template>
     </el-table-column>
     <el-table-column label="下载" width="150" fixed="right">
       <template slot-scope="scope">
-        <el-button  v-bind:class="{active : tableStatus.likeIconOn}" icon="el-icon-star-off" circle @click="Download(scope.row)"></el-button>
+        <el-button  v-bind:class="{active : scope.row.downloaded}" icon="el-icon-download" circle @click="Download(scope.row)"></el-button>
       </template>
     </el-table-column>
   </el-table>
