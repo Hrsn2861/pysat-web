@@ -3,6 +3,7 @@
     :data="displayData"
     style="width: 100%"
     :default-sort="{prop: 'date', order: 'descending'}"
+    height="500"
   >
     <el-table-column prop="submit_time" label="提交时间" width="300"></el-table-column>
     <el-table-column prop="name" label="程序名" :formatter="formatter" width="200"></el-table-column>
