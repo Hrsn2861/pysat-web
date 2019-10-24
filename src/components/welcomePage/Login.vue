@@ -158,11 +158,12 @@ export default {
     sendCAPTCHA () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
-        phone: this.formForgetpwd.phone
+        phone: this.formForgetpwd.phone,
+        username: this.formForgetpwd.username
       }
-
+      console.log(tmpdata)
       myPost(
-        'api/user/sign/verify',
+        'api/user/sign/retrieve',
         tmpdata,
         res => {
           if (res.data.status === 1) {
