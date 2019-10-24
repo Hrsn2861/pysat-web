@@ -3,6 +3,7 @@
     :data="displayData"
     style="width: 100%"
     :default-sort="{prop: 'date', order: 'descending'}"
+    height="500"
   >
     <el-table-column prop="upload_time" label="上传时间" width="300"></el-table-column>
     <el-table-column prop="author" label="作者" width="180"></el-table-column>
