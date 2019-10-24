@@ -1,9 +1,0 @@
-import Vue from 'vue'
-import Index from '@/components/Index'
-
-describe('Index.vue', () => {
-  it('should render correct contents', () => {
-    const vm = new Vue(Index).$mount()
-    expect(vm.$el.textContent).toContain('PYSAT')
-  })
-})

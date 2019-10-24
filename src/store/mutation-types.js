@@ -1,8 +1,23 @@
+export const SETUSER = 'SETUSER'
 
 export const LOGIN = 'LOGIN'
 
-export const LOGINOUT = 'LOGINOUT'
+export const LOGOUT = 'LOGOUT'
 
 export const DELSESSION = 'DELSESSION'
 
+export const CHECKSESSION = 'CHECKSESSION'
+
 export const TESTFUNC = 'TESTFUNC'
+
+// Used in reponsive view
+export const TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR'
+export const CLOSE_SIDEBAR = 'CLOSE_SIDEBAR'
+export const TOGGLE_DEVICE = 'TOGGLE_DEVICE'
+
+// Used in chat system
+export const CHANGE_CURRENT_SESSION_ID = 'CHANGE_CURRENT_SESSION_ID'
+export const ADD_MESSAGE_TO_CURRENT_SESSION = 'ADD_MESSAGE_TO_CURRENT_SESSION'
+export const SET_CURRENT_SESSION_DATA = 'SET_CURRENT_SESSION_DATA'
+export const ADD_MESSAGE_OPPOSITE = 'ADD_MESSAGE_OPPOSITE'
+export const INIT_DATA = 'INIT_DATA'
