@@ -1,6 +1,7 @@
 FROM node:12.10.0
 
-RUN npm config set registry https://registry.npm.taobao.org
+RUN npm config set sass_binary_site=https://npm.taobao.org/mirrors/node-sass/
+RUN npm config set registry=https://registry.npm.taobao.org
 
 ENV WEB=/opt/web
 
