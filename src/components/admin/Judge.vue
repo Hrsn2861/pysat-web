@@ -1,7 +1,8 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <JudgeTable v-bind:displayData="tableData"></JudgeTable>
+      <JudgeTable v-bind:displayData="tableData" @func="UpdateCode"></JudgeTable>
+      <center><AceContainer ref="AceContainer"></AceContainer></center>
     </el-card>
   </div>
 </template>
@@ -11,10 +12,12 @@
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 import JudgeTable from '@/components/admin/JudgeTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
+import AceContainer from '@/components/star/AceContainer.vue'
 
 export default {
   components: {
-    JudgeTable
+    JudgeTable,
+    AceContainer
   },
   beforeCreate () {
     checkSession(this, '', '/')
@@ -47,7 +50,8 @@ export default {
           id: 'imxianyu'
         }
 
-      ]
+      ],
+      currentCode: ''
     }
   },
   methods: {
@@ -73,6 +77,9 @@ export default {
           this.$message.error(`${err.message}`, 'ERROR!')
         }
       )
+    },
+    UpdateCode (code) {
+      this.$refs.AceContainer.code = code
     }
   }
 }

@@ -16,6 +16,7 @@ export async function checkSession (context, loggedUrl, unloggedUrl) {
           // 已登陆
           context.$message.success('已登陆！')
           logged = true
+          localStorage.setItem('permission', Number(res.data.data.user.permission))
         } else {
           // 未登录
           context.$message.success('未登录！')
@@ -65,6 +66,7 @@ export async function logout (context) {
   await myPost('api/user/sign/logout', {token: context.$store.getters.getUserToken},
     res => {
       context.$store.dispatch('userLogOut') // userlogout不删除会话,只删除用户
+      localStorage.removeItem('permission')
     },
     err => {
       context.$message.error(`${err.message}`)
