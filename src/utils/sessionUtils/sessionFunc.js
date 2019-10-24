@@ -20,6 +20,7 @@ export async function checkSession (context, loggedUrl, unloggedUrl) {
         } else {
           // 未登录
           context.$message.success('未登录！')
+          context.$store.dispatch('userLogOut')
         }
         // console.log('index: ' + res.data.data.user)
 
@@ -49,6 +50,28 @@ export async function checkSession (context, loggedUrl, unloggedUrl) {
     )
   }
   if (logged) {
+    // 检查消息数目
+    // 在调用之前，如果登陆的话全局检查消息数目
+    let queryJson = {
+      token: context.$store.getters.getUserToken
+    }
+    myPost(
+      '/api/message/chat/list',
+      queryJson,
+      res => {
+        if (res.data.status === 1) {
+          context.$store.dispatch('initData', res.data.data)
+          // this.changeCurrentSessionId(this.currentSessionId)
+        }
+      },
+      err => {
+        context.$message({
+          type: 'error',
+          message: err,
+          duration: 1000
+        })
+      }
+    )
     if (loggedUrl !== '') {
       console.log('sessionFunc.js Jumpto: ', loggedUrl)
       if (loggedUrl === 'myinfo') {

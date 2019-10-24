@@ -9,7 +9,9 @@
       >
         <!--   :class="[item.id === currentSessionId ? 'active':'']" -->
         <!-- <img class="avatar" :src="getImageFromURL(item.user.img)" :alt="item.user.name" /> -->
-        <img class="avatar" src="../../assets/cx.png" :alt="item.id" />
+        <el-badge :value="item.unread" :max="99" class="item" :hidden="item.unread===0">
+          <img class="avatar" src="../../assets/cx.png" :alt="item.id"/>
+        </el-badge>
         <p class="name">{{item.user}}</p>
         <!-- <img :src="getImageFromURL(item.user.img)"> -->
       </li>
@@ -21,16 +23,21 @@
 import ChatMixin from './ChatMixin.js'
 export default {
   mixins: [ChatMixin],
+  mounted: function () {
+    this.getChatList()
+  },
   name: 'list',
   data () {
     return {}
+  },
+  methods: {
+
   }
 }
 </script>
 
 <style lang="scss" scoped>
 #list {
-
   $avatar-size: 35px;
 
   ul {

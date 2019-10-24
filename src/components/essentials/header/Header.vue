@@ -34,6 +34,11 @@
         <el-menu-item index="5" @click="logOut()">这不重要</el-menu-item>
       </el-menu>
 
+      <div style="margin-top:5px;">
+        <el-badge :value="this.$store.state.chatSystem.msgCount" :max="99" class="item" :hidden="this.$store.state.chatSystem.msgCount === 0">
+          <img class="avatar" src="@/assets/cx.png" style="height:30px;width:30px;"/>
+         </el-badge>
+      </div>
       <!-- <el-dropdown trigger="click">
         <span class="el-dropdown-link">
           {{this.$store.getters.username}}
