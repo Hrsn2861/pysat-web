@@ -21,7 +21,6 @@ const state = {
     sessions: [],
     msgCount: 0, // 未读消息总数
     currentSessionId: 0,
-    filterKey: '',
     currentSession: {
       chatUser: '',
       totCount: 0,

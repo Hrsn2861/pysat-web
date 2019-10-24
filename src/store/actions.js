@@ -48,15 +48,15 @@ const actions = {
   initData ({ commit }, data) {
     commit(types.INIT_DATA, data)
   },
+
   setCurrentSessionData ({commit}, data) {
     commit(types.SET_CURRENT_SESSION_DATA, data)
   },
-
-  addMessageToCurrentSession ({ commit }, msg) {
-    commit(types.ADD_MESSAGE_TO_CURRENT_SESSION, msg)
-  },
   changeCurrentSessionId ({ commit }, id) {
     commit(types.CHANGE_CURRENT_SESSION_ID, id)
+  },
+  setUnreadToZero ({commit}) {
+    commit(types.SET_UNREAD_TO_ZERO)
   }
 }
 
