@@ -79,6 +79,7 @@ export default {
             console.log(res.data.data)
             // 需要更新row.status
             row.status = 1
+            this.$message.success('开始审核！')
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -124,9 +125,11 @@ export default {
             // 需要更新row.status
             if (approve) {
               row.status = 2
+              this.$message.success('审核通过！')
             } else {
               row.status = -1
               this.displayData.splice(index, 1)
+              this.$message.error('审核不通过！')
             }
           } else {
             this.$message.error(`${res.data.msg}`)
@@ -160,6 +163,7 @@ export default {
             // 需要更新row.status
             row.status = 3
             this.displayData.splice(index, 1)
+            this.$message.success('上传成功！')
           } else {
             this.$message.error(`${res.data.msg}`)
           }
