@@ -1,16 +1,17 @@
 <template>
   <el-table
-    :data="tableData"
+    :data="displayData"
     style="width: 100%"
     :default-sort="{prop: 'date', order: 'descending'}"
+    height="500"
   >
-    <el-table-column prop="submit_time" label="提交时间" width="180"></el-table-column>
+    <el-table-column prop="submit_time" label="提交时间" width="300"></el-table-column>
     <el-table-column prop="name" label="程序名" :formatter="formatter"></el-table-column>
     <el-table-column prop="status" label="审核状态" width="180" fixed="right" :formatter="statusFormatter"></el-table-column>
 
     <el-table-column label="下载" width="150" fixed="right">
       <template slot-scope="scope">
-        <el-button  v-bind:class="{active : tableStatus.likeIconOn}" icon="el-icon-star-off" circle @click="Download(scope.row)"></el-button>
+        <el-button  v-bind:class="{active : tableStatus.likeIconOn}" icon="el-icon-download" circle @click="Download(scope.row)"></el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -25,7 +26,7 @@ export default {
   data () {
     // TODO : 使用PROPS接受传递进来的table参数然后显示
     return {
-      tableData: this.displayData,
+      // tableData: this.displayData,
       tableStatus: {
         likeIconOn: false
       },
@@ -47,11 +48,12 @@ export default {
       return this.statusDict[row.status.toString()]
     },
     Download (row) {
+      // console.log(this.displayData)
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         codeid: row.id
       }
-      console.log(tmpdata)
+      // console.log(tmpdata)
       myGet(
         '/api/program/user/download',
         tmpdata,

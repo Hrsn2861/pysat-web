@@ -1,32 +1,33 @@
 <template>
   <el-table
-    :data="tableData"
+    :data="displayData"
     style="width: 100%"
     :default-sort="{prop: 'date', order: 'descending'}"
+    height="200"
   >
-    <el-table-column prop="submit_time" label="提交时间" width="180"></el-table-column>
+    <el-table-column prop="submit_time" label="提交时间" width="300"></el-table-column>
     <el-table-column prop="author" label="作者" width="180"></el-table-column>
     <el-table-column prop="name" label="程序名" :formatter="formatter" width="200"></el-table-column>
     <el-table-column prop="status" label="审核状态"  width="200" :formatter="statusFormatter"></el-table-column>
 
     <el-table-column label="下载" width="150" fixed="right">
       <template slot-scope="scope">
-        <el-button type="text" @click="Download(scope.$index, scope.row)">下载</el-button>
+        <el-button @click="Download(scope.$index, scope.row)" circle icon="el-icon-download"></el-button>
       </template>
     </el-table-column>
         <el-table-column label="通过" width="150" fixed="right">
       <template slot-scope="scope">
-        <el-button type="text" @click="ApproveOrNot(scope.$index, scope.row, true)">通过</el-button>
+        <el-button  @click="ApproveOrNot(scope.$index, scope.row, true)" circle icon="el-icon-check"></el-button>
       </template>
     </el-table-column>
         <el-table-column label="不通过" width="150" fixed="right">
     <template slot-scope="scope">
-        <el-button type="text" @click="ApproveOrNot(scope.$index, scope.row, false)">不通过</el-button>
+        <el-button @click="ApproveOrNot(scope.$index, scope.row, false)" circle icon="el-icon-close"></el-button>
       </template>
     </el-table-column>
     <el-table-column label="上传" width="150" fixed="right">
       <template slot-scope="scope">
-        <el-button type="text" @click="Upload(scope.$index, scope.row)">上传</el-button>
+        <el-button @click="Upload(scope.$index, scope.row)" circle icon="el-icon-upload"></el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -35,13 +36,14 @@
 import { myPost, myGet } from '@/utils/requestFunc.js'
 
 export default {
+  components: {
+  },
   props: [
     'displayData'
   ],
   data () {
     // TODO : 使用PROPS接受传递进来的table参数然后显示
     return {
-      tableData: this.displayData,
       tableStatus: {
         likeIconOn: false
       },
@@ -63,6 +65,10 @@ export default {
       return this.statusDict[row.status.toString()]
     },
     Download (index, row) {
+      if (row.status === 2) {
+        this.$message.error('您已经审核通过了！')
+        return
+      }
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         codeid: row.id
@@ -76,6 +82,8 @@ export default {
             console.log(res.data.data)
             // 需要更新row.status
             row.status = 1
+            this.$message.success('开始审核！')
+            this.$emit('func', res.data.data.code)
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -121,9 +129,11 @@ export default {
             // 需要更新row.status
             if (approve) {
               row.status = 2
+              this.$message.success('审核通过！')
             } else {
               row.status = -1
-              this.tableData.splice(index, 1)
+              this.displayData.splice(index, 1)
+              this.$message.error('审核不通过！')
             }
           } else {
             this.$message.error(`${res.data.msg}`)
@@ -156,7 +166,8 @@ export default {
             console.log(res.data.data)
             // 需要更新row.status
             row.status = 3
-            this.tableData.splice(index, 1)
+            this.displayData.splice(index, 1)
+            this.$message.success('上传成功！')
           } else {
             this.$message.error(`${res.data.msg}`)
           }
