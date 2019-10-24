@@ -39,6 +39,8 @@ export default {
           name: '面向陈旭程序设计基础',
           likes: 250,
           downloads: 250,
+          liked: false,
+          downloaded: true,
           id: 'imchenxulaoshi'
         },
         {
@@ -47,6 +49,8 @@ export default {
           name: '编译原理PA1-B',
           likes: -100,
           downloads: -100,
+          liked: true,
+          downloaded: false,
           id: 'imxianyu'
         }
 

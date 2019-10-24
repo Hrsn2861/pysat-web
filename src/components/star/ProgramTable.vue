@@ -6,17 +6,17 @@
   >
     <el-table-column prop="upload_time" label="上传时间" width="300"></el-table-column>
     <el-table-column prop="author" label="作者" width="180"></el-table-column>
-    <el-table-column prop="name" label="程序名" :formatter="formatter" width="200"></el-table-column>
+    <el-table-column prop="name" label="程序名" width="200"></el-table-column>
     <el-table-column prop="likes" label="点赞数" width="180"></el-table-column>
     <el-table-column prop="downloads" label="下载数" ></el-table-column>
     <el-table-column label="点赞" width="150" fixed="right">
       <template slot-scope="scope">
-        <el-button  v-bind:class="{active : scope.row.liked}" icon="el-icon-star-off" circle @click="Like(scope.row)"></el-button>
+        <el-button  icon="el-icon-star-off" circle @click="Like(scope.row)" :disabled="scope.row.liked"></el-button>
       </template>
     </el-table-column>
     <el-table-column label="下载" width="150" fixed="right">
       <template slot-scope="scope">
-        <el-button  v-bind:class="{active : scope.row.downloaded}" icon="el-icon-download" circle @click="Download(scope.row)"></el-button>
+        <el-button   icon="el-icon-download" circle @click="Download(scope.row)"></el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -37,9 +37,6 @@ export default {
     }
   },
   methods: {
-    formatter (row, column) {
-      return row.name
-    },
     Like (row) {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
@@ -52,6 +49,8 @@ export default {
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
+            this.$message.success('点赞成功！')
+            row.liked = true
           } else {
             this.$message.error(`${res.data.msg}`)
           }

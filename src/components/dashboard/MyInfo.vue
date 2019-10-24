@@ -187,7 +187,6 @@ export default {
   methods: {
 
     async logOut () {
-      localStorage.removeItem('permission')
       localStorage.removeItem('identity')
       await logout(this)
       this.$router.go(0) // 刷新页面
@@ -240,10 +239,6 @@ export default {
             this.currentInfo.motto = res.data.data.user.motto
             this.currentInfo.permission = res.data.data.user.permission
             this.setformInfo()
-
-            if (!localStorage.hasOwnProperty('permission')) { // 赋予permission
-              localStorage.setItem('permission', res.data.data.user.permission)
-            }
             this.myPermission = localStorage.getItem('permission')
 
             console.log('myPERMISSION: ' + this.myPermission)
