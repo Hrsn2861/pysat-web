@@ -1,6 +1,8 @@
 FROM node:12.10.0
 
-RUN npm config set registry https://registry.npm.taobao.org
+RUN npm config set chromedriver_cdnurl=http://cdn.npm.taobao.org/dist/chromedriver
+RUN npm config set sass_binary_site=https://npm.taobao.org/mirrors/node-sass/
+RUN npm config set registry=https://registry.npm.taobao.org
 
 ENV WEB=/opt/web
 
