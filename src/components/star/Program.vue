@@ -2,6 +2,10 @@
   <div class="main-div">
     <el-card class="box-card">
       <el-tabs v-model="activeTabName" @tab-click="getProgramList()">
+        <el-tab-pane label="只看本校" name="tabSchool" >
+          <ProgramTable v-bind:isMySchool="true"></ProgramTable>
+          <!-- TODO: 在getProgramList里面筛选出来学校名称 -->
+        </el-tab-pane>
         <el-tab-pane label="最新程序" name="tabNew" >
           <ProgramTable v-bind:displayData="tableData"></ProgramTable>
         </el-tab-pane>

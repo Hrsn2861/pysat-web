@@ -3,19 +3,21 @@
     :data="displayData"
     style="width: 100%"
     :default-sort="{prop: 'date', order: 'descending'}"
-    height="500"
+    height="800"
   >
-    <el-table-column prop="upload_time" label="上传时间" width="300"></el-table-column>
+    <el-table-column prop="upload_time" label="上传时间" width="250"></el-table-column>
     <el-table-column prop="author" label="作者" width="180"></el-table-column>
+    <el-table-column v-if="!isMySchool" prop="school" label="学校" width="180"></el-table-column>
     <el-table-column prop="name" label="程序名" width="200"></el-table-column>
-    <el-table-column prop="likes" label="点赞数" width="180"></el-table-column>
-    <el-table-column prop="downloads" label="下载数" ></el-table-column>
-    <el-table-column label="点赞" width="150" fixed="right">
+    <el-table-column prop="subject" label="主题" resizable="true"></el-table-column>
+    <el-table-column prop="likes" label="点赞数" width="80"></el-table-column>
+    <el-table-column prop="downloads" label="下载数" width="80"></el-table-column>
+    <el-table-column label="点赞" width="100" fixed="right">
       <template slot-scope="scope">
         <el-button  icon="el-icon-star-off" circle @click="Like(scope.row)" :disabled="scope.row.liked"></el-button>
       </template>
     </el-table-column>
-    <el-table-column label="下载" width="150" fixed="right">
+    <el-table-column label="下载" width="100" fixed="right">
       <template slot-scope="scope">
         <el-button   icon="el-icon-download" circle @click="Download(scope.row)"></el-button>
       </template>
@@ -27,7 +29,8 @@ import { myPost, myGet } from '@/utils/requestFunc.js'
 
 export default {
   props: [
-    'displayData'
+    'displayData',
+    'isMySchool'
   ],
   data () {
     // TODO : 使用PROPS接受传递进来的table参数然后显示
@@ -90,6 +93,6 @@ export default {
 <style scoped>
 
 .active{
-    height: 50vh;
+    height: 70vh;
 }
 </style>

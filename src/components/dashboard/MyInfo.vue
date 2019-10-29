@@ -32,53 +32,125 @@
 
             </el-upload>
           </el-row>
-        </transition> -->
+        </transition>-->
       </div>
-      <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible ">
+      <el-row
+        type="flex"
+        justify="center"
+        v-if="!changePwdVisible && !changePhoneVisible && !changeSchoolVisible "
+      >
         <el-col class="my-info">
-          <center><h1>个人信息</h1></center>
+          <center>
+            <h1>个人信息</h1>
+          </center>
           <el-form ref="myInfo" label-width="100px">
             <el-form-item label="用户名">
-              <el-input class="my-info-item" v-model="formInfo.username" placeholder="" :disabled="true"></el-input>
+              <el-input
+                class="my-info-item"
+                v-model="formInfo.username"
+                placeholder
+                :disabled="true"
+              ></el-input>
             </el-form-item>
             <el-form-item label="电话号码">
-              <el-input class="my-info-item" v-model="formInfo.phone" placeholder="" :disabled="true"></el-input>
+              <el-input class="my-info-item" v-model="formInfo.phone" placeholder :disabled="true"></el-input>
             </el-form-item>
             <el-form-item label="Email">
-              <el-input class="my-info-item" v-model="formInfo.email" placeholder="填了也没用" :disabled="changeInfoVisible"></el-input>
+              <el-input
+                class="my-info-item"
+                v-model="formInfo.email"
+                placeholder="填了也没用"
+                :disabled="changeInfoVisible"
+              ></el-input>
             </el-form-item>
             <el-form-item label="学校">
-              <el-input class="my-info-item" v-model="formInfo.school" placeholder="" :disabled="changeInfoVisible"></el-input>
+              <el-input
+                class="my-info-item"
+                v-model="formInfo.school"
+                placeholder
+                :disabled="changeInfoVisible"
+              ></el-input>
             </el-form-item>
             <el-form-item label="真实姓名">
-              <el-input class="my-info-item" v-model="formInfo.realname" placeholder="" :disabled="changeInfoVisible"></el-input>
+              <el-input
+                class="my-info-item"
+                v-model="formInfo.realname"
+                placeholder
+                :disabled="changeInfoVisible"
+              ></el-input>
             </el-form-item>
             <el-form-item label="座右铭" style="margin-bottom:2%;">
-              <el-input class="my-info-item" v-model="formInfo.motto" placeholder="" :disabled="changeInfoVisible"></el-input>
+              <el-input
+                class="my-info-item"
+                v-model="formInfo.motto"
+                placeholder
+                :disabled="changeInfoVisible"
+              ></el-input>
             </el-form-item>
             <el-form-item label="权限" style="margin-bottom:2%;">
               <el-select v-model="formInfo.permission" placeholder="请选择">
-                <el-option class="my-info-item" v-for="item in permissionOptions" :key="item.value" :label="item.label" :value="item.value" :disabled="!changePermissionEnable"></el-option>
+                <el-option
+                  class="my-info-item"
+                  v-for="item in permissionOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="!changePermissionEnable"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-form>
         </el-col>
       </el-row>
-      <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible">
+      <el-row
+        type="flex"
+        justify="center"
+        v-if="!changePwdVisible && !changePhoneVisible && !changeSchoolVisible"
+      >
         <el-button type="danger" @click="logOut()" v-if="isSelf">登出</el-button>
-        <el-button type="primary" @click="changePwdVisible = true" v-if="isSelf || myPermission >= 8">修改密码</el-button>
-        <el-button type="primary" @click="changePhoneVisible = true" v-if="isSelf || myPermission >= 8">修改手机号码</el-button>
-        <el-button type="primary" @click="changeInfo()" v-if="isSelf || myPermission >= 8">{{updateButtonText}}</el-button>
-        <el-button type="warning" @click="changePermission()" v-if="myPermission >= 4">{{changePermissionButtonText}}</el-button>
+        <el-button
+          type="primary"
+          @click="changePwdVisible = true"
+          v-if="isSelf || myPermission >= 8"
+        >修改密码</el-button>
+        <el-button
+          type="primary"
+          @click="changePhoneVisible = true"
+          v-if="isSelf || myPermission >= 8"
+        >修改手机号码</el-button>
+        <el-button
+          type="primary"
+          @click="changeInfo()"
+          v-if="isSelf || myPermission >= 8"
+        >{{updateButtonText}}</el-button>
+        <el-button
+          type="warning"
+          @click="changePermission()"
+          v-if="myPermission >= 4 "
+        >{{changePermissionButtonText}}</el-button>
+        <el-button
+          type="warning"
+          @click="getSchoolList()"
+          v-if="!isSelect"
+        >{{changeSchoolButtonText}}</el-button>
       </el-row>
 
       <transition name="fade">
         <div v-if="changePwdVisible" class="change">
-
-            <el-input class="change-input" v-model="formChangepwd.oldpwd" placeholder="旧密码" type="password"></el-input>
-            <el-input class="change-input" v-model="formChangepwd.newpwd" placeholder="新密码" type="password"></el-input>
-            <el-button @click="changePwdVisible = false" class="change-button">取消</el-button>
-            <el-button type="primary" @click="changePwd" class="change-button">更新</el-button>
+          <el-input
+            class="change-input"
+            v-model="formChangepwd.oldpwd"
+            placeholder="旧密码"
+            type="password"
+          ></el-input>
+          <el-input
+            class="change-input"
+            v-model="formChangepwd.newpwd"
+            placeholder="新密码"
+            type="password"
+          ></el-input>
+          <el-button @click="changePwdVisible = false" class="change-button">取消</el-button>
+          <el-button type="primary" @click="changePwd" class="change-button">更新</el-button>
         </div>
       </transition>
 
@@ -91,16 +163,44 @@
           <el-button @click="changePhoneVisible = false" class="change-button">取消</el-button>
         </div>
       </transition>
+
+      <transition name="fade">
+        <!-- 这里名字叫做changeSchool，只是为了名字呼应，但是实际上只可以修改一次 -->
+        <div v-if="changeSchoolVisible" class="change-school">
+          <el-table :data="schoolData" style="width: 100%">
+            <el-table-column prop="name" label="学校名称" width="150"></el-table-column>
+            <el-table-column prop="num" label="当前人数" width="150"></el-table-column>
+            <el-table-column prop="description" label="学校描述" width="300"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="150">
+              <template slot-scope="scope">
+                <el-button
+                  @click="applyDialogVisible = true;formChangeSchool.schoolname = scope.row.name"
+                  type="text"
+                  size="small"
+                >申请加入</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-button @click="changeSchoolVisible = false" class="change-school-button">取消</el-button>
+        </div>
+      </transition>
+
+      <el-dialog :title="'加入: ' + formChangeSchool.schoolname + '（一个同学只有一次选择的权利）'" :visible.sync="applyDialogVisible" width="30%">
+        <el-input placeholder="请输入你的验证信息" v-model="formChangeSchool.reason" clearable></el-input>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="applyDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="applyDialogVisible = false">确 定</el-button>
+        </span>
+      </el-dialog>
     </el-card>
   </div>
-  <!-- <el-dialog class="my-dialog" title="提示" :visible.sync="changePassWdVisible" width="50%" :before-close="handleClose"> -->
 </template>
 
 <script>
 import { myGet, myPost } from '@/utils/requestFunc.js'
 import { Encrypt } from '@/utils/crypt.js'
-
-import {checkSession, logout} from '@/utils/sessionUtils/sessionFunc'
+import { checkSession, logout } from '@/utils/sessionUtils/sessionFunc'
 
 export default {
   props: ['username'], // 呃， props没有用？？？？
@@ -112,9 +212,13 @@ export default {
   // 这里看起来如果我引入了beforeCreate的Mixin，vue-router会给我报一个warning，显示重复跳转
   // 事实证明这里并没有覆盖掉beforeCreate
   // 混入对象的钩子将在组件自身钩子之前调用。
-  mounted: function () { // 感觉通过url中的username是否为空来进行后续判断有点蛋疼...把username存到localStorage应该会好一点...
+  mounted: function () {
+    // 感觉通过url中的username是否为空来进行后续判断有点蛋疼...把username存到localStorage应该会好一点...
     console.log('params.username: ', this.$route.params.username)
-    if (this.$route.params.username === '___default' || this.$route.params.username === localStorage['identity']) {
+    if (
+      this.$route.params.username === '___default' ||
+      this.$route.params.username === localStorage['identity']
+    ) {
       this.isSelf = true
       this.getMyInfo('')
     } else {
@@ -143,6 +247,7 @@ export default {
         motto: 'None',
         permission: 0
       },
+      schoolData: [],
 
       myPermission: '',
       isSelf: false, // 判断是不是自己的信息
@@ -154,7 +259,14 @@ export default {
       changePermissionEnable: false,
       updateButtonText: '修改信息',
       changePermissionButtonText: '修改权限',
-
+      changeSchoolVisible: false,
+      changeSchoolButtonText: '选择学校',
+      applyDialogVisible: false,
+      isSelect: false,
+      formChangeSchool: {
+        reason: '',
+        schoolname: ''
+      },
       imageURL: require('../../assets/cx.png'),
 
       formChangepwd: {
@@ -165,27 +277,32 @@ export default {
         CAPTCHA: '',
         phone: ''
       },
-      permissionOptions: [{
-        value: 0,
-        label: '封禁用户'
-      }, {
-        value: 1,
-        label: '普通用户'
-      }, {
-        value: 2,
-        label: '高级用户'
-      }, {
-        value: 4,
-        label: '管理员'
-      }, {
-        value: 8,
-        label: '新世界的神'
-      }]
+      permissionOptions: [
+        {
+          value: 0,
+          label: '封禁用户'
+        },
+        {
+          value: 1,
+          label: '普通用户'
+        },
+        {
+          value: 2,
+          label: '高级用户'
+        },
+        {
+          value: 4,
+          label: '管理员'
+        },
+        {
+          value: 8,
+          label: '新世界的神'
+        }
+      ]
     }
   },
 
   methods: {
-
     async logOut () {
       localStorage.removeItem('identity')
       await logout(this)
@@ -224,7 +341,8 @@ export default {
       var queryJson = {
         token: this.$store.getters.getUserToken
       }
-      if (!this.isSelf) { // 如果不是自己，则username不为空
+      if (!this.isSelf) {
+        // 如果不是自己，则username不为空
         queryJson['username'] = queryUser
       } // 陈旭的接口定义是不检查‘’，所以前端检查这个
       myGet(
@@ -344,7 +462,8 @@ export default {
         if (!this.isSelf) {
           tmpdata['username'] = this.formInfo.username
         }
-        myPost('/api/user/info/modify',
+        myPost(
+          '/api/user/info/modify',
           tmpdata,
           res => {
             console.log(tmpdata)
@@ -365,21 +484,41 @@ export default {
         )
       }
     },
+    getSchoolList () {
+      this.changeSchoolVisible = true
+      this.changeSchoolButtonText = '选择学校'
+      // TODO: getSchoolApi
+      this.schoolData = [
+        {
+          name: '清华大学',
+          description: '北京市海淀区',
+          num: 3000
+        },
+        {
+          name: '朝阳小学',
+          description: '校友GXY',
+          num: 200
+        }
+      ]
+    },
 
     changePermission () {
-      if (this.isSelf) { // 不能修改自己的权限
+      if (this.isSelf) {
+        // 不能修改自己的权限
         this.$message.error('您不能修改自己的权限！')
         return
       }
       if (!this.changePermissionEnable) {
-        if (this.currentInfo.permission >= this.myPermission) { // 如果要改的人的权限原本就不低于自己
+        if (this.currentInfo.permission >= this.myPermission) {
+          // 如果要改的人的权限原本就不低于自己
           this.$message.error('您的权限太低了！')
           return
         }
         this.changePermissionEnable = true
         this.changePermissionButtonText = '更新权限！'
       } else {
-        if (this.formInfo.permission >= this.myPermission) { // 只能改成比自己低的某个权限
+        if (this.formInfo.permission >= this.myPermission) {
+          // 只能改成比自己低的某个权限
           this.$message.error('您只能赋予别人低于自己的权限！')
           this.setformInfo()
           return
@@ -389,7 +528,8 @@ export default {
           username: this.formInfo.username,
           permission: this.formInfo.permission
         }
-        myPost('/api/user/info/modify',
+        myPost(
+          '/api/user/info/modify',
           tmpdata,
           res => {
             console.log(tmpdata)
@@ -451,6 +591,7 @@ export default {
   transform: scale(1.1);
   transition-duration: 1s;
 }
+
 .main-div {
   height: 100%;
   width: 100%;
@@ -459,9 +600,9 @@ export default {
   align-content: center;
   justify-content: center;
   padding: 0%;
-  background: url('../../assets/background16-9-2.jpg');
-  background-size:cover;
-  background-repeat :none;
+  background: url("../../assets/background16-9-2.jpg");
+  background-size: cover;
+  background-repeat: none;
   height: 100%;
 }
 .box-card {
@@ -479,8 +620,8 @@ export default {
   box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);
 }
 
-.el-form-item{
-  margin: 2%;
+.el-form-item {
+  margin: 1.5%;
 }
 
 .change {
@@ -492,8 +633,14 @@ export default {
 .change-input {
   margin: 1%;
 }
-.change-button{
+.change-button {
   margin: 0%;
+}
+.change-school{
+  margin-top: 3%;
+}
+.change-school-button{
+  width: 100%;
 }
 
 .avatar-uploader .el-upload {
