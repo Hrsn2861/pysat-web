@@ -37,6 +37,7 @@
         </template>
         <el-menu-item index="/admin/userlist">用户列表</el-menu-item>
         <el-menu-item index="/admin/judge">待审程序</el-menu-item>
+        <el-menu-item index="/admin/video">上传教程</el-menu-item>
       </el-submenu>
       <el-menu-item index="/myinfo/___default">
         <i class="el-icon-service"></i>
