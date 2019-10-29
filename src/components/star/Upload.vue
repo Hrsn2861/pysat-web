@@ -24,6 +24,22 @@
       <center>
         <el-button type="primary" @click="upload()" plain>点击上传！</el-button>
       </center>
+      <el-upload
+        ref="upload"
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :on-success="handleSuccess"
+        :on-error="handleError"
+        :on-progress="handleProgress"
+        :on-change="handleChange"
+        :before-upload="beforeUpload"
+        :before-remove="beforeRemove"
+        :file-list="fileList"
+        :auto-upload="false">
+        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+        <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">显示文件</el-button> -->
+      </el-upload>
     </el-card>
   </div>
 </template>
@@ -45,10 +61,44 @@ export default {
   data () {
     return {
       codename: '',
-      readme: ''
+      readme: '',
+      fileList: []
     }
   },
   methods: {
+    readFile (file) {
+      var reader = new FileReader()
+      console.log(file.raw)
+      var that = this
+      reader.addEventListener('load', function (e) {
+        console.log('...load succeed...')
+        that.$refs.AceContainer.code = reader.result
+      })
+      reader.addEventListener('error', function (e) {
+        console.log('...load failed...')
+      })
+      reader.addEventListener('loadstart', function (e) {
+        console.log('...start...')
+      })
+      /*
+      reader.οnerror = function (e) {
+        console.log('...error...')
+      }
+
+      reader.onloadstart = function (e) {
+        console.log('??????')
+      }
+
+      reader.οnlοad = function (e) {
+        this.$refs.AceContainer.code = reader.result
+        console.log('...end...')
+        console.log(reader.result)
+      }
+      */
+      reader.readAsText(file.raw, 'utf-8')
+      console.log(reader)
+      console.log(reader.result)
+    },
     upload () {
       if (this.codename === '' || this.$refs.AceContainer.code === '') {
         this.$message.error('请提交有效的程序和程序名')
@@ -76,7 +126,50 @@ export default {
           }
         )
       }
+    },
+    /*
+    submitUpload () {
+      console.log('submitUpload')
+      this.$refs.upload.submit()
+    },
+    handleRemove (file, fileList) {
+      console.log('handleRemove')
+      // console.log(file, fileList)
+    },
+    */
+    handlePreview (file) {
+      console.log('handlePreview')
+      this.readFile(file)
+      // console.log(file)
     }
+    /*
+    handleSuccess (res, file, fileList) {
+      console.log('handleSucess')
+      this.readFile(file)
+      // console.log(fileList)
+    },
+    // eslint-disable-next-line handle-callback-err
+    handleError (err, file, fileList) {
+      console.log('handleError')
+      // console.log(err)
+    },
+    handleChange (file, fileList) {
+      console.log('handleChange')
+      // console.log(file)
+    },
+    handleProgress (event, file, fileList) {
+      console.log('handleProgress')
+      // console.log(event)
+    },
+    beforeUpload (file) {
+      console.log('beforeUpload')
+      // console.log(file)
+    },
+    beforeRemove (file, fileList) {
+      console.log('beforeRemove')
+      // console.log(file)
+    }
+    */
   }
 }
 </script>
