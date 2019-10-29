@@ -18,6 +18,7 @@
 </template>
 <script>
 import { myGet } from '@/utils/requestFunc.js'
+import { saveAs } from 'file-saver'
 
 export default {
   props: [
@@ -60,7 +61,8 @@ export default {
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
-            this.tableData = res.data.data.codelist
+            var file = new File([res.data.data.code], 'newcode.py', {type: 'text/plain;charset=utf-8'})
+            saveAs(file)
           } else {
             this.$message.error(`${res.data.msg}`)
           }
