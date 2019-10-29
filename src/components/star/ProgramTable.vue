@@ -33,7 +33,6 @@ export default {
     'isMySchool'
   ],
   data () {
-    // TODO : 使用PROPS接受传递进来的table参数然后显示
     return {
       tableStatus: {
         likeIconOn: false
