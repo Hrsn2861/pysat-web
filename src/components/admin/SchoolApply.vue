@@ -8,8 +8,8 @@
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="viewCurrentUser(scope.$index, scope.row)">查看</el-button>
-            <el-button type="text" size="small" @click="approveCurrentUser(scope.$index, scope.row)">通过</el-button>
-            <el-button type="text" size="small" @click="disapproveCurrentUser(scope.$index, scope.row)">不通过</el-button>
+            <el-button type="text" size="small" @click="approveCurrentUserOrNot(scope.$index, scope.row, true)">通过</el-button>
+            <el-button type="text" size="small" @click="approveCurrentUserOrNot(scope.$index, scope.row, false)">不通过</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -19,6 +19,7 @@
   </div>
 </template>
 <script>
+import { myPost } from '@/utils/requestFunc.js'
 import {checkSession} from '@/utils/sessionUtils/sessionFunc'
 export default {
   data () {
@@ -40,28 +41,64 @@ export default {
       this.$router.push({name: 'myinfo', params: {username: row.username}})
     },
     getApplyList () {
-      this.applyData = [
-        {
-          username: '禹含',
-          date: '1988',
-          reason: '又红又专'
+      // this.applyData = [
+      //   {
+      //     username: '禹含',
+      //     date: '1988',
+      //     reason: '又红又专'
+      //   },
+      //   {
+      //     username: '陈旭',
+      //     date: '2000',
+      //     reason: '不知道'
+      //   }
+      // ]
+      let tmpdata = {
+        token: this.$store.getters.getUserToken
+      }
+      myPost(
+        '/api/school/admin/applylist',
+        tmpdata,
+        res => {
+          if (res.data.status === 1) {
+            this.applyData = res.data.data
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
         },
-        {
-          username: '陈旭',
-          date: '2000',
-          reason: '不知道'
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
         }
-
-      ]
+      )
     },
-    approveCurrentUser (index, row) {
+    approveCurrentUserOrNot (index, row, approveOrNot) {
       console.log('Approve user: ', row.username)
+
       // TODO : approve and disapprove
       this.applyData.splice(index, 1)
-    },
-    disapproveCurrentUser (index, row) {
-      console.log('Disapprove user: ', row.username)
-      this.applyData.splice(index, 1)
+      let tmpdata = {
+        token: this.$store.getters.getUserToken,
+        username: row.username,
+        approve: approveOrNot
+      }
+      myPost(
+        '/api/school/admin/applylist',
+        tmpdata,
+        res => {
+          if (res.data.status === 1) {
+            this.$message({
+              type: 'success',
+              message: '处理成功！',
+              duration: 1000
+            })
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
     }
   }
 }

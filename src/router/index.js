@@ -8,8 +8,8 @@ import Navi from '@/components/welcomePage/Navigation.vue'
 import MyInfo from '@/components/dashboard/MyInfo.vue'
 import ViewUser from '@/components/admin/ViewUser.vue'
 import Judge from '@/components/admin/Judge.vue'
-import Upload from '@/components/admin/Upload.vue'
-import schoolApply from '@/components/admin/SchoolApply.vue'
+import SchoolApply from '@/components/admin/SchoolApply.vue'
+import CreateTheme from '@/components/admin/CreateTheme.vue'
 import Hangout from '@/components/browse/Hangout.vue'
 import Overview from '@/components/browse/Overview.vue'
 import StarProgram from '@/components/star/Program.vue'
@@ -68,7 +68,11 @@ export default new Router({
         },
         {
           path: 'admin/apply',
-          component: schoolApply
+          component: SchoolApply
+        },
+        {
+          path: 'admin/theme',
+          component: CreateTheme
         },
         {
           path: 'hangout',
@@ -77,6 +81,10 @@ export default new Router({
         {
           path: 'overview',
           component: Overview
+        },
+        {
+          path: 'star/program',
+          component: StarProgram
         },
         {
           path: 'star/program',
