@@ -15,19 +15,16 @@
         <el-button @click="Download(scope.$index, scope.row)" circle icon="el-icon-download"></el-button>
       </template>
     </el-table-column>
-        <el-table-column label="通过" width="150" fixed="right">
+
+    <el-table-column label="上星" width="150" fixed="right">
       <template slot-scope="scope">
-        <el-button  @click="ApproveOrNot(scope.$index, scope.row, true)" circle icon="el-icon-check"></el-button>
+        <el-button @click="Onstar(scope.$index, scope.row)" circle icon="el-icon-upload"></el-button>
       </template>
     </el-table-column>
-        <el-table-column label="不通过" width="150" fixed="right">
-    <template slot-scope="scope">
-        <el-button @click="ApproveOrNot(scope.$index, scope.row, false)" circle icon="el-icon-close"></el-button>
-      </template>
-    </el-table-column>
-    <el-table-column label="上传" width="150" fixed="right">
+
+    <el-table-column label="完成" width="150" fixed="right">
       <template slot-scope="scope">
-        <el-button @click="Upload(scope.$index, scope.row)" circle icon="el-icon-upload"></el-button>
+        <el-button @click="Finish(scope.$index, scope.row)" circle icon="el-icon-success"></el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -67,10 +64,6 @@ export default {
       return this.statusDict[row.status.toString()]
     },
     Download (index, row) {
-      if (row.status === 2) {
-        this.$message.error('您已经审核通过了！')
-        return
-      }
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         codeid: row.id
@@ -82,9 +75,9 @@ export default {
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
-            // 需要更新row.status
-            row.status = 1
-            this.$message.success('开始审核！')
+            // 这回不需要更新row.status
+            // row.status = 1
+            // this.$message.success('开始审核！')
             this.$emit('func', res.data.data.code)
             var file = new File([res.data.data.code], 'newcode.py', {type: 'text/plain;charset=utf-8'})
             saveAs(file)
@@ -97,33 +90,22 @@ export default {
         }
       )
     },
-    ApproveOrNot (index, row, approve) {
+    Onstar (index, row, approve) {
       // 首先应当下载过（根据row.status判断），否则报错
       // 如果通过，则仍然出现在列表里
       // 如果不通过，则需要删掉
-      if (row.status === 0) {
-        this.$message.error('您应当先下载程序再进行审核！')
-        return
-      }
-      if (row.status === 2) {
-        this.$message.error('您已经审核通过了！')
+      if (row.status === 4) {
+        this.$message.error('已经即将上星了！')
         return
       }
 
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         codeid: row.id,
-        source: 1
+        source: 3,
+        target: 4
       }
-      if (approve) {
-        console.log('Approve!')
-        console.log(row.name)
-        tmpdata.target = 2
-      } else {
-        console.log('Disapprove!')
-        console.log(row.name)
-        tmpdata.target = -1
-      }
+
       console.log(tmpdata)
       myPost(
         '/api/program/admin/status',
@@ -132,14 +114,7 @@ export default {
           if (res.data.status === 1) {
             console.log(res.data.data)
             // 需要更新row.status
-            if (approve) {
-              row.status = 2
-              this.$message.success('审核通过！')
-            } else {
-              row.status = -1
-              this.displayData.splice(index, 1)
-              this.$message.error('审核不通过！')
-            }
+            row.status = 4
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -149,20 +124,20 @@ export default {
         }
       )
     },
-    Upload (index, row) {
+    Finish (index, row) {
       // 首先应当已经审核通过，否则报错
       // 上传成功后，需要从列表里面删掉
-      if (row.status < 2) {
-        this.$message.error('您应当先下载并审核通过该程序！')
+      if (row.status < 4) {
+        this.$message.error('您应当先点击上传！')
         return
       }
-      console.log('Upload')
+      console.log('Finish')
       console.log(row.name)
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         codeid: row.id,
-        source: 2,
-        target: 3
+        source: 4,
+        target: 5
       }
       console.log(tmpdata)
       myPost(
@@ -172,9 +147,9 @@ export default {
           if (res.data.status === 1) {
             console.log(res.data.data)
             // 需要更新row.status
-            row.status = 3
+            row.status = 5
             this.displayData.splice(index, 1)
-            this.$message.success('上传成功！')
+            this.$message.success('运行完毕！')
           } else {
             this.$message.error(`${res.data.msg}`)
           }

@@ -8,6 +8,7 @@ import Navi from '@/components/welcomePage/Navigation.vue'
 import MyInfo from '@/components/dashboard/MyInfo.vue'
 import ViewUser from '@/components/admin/ViewUser.vue'
 import Judge from '@/components/admin/Judge.vue'
+import Upload from '@/components/admin/Upload.vue'
 import schoolApply from '@/components/admin/SchoolApply.vue'
 import Hangout from '@/components/browse/Hangout.vue'
 import Overview from '@/components/browse/Overview.vue'
@@ -60,6 +61,10 @@ export default new Router({
         {
           path: 'admin/judge',
           component: Judge
+        },
+        {
+          path: 'admin/upload',
+          component: Upload
         },
         {
           path: 'admin/apply',

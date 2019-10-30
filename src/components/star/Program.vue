@@ -6,6 +6,9 @@
           <ProgramTable v-bind:isMySchool="true"></ProgramTable>
           <!-- TODO: 在getProgramList里面筛选出来学校名称 -->
         </el-tab-pane>
+        <el-tab-pane label="只看在野" name="tabPublic" >
+          <ProgramTable v-bind:isMySchool="true"></ProgramTable>
+        </el-tab-pane>
         <el-tab-pane label="最新程序" name="tabNew" >
           <ProgramTable v-bind:displayData="tableData"></ProgramTable>
         </el-tab-pane>
@@ -68,15 +71,22 @@ export default {
       console.log(this.activeTabName)
       let tmpdata = {
         token: this.$store.getters.getUserToken,
-        type: -1
+        mine: false,
+        type: -1,
+        school: 2,
+        status: '5'
       }
-      if (this.activeTabName === 'tabNew') {
+      if (this.activeTabName === 'tabSchool') {
+        tmpdata.school = 1
+      } else if (this.activeTabName === 'tabPublic') {
+        tmpdata.school = 0
+      } else if (this.activeTabName === 'tabNew') {
         tmpdata.type = 0
       } else {
         tmpdata.type = 1
       }
       myGet(
-        '/api/program/list/onstar',
+        '/api/program/list',
         tmpdata,
         res => {
           if (res.data.status === 1) {
