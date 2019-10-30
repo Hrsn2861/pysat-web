@@ -74,5 +74,7 @@ export default {
   body > .el-container {
     margin-bottom: 40px;
   }
-
+  .sidebar{
+    height: 100% !important;
+  }
 </style>
