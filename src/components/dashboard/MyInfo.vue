@@ -190,7 +190,7 @@
 
         <span slot="footer" class="dialog-footer">
           <el-button @click="applyDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="applyDialogVisible = false">确 定</el-button>
+          <el-button type="primary" @click="applySchool">确 定</el-button>
         </span>
       </el-dialog>
     </el-card>
@@ -483,6 +483,33 @@ export default {
           }
         )
       }
+    },
+
+    applySchool () {
+      this.applyDialogVisible = false
+      let tmpdata = {
+        token: this.$store.getters.getUserToken,
+        reason: this.formChangeSchool.reason,
+        schoolname: this.formChangeSchool.schoolname
+      }
+      myPost(
+        '/api/school/user/apply',
+        tmpdata,
+        res => {
+          if (res.data.status === 1) {
+            this.$message({
+              type: 'success',
+              message: '你的申请已经成功递交',
+              duration: 2000
+            })
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
     },
     getSchoolList () {
       this.changeSchoolVisible = true
