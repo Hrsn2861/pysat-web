@@ -121,17 +121,17 @@
         <el-button
           type="primary"
           @click="changePwdVisible = true"
-          v-if="isSelf || isSameSchoolAndHeadMaster"
+          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin"
         >修改密码</el-button>
         <el-button
           type="primary"
           @click="changePhoneVisible = true"
-          v-if="isSelf || isSameSchoolAndHeadMaster"
+          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin"
         >修改手机号码</el-button>
         <el-button
           type="primary"
           @click="changeInfo()"
-          v-if="isSelf || isSameSchoolAndHeadMaster"
+          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin"
         >{{updateButtonText}}</el-button>
         <el-button
           type="warning"
@@ -586,17 +586,16 @@ export default {
         this.changePermissionEnable = true
         this.changePermissionButtonText = '更新权限！'
       } else {
-        if (this.formInfo.school === '' && this.formInfo.permission_private > 0) {
-          this.$message.error('不能修改无学校用户的校内权限！')
-          this.setformInfo()
-          return
-        }
         if (this.formInfo.permission_private >= this.myPermissionPrivate || this.formInfo.permission_public >= this.myPermissionPublic) {
           this.$message.error('您只能赋予别人低于自己的权限！')
           this.setformInfo()
           return
         }
-
+        if (this.formInfo.school === '' && this.formInfo.permission_private > 0) {
+          this.$message.error('不能修改无学校用户的校内权限！')
+          this.setformInfo()
+          return
+        }
         let tmpdata = {
           token: this.$store.getters.getUserToken,
           username: this.formInfo.username,
