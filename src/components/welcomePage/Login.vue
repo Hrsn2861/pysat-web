@@ -46,7 +46,7 @@
             <el-button class="forget-button" type="primary" @click="sendCAPTCHA">发送验证码</el-button>
             <el-button class="forget-button" type="primary" @click="updatePwd">更 新</el-button>
             <el-button @click="forgetVisible = false; resetForm()">取 消</el-button>
-            <!-- TODO :发送消息 -->
+
           </el-row>
         </transition>
 

@@ -10,7 +10,7 @@ export const mutations = {
   },
 
   [types.LOGIN] (state, data) {
-    state.token = data.token // TODO: 姑且认为这里有token
+    state.token = data.token
     localStorage.setItem('token', data.token)
     // localStorage.setItem('session', data.session.user) //另一种写法
   },

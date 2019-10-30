@@ -39,8 +39,8 @@ export default {
     sendMessage (username, msg) {
       var _ = require('lodash')
       msg = _.trim(msg)
-      if (msg.length === 0) {
-        this.$message.error('请发送有效的消息奥')
+      if (msg.length === 0 || msg.length > 50) {
+        this.$message.error('请发送长度有效的消息奥(0~50字)')
         return
       } // Using Lodash here to trim msg
 
