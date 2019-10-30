@@ -72,17 +72,7 @@ export default {
         summary: this.summary
       }
       console.log(tmpData)
-      // 本地测试用
-      myPost(
-        '/api/file_test',
-        file.raw,
-        res => {
-          console.log(res)
-        },
-        err => {
-          console.log(err)
-        }
-      )
+      this.$refs.upload.submit()
       // 实际使用
       /*
       myPost(
