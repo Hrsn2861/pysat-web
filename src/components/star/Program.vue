@@ -1,14 +1,16 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
+      <el-dropdown @command="handleCommand">
+        <span class="el-dropdown-link">
+          版块菜单<i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="school">学校</el-dropdown-item>
+          <el-dropdown-item command="public">在野</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
       <el-tabs v-model="activeTabName" @tab-click="getProgramList()">
-        <el-tab-pane label="只看本校" name="tabSchool" >
-          <ProgramTable v-bind:isMySchool="true"></ProgramTable>
-          <!-- TODO: 在getProgramList里面筛选出来学校名称 -->
-        </el-tab-pane>
-        <el-tab-pane label="只看在野" name="tabPublic" >
-          <ProgramTable v-bind:isMySchool="true"></ProgramTable>
-        </el-tab-pane>
         <el-tab-pane label="最新程序" name="tabNew" >
           <ProgramTable v-bind:displayData="tableData"></ProgramTable>
         </el-tab-pane>
@@ -38,7 +40,8 @@ export default {
   },
   data () {
     return {
-      activeTabName: 'tabNew',
+      avtiveTabName: 'tabNew',
+      moduleName: 'school',
       tableData: [
         {
           upload_time: '2016-05-02',
@@ -68,25 +71,29 @@ export default {
     // 啊这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
     // 好的，收到
     getProgramList () {
+      console.log(this.moduleName)
       console.log(this.activeTabName)
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         mine: false,
         type: -1,
-        school: 2,
-        status: '5'
+        school: -1,
+        statuslow: 4,
+        statusup: 6
       }
-      if (this.activeTabName === 'tabSchool') {
-        tmpdata.school = 1
-      } else if (this.activeTabName === 'tabPublic') {
+      if (this.moduleName === 'public') {
         tmpdata.school = 0
-      } else if (this.activeTabName === 'tabNew') {
+      } else {
+        tmpdata.school = 1
+      }
+
+      if (this.activeTabName === 'tabNew') {
         tmpdata.type = 0
       } else {
         tmpdata.type = 1
       }
       myGet(
-        '/api/program/list',
+        '/api/program/list/get',
         tmpdata,
         res => {
           if (res.data.status === 1) {
@@ -100,6 +107,10 @@ export default {
           this.$message.error(`${err.message}`, 'ERROR!')
         }
       )
+    },
+    handleCommand (command) {
+      this.moduleName = command
+      this.getProgramList()
     }
   }
 }

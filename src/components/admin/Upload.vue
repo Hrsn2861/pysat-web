@@ -62,7 +62,8 @@ export default {
         token: this.$store.getters.getUserToken,
         mine: false,
         school: 1,
-        status: '3,4'
+        statuslow: 2,
+        statusup: 5
       }
 
       myGet(

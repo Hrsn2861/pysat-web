@@ -48,7 +48,7 @@ export default {
         mine: true
       }
       myGet(
-        '/api/program/list',
+        '/api/program/list/get',
         tmpdata,
         res => {
           if (res.data.status === 1) {

@@ -62,11 +62,12 @@ export default {
         token: this.$store.getters.getUserToken,
         mine: false,
         school: 1,
-        status: '0,1,2'
+        statuslow: -1,
+        statusup: 3
       }
 
       myGet(
-        '/api/program/list',
+        '/api/program/list/get',
         tmpdata,
         res => {
           if (res.data.status === 1) {
