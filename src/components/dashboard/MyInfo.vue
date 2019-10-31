@@ -141,7 +141,7 @@
         <el-button
           type="warning"
           @click="getSchoolList()"
-          v-if="!hasSelectedSchool"
+          v-if="!hasSelectedSchool && isSelf"
         >{{changeSchoolButtonText}}</el-button>
       </el-row>
 

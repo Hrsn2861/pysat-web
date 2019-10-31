@@ -1,7 +1,7 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-checkbox v-model="ifCreatePublic" :disabled="!ifPrivateAndPublicAdmin">是否查看本校</el-checkbox>
+      <el-checkbox  :v-if="ifPrivateAndPublicAdmin">只看本校</el-checkbox>
       <el-table :data="themeData" style="width: 100%" height="800">
         <el-table-column prop="id" label="主题ID" width="250"></el-table-column>
         <el-table-column prop="theme" label="主题名称" width="250"></el-table-column>
@@ -28,7 +28,7 @@
           <el-date-picker v-model="formCreateTheme.deadline" type="date" placeholder="选择日期"></el-date-picker>
         </el-col>
         <el-col :span="1">
-          <el-checkbox v-model="ifCreatePublic" :disabled="!ifPrivateAndPublicAdmin">是否公共</el-checkbox>
+          <el-checkbox v-model="ifCreatePublic" v-if="ifPrivateAndPublicAdmin">是否公共</el-checkbox>
         </el-col>
         <el-col :span="1">
           <el-button @click="createTheme" style="width:100%;margin:0%;">点击创建</el-button>
@@ -55,7 +55,6 @@ export default {
         theme: '',
         deadline: '',
         description: ''
-
       }
 
     }
