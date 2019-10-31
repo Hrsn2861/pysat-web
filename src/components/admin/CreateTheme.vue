@@ -1,7 +1,9 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
+      <el-checkbox v-model="ifCreatePublic" :disabled="!ifPrivateAndPublicAdmin">是否查看本校</el-checkbox>
       <el-table :data="themeData" style="width: 100%" height="800">
+        <el-table-column prop="id" label="主题ID" width="250"></el-table-column>
         <el-table-column prop="theme" label="主题名称" width="250"></el-table-column>
         <el-table-column prop="description" label="描述" :resizable="true"></el-table-column>
         <el-table-column prop="date" label="发布时间" width="150"></el-table-column>
@@ -25,7 +27,10 @@
         <el-col :span="6">
           <el-date-picker v-model="formCreateTheme.deadline" type="date" placeholder="选择日期"></el-date-picker>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="1">
+          <el-checkbox v-model="ifCreatePublic" :disabled="!ifPrivateAndPublicAdmin">是否公共</el-checkbox>
+        </el-col>
+        <el-col :span="1">
           <el-button @click="createTheme" style="width:100%;margin:0%;">点击创建</el-button>
         </el-col>
       </el-row>
@@ -36,8 +41,14 @@
 import { myPost } from '@/utils/requestFunc.js'
 
 export default {
+  computed: {
+    ifPrivateAndPublicAdmin () {
+      return localStorage['permission_private'] >= 2 && localStorage['permission_public'] >= 2
+    }
+  },
   data () {
     return {
+      ifCreatePublic: false,
       themeData: [],
       formCreateTheme: {
         token: this.$store.getters.getUsereToken,
@@ -76,14 +87,14 @@ export default {
     },
     getThemeList () {
       let tmpdata = {
-        token: this.$store.getters.getUsereToken
+        token: this.$store.getters.getUserToken
       }
       myPost(
         '/api/school/theme/list',
         tmpdata,
         res => {
           if (res.data.status === 1) {
-            this.themeData = res.data.data
+            this.themeData = res.data.data.themelist
           } else {
             this.$message.error(`${res.data.msg}`)
           }

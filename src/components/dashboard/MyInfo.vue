@@ -121,17 +121,17 @@
         <el-button
           type="primary"
           @click="changePwdVisible = true"
-          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin"
+          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin || isGreatAdmin"
         >修改密码</el-button>
         <el-button
           type="primary"
           @click="changePhoneVisible = true"
-          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin"
+          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin || isGreatAdmin"
         >修改手机号码</el-button>
         <el-button
           type="primary"
           @click="changeInfo()"
-          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin"
+          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin || isGreatAdmin"
         >{{updateButtonText}}</el-button>
         <el-button
           type="warning"
