@@ -67,7 +67,7 @@ export default {
       }
 
       myGet(
-        '/api/program/list',
+        '/api/program/list/get',
         tmpdata,
         res => {
           if (res.data.status === 1) {
