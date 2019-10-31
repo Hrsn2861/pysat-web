@@ -44,10 +44,14 @@ export default {
   methods: {
     getQueueList () {
       let tmpdata = {
-        token: this.$store.getters.getUserToken
+        token: this.$store.getters.getUserToken,
+        mine: false,
+        school: 1,
+        statuslow: 3,
+        statusup: 5
       }
       myGet(
-        '/api/program/list/inqueue',
+        '/api/program/list/get',
         tmpdata,
         res => {
           if (res.data.status === 1) {

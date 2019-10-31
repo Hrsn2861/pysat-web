@@ -44,10 +44,11 @@ export default {
   methods: {
     getMineList () {
       let tmpdata = {
-        token: this.$store.getters.getUserToken
+        token: this.$store.getters.getUserToken,
+        mine: true
       }
       myGet(
-        '/api/program/list/mine',
+        '/api/program/list/get',
         tmpdata,
         res => {
           if (res.data.status === 1) {

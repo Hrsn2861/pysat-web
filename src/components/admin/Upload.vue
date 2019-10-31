@@ -23,7 +23,7 @@ export default {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.getJudgeList()
+    this.getUploadList()
   },
   data () {
     return {
@@ -57,13 +57,13 @@ export default {
   methods: {
     // 啊这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
     // 好的，收到
-    getJudgeList () {
+    getUploadList () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         mine: false,
         school: 1,
-        statuslow: -1,
-        statusup: 3
+        statuslow: 2,
+        statusup: 5
       }
 
       myGet(

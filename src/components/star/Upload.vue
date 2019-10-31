@@ -1,6 +1,28 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
+      <el-form>
+        <el-form-item label="主题">
+          <el-select v-model="currentThemeId" placeholder="主题">
+            <el-option
+              v-for="item in themeList"
+              :key="item.id"
+              :label="item.theme"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="版块">
+          <el-select v-model="moduleId" placeholder="版块" @change="GetThemeList">
+            <el-option
+              v-for="item in moduleList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
       <AceContainer ref="AceContainer"></AceContainer>
       <el-col :span="4">
         <el-input
@@ -28,13 +50,6 @@
         ref="upload"
         action="https://jsonplaceholder.typicode.com/posts/"
         :on-preview="handlePreview"
-        :on-remove="handleRemove"
-        :on-success="handleSuccess"
-        :on-error="handleError"
-        :on-progress="handleProgress"
-        :on-change="handleChange"
-        :before-upload="beforeUpload"
-        :before-remove="beforeRemove"
         :file-list="fileList"
         :auto-upload="false">
         <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -58,14 +73,67 @@ export default {
   beforeCreate () {
     checkSession(this, '', '/')
   },
+  mounted () {
+    this.GetThemeList()
+  },
   data () {
     return {
       codename: '',
       readme: '',
-      fileList: []
+      themeList: [
+        {
+          id: 0,
+          theme: '共产主义'
+        },
+        {
+          id: 1,
+          theme: '大家随意提交的题目'
+        }
+      ],
+      fileList: [],
+      currentThemeId: 0,
+      moduleId: 0,
+      moduleList: [
+        {
+          value: 0,
+          label: '在野'
+        },
+        {
+          value: 1,
+          label: '校内'
+        }
+      ]
     }
   },
   methods: {
+    GetThemeList () {
+      let tmpData = {
+        token: this.$store.getters.getUserToken,
+        school: this.moduleId
+      }
+      console.log(tmpData)
+
+      myPost(
+        '/school/theme/list',
+        tmpData,
+        res => {
+          if (res.data.status === 1) {
+            this.$message.success(`${res.data.msg}`)
+            this.themeList = res.data.data.themelist
+            console.log(this.themeList)
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
+    },
+    handleCommand (command) {
+      this.moduleId = command
+      console.log(this.moduleId)
+    },
     readFile (file) {
       var reader = new FileReader()
       console.log(file.raw)
@@ -108,7 +176,9 @@ export default {
           token: this.$store.getters.getUserToken,
           codename: this.codename,
           readme: this.readme,
-          code: this.$refs.AceContainer.code
+          code: this.$refs.AceContainer.code,
+          schoolid: this.moduleId,
+          theme: this.currentThemeId
         }
         myPost(
           '/api/program/user/submit',

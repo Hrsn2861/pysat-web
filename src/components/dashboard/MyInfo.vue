@@ -88,10 +88,20 @@
               ></el-input>
             </el-form-item>
             <el-form-item label="权限" style="margin-bottom:2%;">
-              <el-select v-model="formInfo.permission" placeholder="请选择">
+              <el-select v-model="formInfo.permission_private" placeholder="校内权限">
                 <el-option
                   class="my-info-item"
-                  v-for="item in permissionOptions"
+                  v-for="item in permissionPrivateOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="!changePermissionEnable"
+                ></el-option>
+              </el-select>
+              <el-select v-model="formInfo.permission_public" placeholder="公共权限">
+                <el-option
+                  class="my-info-item"
+                  v-for="item in permissionPublicOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -111,27 +121,27 @@
         <el-button
           type="primary"
           @click="changePwdVisible = true"
-          v-if="isSelf || myPermission >= 8"
+          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin"
         >修改密码</el-button>
         <el-button
           type="primary"
           @click="changePhoneVisible = true"
-          v-if="isSelf || myPermission >= 8"
+          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin"
         >修改手机号码</el-button>
         <el-button
           type="primary"
           @click="changeInfo()"
-          v-if="isSelf || myPermission >= 8"
+          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin"
         >{{updateButtonText}}</el-button>
         <el-button
           type="warning"
           @click="changePermission()"
-          v-if="myPermission >= 4 "
+          v-if="isSameSchoolAndHeadMaster || isNoSchoolAndAdmin "
         >{{changePermissionButtonText}}</el-button>
         <el-button
           type="warning"
           @click="getSchoolList()"
-          v-if="!isSelect"
+          v-if="!hasSelectedSchool"
         >{{changeSchoolButtonText}}</el-button>
       </el-row>
 
@@ -235,7 +245,8 @@ export default {
         school: 'None',
         realname: 'None',
         motto: 'None',
-        permission: 0
+        permission_public: 0,
+        permission_private: 0
       },
 
       formInfo: {
@@ -245,11 +256,13 @@ export default {
         school: 'None',
         realname: 'None',
         motto: 'None',
-        permission: 0
+        permission_private: 0,
+        permission_public: 0
       },
       schoolData: [],
 
-      myPermission: '',
+      myPermissionPrivate: '',
+      myPermissionPublic: '',
       isSelf: false, // 判断是不是自己的信息
 
       changeAvatarVisible: false,
@@ -277,31 +290,81 @@ export default {
         CAPTCHA: '',
         phone: ''
       },
-      permissionOptions: [
+      permissionPublicOptions: [
+
         {
           value: 0,
-          label: '封禁用户'
+          label: '封禁用户（校外）'
         },
         {
           value: 1,
-          label: '普通用户'
+          label: '普通用户（校外）'
         },
         {
           value: 2,
-          label: '高级用户'
+          label: '普通管理员（校外）'
         },
         {
           value: 4,
-          label: '管理员'
+          label: '高级管理员（校外）'
         },
         {
           value: 8,
-          label: '新世界的神'
+          label: '网站管理员（校外）'
+        },
+        {
+          value: 16,
+          label: '新世界的神（校外）'
         }
+
+      ],
+      permissionPrivateOptions: [
+
+        {
+          value: 0,
+          label: '封禁用户（校内）'
+        },
+        {
+          value: 1,
+          label: '普通用户（校内）'
+        },
+        {
+          value: 2,
+          label: '普通管理员（校内）'
+        },
+        {
+          value: 4,
+          label: '高级管理员（校内）'
+        },
+        {
+          value: 8,
+          label: '网站管理员（校内）'
+        },
+        {
+          value: 16,
+          label: '新世界的神（校内）'
+        }
+
       ]
     }
   },
-
+  computed: {
+    // 如果是同一个学校的校长，可以修改信息与权限（不可以大于自己）
+    isSameSchoolAndHeadMaster () {
+      return this.formInfo.school === localStorage['school'] && localStorage['permission_private'] >= 4
+    },
+    // 如果是在野头目，可以修改无学校信息同学的信息与提升权限
+    isNoSchoolAndAdmin () {
+      return this.formInfo.school === '' && localStorage['permission_public'] >= 4
+    },
+    // 伟大的管理员可以为所欲为，不过这个属性可能不重要
+    isGreatAdmin () {
+      return localStorage['permission_public'] >= 8
+    },
+    hasSelectedSchool () {
+      return localStorage['school'] !== ''
+    }
+  },
   methods: {
     async logOut () {
       localStorage.removeItem('identity')
@@ -316,7 +379,8 @@ export default {
       this.formInfo.school = this.currentInfo.school
       this.formInfo.realname = this.currentInfo.realname
       this.formInfo.motto = this.currentInfo.motto
-      this.formInfo.permission = this.currentInfo.permission
+      this.formInfo.permission_private = this.currentInfo.permission_private
+      this.formInfo.permission_public = this.currentInfo.permission_pulic
     },
 
     setcurrentInfo () {
@@ -326,7 +390,8 @@ export default {
       this.currentInfo.school = this.formInfo.school
       this.currentInfo.realname = this.formInfo.realname
       this.currentInfo.motto = this.formInfo.motto
-      this.currentInfo.permission = this.formInfo.permission
+      this.currentInfo.permission_private = this.formInfo.permission_private
+      this.formInfo.permission_public = this.currentInfo.permission_public
     },
     resetChangepwd () {
       this.formChangepwd.oldpwd = ''
@@ -355,11 +420,14 @@ export default {
             this.currentInfo.school = res.data.data.user.school
             this.currentInfo.realname = res.data.data.user.realname
             this.currentInfo.motto = res.data.data.user.motto
-            this.currentInfo.permission = res.data.data.user.permission
+            this.currentInfo.permission_private = res.data.data.user.permission_private
+            this.currentInfo.permission_public = res.data.data.user.permission_public
             this.setformInfo()
-            this.myPermission = localStorage.getItem('permission')
+            this.myPermissionPrivate = localStorage.getItem('permission_private')
+            this.myPermissionPublic = localStorage.getItem('permission_public')
 
-            console.log('myPERMISSION: ' + this.myPermission)
+            console.log('myPERMISSION-PRIVATE: ' + this.myPermissionPrivate)
+            console.log('myPERMISSION-PUBLIC: ' + this.myPermissionPublic)
           }
         },
         err => {
@@ -536,24 +604,30 @@ export default {
         return
       }
       if (!this.changePermissionEnable) {
-        if (this.currentInfo.permission >= this.myPermission) {
-          // 如果要改的人的权限原本就不低于自己
+        if (this.currentInfo.permission_public >= this.myPermissionPublic && this.currentInfo.permission_private >= this.myPermissionPrivate) {
+          // 如果要改的人的权限全方位碾压自己，这个是不能改的
+          // 如果要改的人权限有低于自己的，那就是可以的
           this.$message.error('您的权限太低了！')
           return
         }
         this.changePermissionEnable = true
         this.changePermissionButtonText = '更新权限！'
       } else {
-        if (this.formInfo.permission >= this.myPermission) {
-          // 只能改成比自己低的某个权限
+        if (this.formInfo.permission_private >= this.myPermissionPrivate || this.formInfo.permission_public >= this.myPermissionPublic) {
           this.$message.error('您只能赋予别人低于自己的权限！')
+          this.setformInfo()
+          return
+        }
+        if (this.formInfo.school === '' && this.formInfo.permission_private > 0) {
+          this.$message.error('不能修改无学校用户的校内权限！')
           this.setformInfo()
           return
         }
         let tmpdata = {
           token: this.$store.getters.getUserToken,
           username: this.formInfo.username,
-          permission: this.formInfo.permission
+          permission_private: this.formInfo.permission_private,
+          permission_public: this.formInfo.permission_public
         }
         myPost(
           '/api/user/info/modify',
