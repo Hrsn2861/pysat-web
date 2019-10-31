@@ -13,7 +13,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="版块">
-          <el-select v-model="moduleId" placeholder="版块">
+          <el-select v-model="moduleId" placeholder="版块" @change="GetThemeList">
             <el-option
               v-for="item in moduleList"
               :key="item.value"
@@ -50,13 +50,6 @@
         ref="upload"
         action="https://jsonplaceholder.typicode.com/posts/"
         :on-preview="handlePreview"
-        :on-remove="handleRemove"
-        :on-success="handleSuccess"
-        :on-error="handleError"
-        :on-progress="handleProgress"
-        :on-change="handleChange"
-        :before-upload="beforeUpload"
-        :before-remove="beforeRemove"
         :file-list="fileList"
         :auto-upload="false">
         <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -87,12 +80,20 @@ export default {
     return {
       codename: '',
       readme: '',
+      themeList: [
+        {
+          id: 0,
+          theme: '共产主义'
+        },
+        {
+          id: 1,
+          theme: '大家随意提交的题目'
+        }
+      ],
       fileList: [],
-      themeList: [],
       currentThemeId: 0,
       moduleId: 0,
       moduleList: [
-
         {
           value: 0,
           label: '在野'
@@ -107,16 +108,18 @@ export default {
   methods: {
     GetThemeList () {
       let tmpData = {
-        token: this.$store.getters.getUserToken
+        token: this.$store.getters.getUserToken,
+        school: this.moduleId
       }
+      console.log(tmpData)
+
       myPost(
         '/school/theme/list',
         tmpData,
         res => {
-          console.log(tmpData)
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
-            this.themeList = res.data.data
+            this.themeList = res.data.data.themelist
             console.log(this.themeList)
           } else {
             this.$message.error(`${res.data.msg}`)
