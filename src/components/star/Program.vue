@@ -92,6 +92,7 @@ export default {
       } else {
         tmpdata.type = 1
       }
+      console.log(tmpdata)
       myGet(
         '/api/program/list/get',
         tmpdata,

@@ -1,6 +1,28 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
+      <el-form>
+        <el-form-item label="主题">
+          <el-select v-model="currentThemeId" placeholder="主题">
+            <el-option
+              v-for="item in themeList"
+              :key="item.id"
+              :label="item.theme"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="版块">
+          <el-select v-model="moduleId" placeholder="版块">
+            <el-option
+              v-for="item in moduleList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
       <AceContainer ref="AceContainer"></AceContainer>
       <el-col :span="4">
         <el-input
@@ -58,14 +80,57 @@ export default {
   beforeCreate () {
     checkSession(this, '', '/')
   },
+  mounted () {
+    this.GetThemeList()
+  },
   data () {
     return {
       codename: '',
       readme: '',
-      fileList: []
+      fileList: [],
+      themeList: [],
+      currentThemeId: 0,
+      moduleId: 0,
+      moduleList: [
+
+        {
+          value: 0,
+          label: '在野'
+        },
+        {
+          value: 1,
+          label: '校内'
+        }
+      ]
     }
   },
   methods: {
+    GetThemeList () {
+      let tmpData = {
+        token: this.$store.getters.getUserToken
+      }
+      myPost(
+        '/school/theme/list',
+        tmpData,
+        res => {
+          console.log(tmpData)
+          if (res.data.status === 1) {
+            this.$message.success(`${res.data.msg}`)
+            this.themeList = res.data.data
+            console.log(this.themeList)
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
+    },
+    handleCommand (command) {
+      this.moduleId = command
+      console.log(this.moduleId)
+    },
     readFile (file) {
       var reader = new FileReader()
       console.log(file.raw)
@@ -108,7 +173,9 @@ export default {
           token: this.$store.getters.getUserToken,
           codename: this.codename,
           readme: this.readme,
-          code: this.$refs.AceContainer.code
+          code: this.$refs.AceContainer.code,
+          schoolid: this.moduleId,
+          theme: this.currentThemeId
         }
         myPost(
           '/api/program/user/submit',
