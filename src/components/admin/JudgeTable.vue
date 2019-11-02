@@ -2,12 +2,12 @@
   <el-table
     :data="displayData"
     style="width: 100%"
-    :default-sort="{prop: 'date', order: 'descending'}"
+    :default-sort="{prop: 'submit_time', order: 'descending'}"
     height="200"
   >
     <el-table-column prop="submit_time" label="提交时间" width="300"></el-table-column>
     <el-table-column prop="author" label="作者" width="180"></el-table-column>
-    <el-table-column prop="name" label="程序名" :formatter="formatter" width="200"></el-table-column>
+    <el-table-column prop="name" label="程序名" width="200"></el-table-column>
     <el-table-column prop="status" label="审核状态"  width="200" :formatter="statusFormatter"></el-table-column>
 
     <el-table-column label="下载" width="150" fixed="right">
@@ -60,9 +60,6 @@ export default {
     }
   },
   methods: {
-    formatter (row, column) {
-      return row.name
-    },
     statusFormatter (row, column) {
       return this.statusDict[row.status.toString()]
     },
@@ -71,23 +68,24 @@ export default {
         this.$message.error('您已经审核通过了！')
         return
       }
-      let tmpdata = {
+      let tmpData = {
         token: this.$store.getters.getUserToken,
-        codeid: row.id
+        code_id: row.id
       }
-      console.log(tmpdata)
+      console.log(tmpData)
       myGet(
         '/api/program/admin/download',
-        tmpdata,
+        tmpData,
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
             // 需要更新row.status
             row.status = 1
             this.$message.success('开始审核！')
-            this.$emit('func', res.data.data.code)
-            var file = new File([res.data.data.code], 'newcode.py', {type: 'text/plain;charset=utf-8'})
-            saveAs(file)
+            var codeContent = new File([res.data.data.code.content], 'code.py', {type: 'text/plain;charset=utf-8'})
+            saveAs(codeContent)
+            var codeReadme = new File([res.data.data.code.readme], 'readme.py', {type: 'text/plain;charset=utf-8'})
+            saveAs(codeReadme)
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -110,24 +108,24 @@ export default {
         return
       }
 
-      let tmpdata = {
+      let tmpData = {
         token: this.$store.getters.getUserToken,
-        codeid: row.id,
+        code_id: row.id,
         source: 1
       }
       if (approve) {
         console.log('Approve!')
         console.log(row.name)
-        tmpdata.target = 2
+        tmpData.target = 2
       } else {
         console.log('Disapprove!')
         console.log(row.name)
-        tmpdata.target = -1
+        tmpData.target = -1
       }
-      console.log(tmpdata)
+      console.log(tmpData)
       myPost(
         '/api/program/admin/status',
-        tmpdata,
+        tmpData,
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
@@ -158,16 +156,16 @@ export default {
       }
       console.log('Upload')
       console.log(row.name)
-      let tmpdata = {
+      let tmpData = {
         token: this.$store.getters.getUserToken,
-        codeid: row.id,
+        code_id: row.id,
         source: 2,
         target: 3
       }
-      console.log(tmpdata)
+      console.log(tmpData)
       myPost(
         '/api/program/admin/status',
-        tmpdata,
+        tmpData,
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
