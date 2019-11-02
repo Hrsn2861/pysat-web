@@ -2,8 +2,18 @@
   <div class="main-div">
     <el-card class="box-card">
       <el-form>
-        <el-form-item label="版块">
-          <el-select v-model="moduleId" placeholder="版块" @change="GetThemeList()">
+        <el-form-item label="学校" v-if="permission_public>=8">
+          <el-select v-model="currentSchoolId" placeholder="学校" @change="GetThemeList()">
+            <el-option
+              v-for="item in schoolList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="版块" v-if="permission_private<8">
+          <el-select v-model="currentModuleId" placeholder="版块" @change="GetThemeList()">
             <el-option
               v-for="item in moduleList"
               :key="item.value"
@@ -49,11 +59,52 @@ export default {
     checkSession(this, '', '/')
   },
   mounted: function () {
+    this.permission_public = localStorage.getItem('permission_public')
+    this.permission_private = localStorage.getItem('permission_private')
+    if (this.permission_public >= 8) {
+      this.GetSchoolList()
+    }
+    this.GetThemeList()
     this.GetProgramList()
   },
   data () {
     return {
+      permission_public: -1,
+      permission_private: -1,
+
       avtiveTabName: 'tabNew',
+      currentSchoolId: 0,
+      schoolList: [
+        {
+          id: 0,
+          name: '野鸡大学'
+        },
+        {
+          id: 1,
+          name: '清华大学'
+        },
+        {
+          id: 2,
+          name: '北京大学'
+        },
+        {
+          id: 3,
+          name: '陈旭幼儿园'
+        }
+      ],
+
+      currentModuleId: 0,
+      moduleList: [
+        {
+          value: 0,
+          label: '在野'
+        },
+        {
+          value: 1,
+          label: '校内'
+        }
+      ],
+
       currentThemeId: 0,
       themeList: [
         {
@@ -63,17 +114,6 @@ export default {
         {
           id: 1,
           name: '大家随意提交的题目'
-        }
-      ],
-      moduleId: 0,
-      moduleList: [
-        {
-          value: 0,
-          label: '在野'
-        },
-        {
-          value: 1,
-          label: '校内'
         }
       ],
 
@@ -103,9 +143,30 @@ export default {
     }
   },
   methods: {
+    GetSchoolList () {
+      let tmpData = {
+        token: this.$store.getters.getUserToken
+      }
+      myGet(
+        '/api/school/get_list',
+        tmpData,
+        res => {
+          if (res.data.status === 1) {
+            this.$message.success(`${res.data.msg}`)
+            this.schoolList = res.data.data.school_list
+            console.log(this.schoolList)
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
+    },
     GetThemeList () {
       // 先判断ProgramTable里面是否显示author_school
-      if (this.moduleId === 0) {
+      if (this.currentModuleId === 0) {
         this.$refs.tableHot.isPublic = true
         this.$refs.tableNew.isPublic = true
       } else {
@@ -116,10 +177,14 @@ export default {
         token: this.$store.getters.getUserToken,
         school_id: -1
       }
-      if (this.moduleId === 0) {
+      if (this.currentModuleId === 0) {
         tmpData.school_id = 0
       } else {
-        tmpData.school_id = localStorage.getItem('school_id')
+        if (this.permission_public >= 8) {
+          tmpData.school_id = localStorage.getItem('school_id')
+        } else {
+          tmpData.school_id = this.currentSchoolId
+        }
       }
       console.log(tmpData)
 
@@ -155,7 +220,7 @@ export default {
         status_low: 4,
         status_up: 6
       }
-      if (this.moduleId === 0) {
+      if (this.currentModuleId === 0) {
         tmpData.school_id = 0
       } else {
         tmpData.school_id = localStorage.getItem('school_id')
