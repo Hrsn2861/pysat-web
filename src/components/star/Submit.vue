@@ -180,6 +180,7 @@ export default {
           schoolid: this.moduleId,
           theme: this.currentThemeId
         }
+        console.log(uploadData)
         myPost(
           '/api/program/user/submit',
           uploadData,

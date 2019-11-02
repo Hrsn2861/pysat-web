@@ -27,7 +27,7 @@
         <el-menu-item index="/star/program">星上程序</el-menu-item>
         <el-menu-item index="/star/queue">上传队列</el-menu-item>
         <el-menu-item index="/star/mine">我的程序</el-menu-item>
-        <el-menu-item index="/star/upload" >上传程序</el-menu-item>
+        <el-menu-item index="/star/submit" >提交程序</el-menu-item>
       </el-submenu>
 
       <el-submenu v-if="permission >= 4">
