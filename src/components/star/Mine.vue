@@ -7,7 +7,6 @@
 </template>
 
 <script>
-// import { myGet } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 import MineTable from '@/components/star/MineTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
@@ -20,7 +19,7 @@ export default {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.getMineList()
+    this.GetMineList()
   },
   data () {
     return {
@@ -42,7 +41,7 @@ export default {
     }
   },
   methods: {
-    getMineList () {
+    GetMineList () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         mine: true
@@ -52,9 +51,7 @@ export default {
         tmpdata,
         res => {
           if (res.data.status === 1) {
-            this.tableData = res.data.data.codelist
-            console.log(this.tableData)
-            console.log(this.$refs.MineTable.displayData)
+            this.tableData = res.data.data.code_list
           } else {
             this.$message.error(`${res.data.msg}`)
           }
