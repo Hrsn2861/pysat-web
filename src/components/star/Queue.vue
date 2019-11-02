@@ -1,7 +1,14 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <QueueTable v-bind:displayData="tableData"></QueueTable>
+      <el-tabs v-model="moduleName" @tab-click="GetQueueList()">
+        <el-tab-pane label="在野" name="public" >
+          <QueueTable v-bind:displayData="tableData"></QueueTable>
+        </el-tab-pane>
+        <el-tab-pane label="校内" name="private">
+          <QueueTable v-bind:displayData="tableData"></QueueTable>
+        </el-tab-pane>
+      </el-tabs>
     </el-card>
   </div>
 </template>
@@ -20,7 +27,7 @@ export default {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.getQueueList()
+    this.GetQueueList()
   },
   data () {
     return {
@@ -37,27 +44,32 @@ export default {
           author: '大牛顾掀宇',
           id: 'woshidaniu'
         }
-
-      ]
+      ],
+      moduleName: 'public'
     }
   },
   methods: {
-    getQueueList () {
-      let tmpdata = {
+    GetQueueList () {
+      let tmpData = {
         token: this.$store.getters.getUserToken,
         mine: false,
-        school: 1,
-        statuslow: 3,
-        statusup: 5
+        school_id: -1,
+        status_low: 3,
+        status_up: 5
       }
+      if (this.moduleName === 'public') {
+        tmpData.school_id = 0
+      } else {
+        tmpData.school_id = localStorage.getItem('school_id')
+      }
+      console.log(tmpData)
       myGet(
         '/api/program/list/get',
-        tmpdata,
+        tmpData,
         res => {
           if (res.data.status === 1) {
-            console.log(res)
             console.log(res.data.data)
-            this.tableData = res.data.data.codelist
+            this.tableData = res.data.data.code_list
           } else {
             this.$message.error(`${res.data.msg}`)
           }
