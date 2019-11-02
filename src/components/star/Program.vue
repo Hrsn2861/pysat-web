@@ -1,21 +1,34 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-dropdown @command="handleCommand">
-        <span class="el-dropdown-link">
-          版块菜单<i class="el-icon-arrow-down el-icon--right"></i>
-        </span>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="school">学校</el-dropdown-item>
-          <el-dropdown-item command="public">在野</el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-      <el-tabs v-model="activeTabName" @tab-click="getProgramList()">
+      <el-form>
+        <el-form-item label="版块">
+          <el-select v-model="moduleId" placeholder="版块" @change="GetThemeList()">
+            <el-option
+              v-for="item in moduleList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="主题">
+          <el-select v-model="currentThemeId" placeholder="主题" @change="GetProgramList()">
+            <el-option
+              v-for="item in themeList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <el-tabs v-model="activeTabName" @tab-click="GetProgramList()">
         <el-tab-pane label="最新程序" name="tabNew" >
-          <ProgramTable v-bind:displayData="tableData"></ProgramTable>
+          <ProgramTable ref = "tableNew" v-bind:displayData="tableData"></ProgramTable>
         </el-tab-pane>
         <el-tab-pane label="最热程序" name="tabHot">
-          <ProgramTable v-bind:displayData="tableData"></ProgramTable>
+          <ProgramTable ref = "tableHot" v-bind:displayData="tableData"></ProgramTable>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -36,12 +49,34 @@ export default {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.getProgramList()
+    this.GetProgramList()
   },
   data () {
     return {
       avtiveTabName: 'tabNew',
-      moduleName: 'school',
+      currentThemeId: 0,
+      themeList: [
+        {
+          id: 0,
+          name: '共产主义'
+        },
+        {
+          id: 1,
+          name: '大家随意提交的题目'
+        }
+      ],
+      moduleId: 0,
+      moduleList: [
+        {
+          value: 0,
+          label: '在野'
+        },
+        {
+          value: 1,
+          label: '校内'
+        }
+      ],
+
       tableData: [
         {
           upload_time: '2016-05-02',
@@ -68,34 +103,73 @@ export default {
     }
   },
   methods: {
+    GetThemeList () {
+      // 先判断ProgramTable里面是否显示author_school
+      if (this.moduleId === 0) {
+        this.$refs.tableHot.isPublic = true
+        this.$refs.tableNew.isPublic = true
+      } else {
+        this.$refs.tableHot.isPublic = false
+        this.$refs.tableNew.isPublic = false
+      }
+      let tmpData = {
+        token: this.$store.getters.getUserToken,
+        school_id: -1
+      }
+      if (this.moduleId === 0) {
+        tmpData.school_id = 0
+      } else {
+        tmpData.school_id = localStorage.getItem('school_id')
+      }
+      console.log(tmpData)
+
+      myGet(
+        '/api/school/theme/list/get',
+        tmpData,
+        res => {
+          if (res.data.status === 1) {
+            this.$message.success(`${res.data.msg}`)
+            this.themeList = res.data.data.theme_list
+            console.log(this.themeList)
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
+    },
+
     // 啊这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
-    // 好的，收到
-    getProgramList () {
+    // 呵呵
+    GetProgramList () {
       console.log(this.moduleName)
       console.log(this.activeTabName)
-      let tmpdata = {
+      let tmpData = {
         token: this.$store.getters.getUserToken,
         mine: false,
-        type: -1,
-        school: -1,
-        statuslow: 4,
-        statusup: 6
+        sort_type: -1,
+        school_id: -1,
+        theme_id: -1,
+        status_low: 4,
+        status_up: 6
       }
-      if (this.moduleName === 'public') {
-        tmpdata.school = 0
+      if (this.moduleId === 0) {
+        tmpData.school_id = 0
       } else {
-        tmpdata.school = 1
+        tmpData.school_id = localStorage.getItem('school_id')
       }
 
       if (this.activeTabName === 'tabNew') {
-        tmpdata.type = 0
+        tmpData.sort_type = 0
       } else {
-        tmpdata.type = 1
+        tmpData.sort_type = 1
       }
-      console.log(tmpdata)
+      console.log(tmpData)
       myGet(
         '/api/program/list/get',
-        tmpdata,
+        tmpData,
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
@@ -108,10 +182,6 @@ export default {
           this.$message.error(`${err.message}`, 'ERROR!')
         }
       )
-    },
-    handleCommand (command) {
-      this.moduleName = command
-      this.getProgramList()
     }
   }
 }

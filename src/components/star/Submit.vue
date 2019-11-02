@@ -61,7 +61,7 @@
 
 <script>
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import { myPost } from '@/utils/requestFunc.js'
+import { myPost, myGet } from '@/utils/requestFunc.js'
 
 import AceContainer from '@/components/star/AceContainer.vue'
 
@@ -119,7 +119,7 @@ export default {
       }
       console.log(tmpData)
 
-      myPost(
+      myGet(
         '/api/school/theme/list/get',
         tmpData,
         res => {
