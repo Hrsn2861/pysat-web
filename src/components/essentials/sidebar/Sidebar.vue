@@ -30,14 +30,14 @@
         <el-menu-item index="/star/submit" >提交程序</el-menu-item>
       </el-submenu>
 
-      <el-submenu v-if="permission >= 4">
+      <el-submenu v-if="permission_public >= 2 || permission_private >= 2">
         <template slot="title">
           <i class="el-icon-s-home"></i>
           <span slot="title">管理中心</span>
         </template>
         <el-menu-item index="/admin/userlist">用户列表</el-menu-item>
         <el-menu-item index="/admin/judge">待审程序</el-menu-item>
-        <el-menu-item index="/admin/upload">待传程序</el-menu-item>
+        <el-menu-item index="/admin/upload" v-if="permission_public >= 4 || permission_private >= 4">待传程序</el-menu-item>
         <el-menu-item index="/admin/apply">加入申请</el-menu-item>
         <el-menu-item index="/admin/theme">管理主题</el-menu-item>
       </el-submenu>
@@ -62,8 +62,16 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'Sidebar',
+  beforeMount () {
+    this.permission_public = Number(localStorage.getItem('permission_public'))
+    this.permission_private = Number(localStorage.getItem('permission_private'))
+  },
+
   data () {
-    return { permission: localStorage.getItem('permission') }
+    return {
+      permission_public: -1,
+      permission_private: -1
+    }
   },
   computed: {
     ...mapGetters(['sidebar']),
