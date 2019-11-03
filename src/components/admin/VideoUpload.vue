@@ -1,164 +1,244 @@
 <template>
-  <div class="main-div">
-    <el-card class="box-card">
-      <el-col :span="20">
-        <el-input
-          type="textarea"
-          placeholder="请简单描述一下你的视频教程(ZBZY)"
-          v-model="summary"
-          maxlength="30"
-          show-word-limit>
-        </el-input>
-      </el-col>
-      <el-upload
-        ref="upload"
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :on-preview="handlePreview"
-        :file-list="fileList"
-        :auto-upload="false">
-        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-        <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">显示文件</el-button> -->
-      </el-upload>
-    </el-card>
-  </div>
+    <div class="page">
+        <div id="filePicker">选择文件</div>
+
+        <div class="file-panel">
+            <h2>文件列表</h2>
+            <div class="file-list">
+                <ul class="file-item" :class="`file-${file.id}`" v-for="file in fileList" :key="file">
+                    <li class="file-type" :icon="fileCategory(file.ext)"></li>
+                    <li class="file-name" >{{file.name}}</li>
+                    <li class="file-size">{{fileSize(file.size)}}</li>
+                    <li class="file-status">上传中...</li>
+                    <li class="file-operate">
+                        <el-button icon="el-icon-video-play" @click="resume(file)"></el-button>
+                        <el-button icon="el-icon-video-pause" @click="stop(file)"></el-button>
+                        <el-button icon="el-icon-remove" @click="remove(file)"></el-button>
+                    </li>
+                    <li class="progress"></li>
+                </ul>
+                <div class="no-file" v-if="!fileList.length"><i class="iconfont icon-empty-file"></i> 暂无待上传文件</div>
+            </div>
+        </div>
+
+        <vue-upload
+                ref="uploader"
+                uploadButton="#filePicker"
+                multiple
+                @fileChange="fileChange"
+                @progress="onProgress"
+                @success="onSuccess"
+                @uploadError="onUploadError"
+                @error="onError"
+        ></vue-upload>
+    </div>
 </template>
 
 <script>
-import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import { myPost } from '@/utils/requestFunc.js'
+import vueUpload from '@/components/admin/uploader'
+import WebUploader from 'webuploader'
+import $ from 'jquery'
 
 export default {
-  components: {
 
-  },
-  beforeCreate () {
-    checkSession(this, '', '/')
-  },
   data () {
     return {
-      codename: '',
-      readme: '',
-      fileList: [],
-      summary: ''
+      fileList: []
+    }
+  },
+  mounted () {
+
+  },
+  computed: {
+    uploader () {
+      return this.$refs.uploader
     }
   },
   methods: {
-    readFile (file) {
-      var reader = new FileReader()
-      console.log(file.raw)
-      var that = this
-      reader.addEventListener('load', function (e) {
-        console.log('...load succeed...')
-        that.$refs.AceContainer.code = reader.result
-      })
-      reader.addEventListener('error', function (e) {
-        console.log('...load failed...')
-      })
-      reader.addEventListener('loadstart', function (e) {
-        console.log('...start...')
-      })
+    fileChange (file) {
+      if (!file.size) return
 
-      reader.readAsText(file.raw, 'utf-8')
-      console.log(reader)
-      console.log(reader.result)
+      this.fileList.push(file)
+
+      console.log(file)
     },
 
-    handlePreview (file) {
-      console.log('handlePreview')
-      let tmpData = {
-        token: this.$store.getters.getUserToken,
-        videofile: file.raw,
-        videoname: file.raw.name,
-        summary: this.summary
-      }
-      console.log(tmpData)
-      this.$refs.upload.submit()
-      // 实际使用
-      /*
-      myPost(
-        '/api/video/upload',
-        tmpData,
-        res => {
-          if (res.data.status === 1) {
-            this.$message.success(`${res.data.msg}`)
-          } else {
-            this.$message.error(`${res.data.msg}`)
+    onProgress (file, percent) {
+      $(`.file-${file.id} .progress`).css('width', percent * 100 + '%')
+      $(`.file-${file.id} .file-status`).html((percent * 100).toFixed(2) + '%')
+    },
+
+    onSuccess (file, response) {
+      console.log('上传成功', response)
+      this.$message.success(`${file.name}: ${response}`)
+
+      if (response.needMerge) {
+        /*
+        api.mergeUpload({
+          tempName: response.tempName,
+          fileName: file.name
+        }).then(res => {
+          let $fileStatus = $(`.file-${file.id} .file-status`)
+          console.log(res)
+          if (res.status === 0) {
+            $fileStatus.html('上传成功，转码中')
+          } else if (res.status === 1) {
+            $fileStatus.html('上传失败')
+          } else if (res.status === 2) {
+            $fileStatus.html('上传成功')
           }
-        },
-        err => {
-          this.$message.error(`${err.message}`, 'ERROR!')
+        }) */
+      }
+    },
+
+    onUploadError (file, reason) {
+      this.$message.error(`${file.name}: ${reason}`)
+    },
+    onError (msg) {
+      this.$message.error(`${msg}`)
+    },
+
+    resume (file) {
+      this.uploader.upload(file)
+    },
+    stop (file) {
+      this.uploader.stop(file)
+    },
+    remove (file) {
+      // 取消并中断文件上传
+      this.uploader.cancelFile(file)
+      // 在队列中移除文件
+      this.uploader.removeFile(file, true)
+
+      // 在ui上移除
+      let index = this.fileList.findIndex(ele => ele.id === file.id)
+      this.fileList.splice(index, 1)
+    },
+
+    fileSize (size) {
+      return WebUploader.Base.formatSize(size)
+    },
+    fileCategory (ext) {
+      let type = ''
+
+      const typeMap = {
+        image: ['gif', 'jpg', 'jpeg', 'png', 'bmp', 'webp'],
+        video: ['mp4', 'm3u8', 'rmvb', 'avi', 'swf', '3gp', 'mkv', 'flv'],
+        text: ['doc', 'txt', 'docx', 'pages', 'epub', 'pdf', 'numbers', 'csv', 'xls', 'xlsx', 'keynote', 'ppt', 'pptx']
+      }
+
+      Object.keys(typeMap).forEach((_type) => {
+        const extensions = typeMap[_type]
+        if (extensions.indexOf(ext) > -1) {
+          type = _type
         }
-      )
-      */
+      })
+
+      return type
     }
-    /*
-    handleSuccess (res, file, fileList) {
-      console.log('handleSucess')
-      this.readFile(file)
-      // console.log(fileList)
-    },
-    // eslint-disable-next-line handle-callback-err
-    handleError (err, file, fileList) {
-      console.log('handleError')
-      // console.log(err)
-    },
-    handleChange (file, fileList) {
-      console.log('handleChange')
-      // console.log(file)
-    },
-    handleProgress (event, file, fileList) {
-      console.log('handleProgress')
-      // console.log(event)
-    },
-    beforeUpload (file) {
-      console.log('beforeUpload')
-      // console.log(file)
-    },
-    beforeRemove (file, fileList) {
-      console.log('beforeRemove')
-      // console.log(file)
-    }
-    */
+
+  },
+  watch: {},
+  components: {
+    vueUpload
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang='scss'>
-.box-card {
-  display: flex;
-  justify-content: center;
-  border: 0px dashed rgb(40, 40, 40);
-  background-color: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-  transition: box-shadow 0.3s ease-in-out !important;
-  transition-duration: 1s;
-  margin: 0%;
-  width: 70%;
-  height: auto;
-}
+<style lang="scss">
 
-.box-card:hover {
-  box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);
-}
+    $h-row: 50px;
 
-.main-div {
-  height: 100%;
-  width: 100%;
-  margin: 0%;
-  display: flex;
-  align-content: center;
-  align-items: center;
-  justify-content: center;
-  padding: 0%;
-  background: url("../../assets/background16-9-2.jpg");
-  background-size: cover;
-  background-repeat: none;
-  height: 100%;
-}
+    .file-panel {
+        width: 1300px;
+        margin-top: 10px;
+        box-shadow: 0 2px 12px 1px rgba(0, 0, 0, 0.1);
 
-.el-button {
-  margin: 1%;
-  margin-bottom: 0%;
-}
+        > h2 {
+            height: 40px;
+            line-height: 40px;
+            padding: 0 10px;
+            border-radius: 4px 4px 0 0;
+            border-bottom: 1px solid #ccc;
+            background-color: #fff;
+        }
+
+        .file-list {
+            position: relative;
+            height: 360px;
+            overflow-y: auto;
+            background-color: rgb(250, 250, 250);
+        }
+
+        .file-item {
+            position: relative;
+            height: $h-row -1;
+            line-height: $h-row;
+            width: 1500px;
+            padding: 0 10px;
+            border-bottom: 1px solid #ccc;
+            background-color: #fff;
+            z-index: 1;
+
+            > li {
+                display: inline-block;
+            }
+        }
+        .file-type {
+            width: 24px;
+            height: 24px;
+            vertical-align: -5px;
+        }
+        .file-name {
+            width: 20%;
+            margin-left: 10px;
+        }
+        .file-size {
+            width: 20%;
+        }
+        .file-status {
+            width: 20%;
+        }
+        .file-operate {
+            width: 20%;
+
+            > a {
+                padding: 10px 5px;
+                cursor: pointer;
+                color: #666;
+
+                &:hover {
+                    color: #ff4081;
+                }
+            }
+        }
+
+        .file-type[icon=text] {
+            background: url(../../assets/icon/text-icon.png);
+        }
+        .file-type[icon=video] {
+            background: url(../../assets/icon/video-icon.png);
+        }
+        .file-type[icon=image] {
+            background: url(../../assets/icon/image-icon.png);
+        }
+
+        .progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: $h-row - 1;
+            width: 0;
+            background-color: #E2EDFE;
+            z-index: -1;
+        }
+
+        .no-file {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+        }
+    }
 </style>
