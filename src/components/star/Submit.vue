@@ -177,11 +177,9 @@ export default {
         console.log(this.$refs.AceContainer.code)
         let tmpData = {
           token: this.$store.getters.getUserToken,
-          code: {
-            name: this.codename,
-            content: this.$refs.AceContainer.code,
-            readme: this.readme
-          },
+          code_name: this.codename,
+          code_content: this.$refs.AceContainer.code,
+          code_readme: this.readme,
           school_id: -1,
           theme_id: this.currentThemeId
         }
