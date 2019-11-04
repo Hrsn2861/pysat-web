@@ -23,7 +23,7 @@
         </el-table-column>
       </el-table>
       <el-select v-model="currentSchoolId" placeholder="学校" @change="GetSchoolList()">
-        <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+        <el-option v-for="item in schoolList" :key="item.id" :label="item.schoolname" :value="item.id"></el-option>
       </el-select>
       <el-button type="text" @click="GetApplyList()">刷新名单</el-button>
       <el-button type="text">...</el-button>
@@ -40,20 +40,8 @@ export default {
   data () {
     return {
       applyList: [
-        {
-          id: 0,
-          username: '禹含',
-          date: '1988',
-          reason: '又红又专'
-        },
-        {
-          id: 1,
-          username: '陈旭',
-          date: '2000',
-          reason: '不知道'
-        }
       ],
-      currentSchoolId: localStorage['school_id'],
+      currentSchoolId: 1,
       schoolList: [
         {
           id: localStorage['school_id'],
@@ -66,7 +54,6 @@ export default {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.GetApplyList()
     this.GetSchoolList()
   },
   computed: {
@@ -84,11 +71,13 @@ export default {
       this.$router.push({ name: 'myinfo', params: { username: row.username } })
     },
     GetSchoolList () {
+      console.log(this.currentSchoolId)
       if (this.isPrivateAndPublicAdmin) {
         let tmpData = {
           token: this.$store.getters.getUserToken
         }
         this.GetSchoolListFromMixin(tmpData)
+        this.GetApplyList()
       }
     },
     GetApplyList () {
@@ -103,7 +92,7 @@ export default {
         tmpdata,
         res => {
           if (res.data.status === 1) {
-            this.applyData = res.data.data
+            this.applyList = res.data.data
           } else {
             this.$message.error(`${res.data.msg}`)
           }

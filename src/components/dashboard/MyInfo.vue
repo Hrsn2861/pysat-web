@@ -140,9 +140,10 @@
         >{{changePermissionButtonText}}</el-button>
         <el-button
           type="warning"
-          @click="getSchoolList()"
-          v-if="!hasSelectedSchool && isSelf"
+          @click="GetSchoolList()"
+          v-if="!hasSelectedSchool && isSelf && !isGreatAdmin"
         >{{changeSchoolButtonText}}</el-button>
+
       </el-row>
 
       <transition name="fade">
@@ -177,14 +178,16 @@
       <transition name="fade">
         <!-- 这里名字叫做changeSchool，只是为了名字呼应，但是实际上只可以修改一次 -->
         <div v-if="changeSchoolVisible" class="change-school">
-          <el-table :data="schoolData" style="width: 100%">
-            <el-table-column prop="name" label="学校名称" width="150"></el-table-column>
-            <el-table-column prop="num" label="当前人数" width="150"></el-table-column>
+          <el-table :data="schoolList" style="width: 100%">
+            <el-table-column prop="id" label="学校ID" width="150"></el-table-column>
+            <el-table-column prop="schoolname" label="学校名称" width="150"></el-table-column>
+            <el-table-column prop="headmaster" label="校长" width="150"></el-table-column>
             <el-table-column prop="description" label="学校描述" width="300"></el-table-column>
+            <el-table-column prop="population" label="当前人数" width="150"></el-table-column>
             <el-table-column fixed="right" label="操作" width="150">
               <template slot-scope="scope">
                 <el-button
-                  @click="applyDialogVisible = true;formApplySchool.schoolname = scope.row.name"
+                  @click="applyDialogVisible = true;formApplySchool.school_name = scope.row.schoolname;formApplySchool.school_id = scope.row.id"
                   type="text"
                   size="small"
                 >申请加入</el-button>
@@ -195,12 +198,12 @@
         </div>
       </transition>
 
-      <el-dialog :title="'加入: ' + formApplySchool.schoolname + '（一个同学只有一次选择的权利）'" :visible.sync="applyDialogVisible" width="30%">
+      <el-dialog :title="'加入: ' + formApplySchool.school_name + '（一个同学只有一次选择的权利）'" :visible.sync="applyDialogVisible" width="30%">
         <el-input placeholder="请输入你的验证信息" v-model="formApplySchool.reason" clearable></el-input>
 
         <span slot="footer" class="dialog-footer">
           <el-button @click="applyDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="applySchool">确 定</el-button>
+          <el-button type="primary" @click="ApplySchool">确 定</el-button>
         </span>
       </el-dialog>
     </el-card>
@@ -211,8 +214,10 @@
 import { myGet, myPost } from '@/utils/requestFunc.js'
 import { Encrypt } from '@/utils/crypt.js'
 import { checkSession, logout } from '@/utils/sessionUtils/sessionFunc'
+import getSchoolAndThemeMixin from '@/utils/getListUtils/getThemeAndSchoolList'
 
 export default {
+  mixins: [getSchoolAndThemeMixin],
   props: ['username'], // 呃， props没有用？？？？
   name: 'MyInfo',
   beforeCreate () {
@@ -259,7 +264,7 @@ export default {
         permission_private: 0,
         permission_public: 0
       },
-      schoolData: [],
+      schoolList: [],
 
       myPermissionPrivate: '',
       myPermissionPublic: '',
@@ -278,7 +283,9 @@ export default {
       isSelect: false,
       formApplySchool: {
         reason: '',
-        schoolname: ''
+        school_name: '',
+        school_id: -1
+
       },
       imageURL: require('../../assets/cx.png'),
 
@@ -362,7 +369,7 @@ export default {
       return localStorage['permission_public'] >= 8
     },
     hasSelectedSchool () {
-      return localStorage['school'] !== ''
+      return localStorage['school_id'] !== 0
     }
   },
   methods: {
@@ -415,9 +422,10 @@ export default {
         queryJson,
         res => {
           if (res.data.status === 1) {
+            console.log(res.data.data.user)
             this.currentInfo.username = res.data.data.user.username
             this.currentInfo.phone = res.data.data.user.phone
-            this.currentInfo.school = res.data.data.user.school
+            this.currentInfo.school = res.data.data.user.school_name
             this.currentInfo.realname = res.data.data.user.realname
             this.currentInfo.motto = res.data.data.user.motto
             this.currentInfo.permission_private = res.data.data.user.permission_private
@@ -553,12 +561,12 @@ export default {
       }
     },
 
-    applySchool () {
+    ApplySchool () {
       this.applyDialogVisible = false
       let tmpdata = {
         token: this.$store.getters.getUserToken,
-        reason: this.formApplySchool.reason,
-        schoolname: this.formApplySchool.schoolname
+        apply_reason: this.formApplySchool.reason,
+        apply_school_id: this.formApplySchool.school_id
       }
       myPost(
         '/api/school/user/apply',
@@ -579,22 +587,14 @@ export default {
         }
       )
     },
-    getSchoolList () {
+    GetSchoolList () {
       this.changeSchoolVisible = true
       this.changeSchoolButtonText = '选择学校'
       // TODO: getSchoolApi
-      this.schoolData = [
-        {
-          name: '清华大学',
-          description: '北京市海淀区',
-          num: 3000
-        },
-        {
-          name: '朝阳小学',
-          description: '校友GXY',
-          num: 200
-        }
-      ]
+      let tmpData = {
+        token: this.$store.getters.getUserToken
+      }
+      this.GetSchoolListFromMixin(tmpData)
     },
 
     changePermission () {

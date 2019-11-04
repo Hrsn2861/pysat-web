@@ -26,7 +26,6 @@ export default {
         res => {
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
-
             this.schoolList = res.data.data.school_list
             console.log(this.schoolList)
           } else {
