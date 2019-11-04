@@ -23,7 +23,7 @@
         </el-table-column>
       </el-table>
       <el-select v-model="currentSchoolId" placeholder="学校" @change="GetSchoolList()">
-        <el-option v-for="item in schoolList" :key="item.id" :label="item.schoolname" :value="item.id"></el-option>
+        <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
       <el-button type="text" @click="GetApplyList()">刷新名单</el-button>
       <el-button type="text">...</el-button>
@@ -54,12 +54,20 @@ export default {
   },
   computed: {
     // 如果是private和public的admin，那么getSchoolList就可以成功调用，否则默认显示localStorage的
-    isPrivateAndPublicAdmin () {
+    isPrivateAdmin () {
       return (
-        localStorage['permission_private'] >= 2 &&
+        localStorage['permission_private'] >= 2
+      )
+    },
+    isPublicAdmin () {
+      return (
         localStorage['permission_public'] >= 2
       )
+    },
+    isGreatAdmin () {
+      return localStorage['permission_public'] >= 8
     }
+
   },
   methods: {
     ViewCurrentUser (index, row) {
@@ -67,13 +75,31 @@ export default {
       this.$router.push({ name: 'myinfo', params: { username: row.username } })
     },
     GetSchoolList () {
-      console.log(this.currentSchoolId)
-      if (this.isPrivateAndPublicAdmin) {
+      if (this.isGreatAdmin) {
         let tmpData = {
           token: this.$store.getters.getUserToken
         }
         this.GetSchoolListFromMixin(tmpData)
-        this.GetApplyList()
+      } else {
+        if (this.isPublicAdmin) {
+          this.schoolList.push(
+            {
+              id: 0,
+              name: '公共区域'
+            }
+          )
+          this.currentSchoolId = 0
+        }
+        if (this.isPrivateAdmin) {
+          this.schoolList.push(
+            {
+              id: localStorage['school_id'],
+              name: localStorage['school_name']
+            }
+          )
+          this.currentSchoolId = localStorage['school_id']
+        }
+        console.log(this.schoolList)
       }
     },
     GetApplyList () {

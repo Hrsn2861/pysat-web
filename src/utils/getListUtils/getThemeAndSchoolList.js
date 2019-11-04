@@ -3,13 +3,13 @@ export default {
   methods: {
     GetThemeListFromMixin (tmpData) {
       myGet(
-        '/api/school/theme/list/get',
+        '/api/school/theme/list',
         tmpData,
         res => {
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
             this.themeList = res.data.data.theme_list
-            console.log(this.themeList)
+            console.log(res.data.data)
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -28,6 +28,7 @@ export default {
             this.$message.success(`${res.data.msg}`)
             this.schoolList = res.data.data.school_list
             console.log(this.schoolList)
+            this.currentSchoolId = this.schoolList[0].id
           } else {
             this.$message.error(`${res.data.msg}`)
           }

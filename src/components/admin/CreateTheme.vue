@@ -3,8 +3,8 @@
     <el-card class="box-card">
       <el-row style="margin-bottom:2%;">
         <!-- change为选中值发生变化时触发 -->
-        <el-select v-model="currentSchoolId" placeholder="学校" @change="GetSchoolList()">
-          <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+        <el-select v-model="currentSchoolId" placeholder="学校">
+          <el-option v-for="item in schoolList" :key="item.id" :label="item.schoolname" :value="item.id"></el-option>
         </el-select>
         <el-button @click="NewThemeDialog()">点击创建</el-button>
         <el-button @click="GetThemeList">刷新主题</el-button>
@@ -13,7 +13,7 @@
         <el-table-column prop="id" label="主题ID" width="80"></el-table-column>
         <el-table-column prop="name" label="主题名称" width="150"></el-table-column>
         <el-table-column prop="description" label="描述" :resizable="true"></el-table-column>
-        <el-table-column prop="release_date" label="发布/修改时间" width="150"></el-table-column>
+        <el-table-column prop="create_time" label="发布时间" width="150"></el-table-column>
         <el-table-column prop="deadline" label="截止日期" width="150"></el-table-column>
         <el-table-column prop="count" label="相关主题数" width="120"></el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
@@ -35,11 +35,10 @@
           v-model="formCreateTheme.school_id"
           placeholder="发布区域"
           v-if='themeStatus === "新建主题"'
-          @change="GetSchoolList()"
         >
-          <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          <el-option v-for="item in schoolList" :key="item.id" :label="item.schoolname" :value="item.id"></el-option>
         </el-select>
-        <el-date-picker v-model="formCreateTheme.theme_deadline" type="date" placeholder="选择日期"></el-date-picker>
+        <el-date-picker v-model="formCreateTheme.theme_deadline" type="date" placeholder="选择日期" value-format="yyyy-MM-dd">></el-date-picker>
         <span slot="footer" class="dialog-footer">
           <el-button @click="themeDialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="UpdateTheme()">确 定</el-button>
@@ -56,11 +55,18 @@ export default {
   mixins: [getSchoolAndThemeMixin],
   computed: {
     // 这里暂时好像没有用
-    isPrivateAndPublicAdmin () {
+    isPrivateAdmin () {
       return (
-        localStorage['permission_private'] >= 2 &&
+        localStorage['permission_private'] >= 2
+      )
+    },
+    isPublicAdmin () {
+      return (
         localStorage['permission_public'] >= 2
       )
+    },
+    isGreatAdmin () {
+      return localStorage['permission_public'] >= 8
     },
     isHeadmasterOrGreater () {
       // return localStorage['permission_private'] >= 4 || localStorage['permission_public'] >= 4
@@ -75,13 +81,13 @@ export default {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.GetThemeList()
     this.GetSchoolList()
+    this.GetThemeList()
   },
   data () {
     return {
       themeStatus: '',
-      currentSchoolId: localStorage['school_id'],
+      currentSchoolId: -1,
       themeDialogVisible: false,
       themeList: [
         {
@@ -94,10 +100,6 @@ export default {
         }
       ],
       schoolList: [
-        {
-          id: localStorage['school_id'],
-          name: localStorage['school_name']
-        }
       ],
       formCreateTheme: {
         token: this.$store.getters.getUsereToken,
@@ -111,11 +113,32 @@ export default {
   },
   methods: {
     GetSchoolList () {
-      if (this.isPrivateAndPublicAdmin) {
+      if (this.isGreatAdmin) {
         let tmpData = {
           token: this.$store.getters.getUserToken
         }
+        // FIXME ： 这里如果在函数调用下面使用consolelog，打印的不是正常值
         this.GetSchoolListFromMixin(tmpData)
+      } else {
+        if (this.isPublicAdmin) {
+          this.schoolList.push(
+            {
+              id: 0,
+              name: '公共区域'
+            }
+          )
+          this.currentSchoolId = 0
+        }
+        if (this.isPrivateAdmin) {
+          this.schoolList.push(
+            {
+              id: localStorage['school_id'],
+              name: localStorage['school_name']
+            }
+          )
+          this.currentSchoolId = localStorage['school_id']
+        }
+        console.log(this.schoolList)
       }
     },
     GetThemeList () {
@@ -186,6 +209,7 @@ export default {
           theme_deadline: this.formCreateTheme.theme_deadline
         }
       }
+      console.log(tmpData.theme_deadline)
       myPost(
         api,
         tmpData,
@@ -234,7 +258,7 @@ export default {
   transition-duration: 1s;
 }
 .el-table {
-  height: auto !important;
+  height: 82vh !important;
 }
 .box-card:hover {
   box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);
