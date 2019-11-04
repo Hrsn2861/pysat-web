@@ -6,7 +6,7 @@
         <el-select v-model="currentSchoolId" placeholder="学校" @change="GetSchoolList()">
           <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
-        <el-button @click="NewTheme()">点击创建</el-button>
+        <el-button @click="NewThemeDialog()">点击创建</el-button>
         <el-button @click="GetThemeList">刷新主题</el-button>
       </el-row>
       <el-table :data="themeList" style="width: 100%" height="800">
@@ -51,7 +51,7 @@
 <script>
 import { myGet, myPost } from '@/utils/requestFunc.js'
 import getSchoolAndThemeMixin from '@/utils/getListUtils/getThemeAndSchoolList'
-
+import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 export default {
   mixins: [getSchoolAndThemeMixin],
   computed: {
@@ -70,6 +70,9 @@ export default {
         return localStorage['permission_private'] >= 4
       }
     }
+  },
+  beforeCreate () {
+    checkSession(this, '', '/')
   },
   mounted: function () {
     this.GetThemeList()
@@ -112,7 +115,7 @@ export default {
         let tmpData = {
           token: this.$store.getters.getUserToken
         }
-        this.getSchoolListFromMixin(tmpData)
+        this.GetSchoolListFromMixin(tmpData)
       }
     },
     GetThemeList () {
@@ -122,7 +125,7 @@ export default {
       }
       this.GetThemeListFromMixin(tmpdata)
     },
-    NewTheme () {
+    NewThemeDialog () {
       this.themeDialogVisible = true
       this.themeStatus = '新建主题'
       this.formCreateTheme.theme_name = ''

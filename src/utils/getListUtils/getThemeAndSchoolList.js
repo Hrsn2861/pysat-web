@@ -21,11 +21,12 @@ export default {
     },
     GetSchoolListFromMixin (tmpData) {
       myGet(
-        '/api/school/get_list',
+        '/api/school/school/get_list',
         tmpData,
         res => {
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
+
             this.schoolList = res.data.data.school_list
             console.log(this.schoolList)
           } else {

@@ -88,7 +88,7 @@ export default {
         let tmpData = {
           token: this.$store.getters.getUserToken
         }
-        this.getSchoolListFromMixin(tmpData)
+        this.GetSchoolListFromMixin(tmpData)
       }
     },
     GetApplyList () {
