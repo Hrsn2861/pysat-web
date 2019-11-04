@@ -1,8 +1,14 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <JudgeTable v-bind:displayData="tableData" @func="UpdateCode"></JudgeTable>
-      <center><AceContainer ref="AceContainer"></AceContainer></center>
+      <el-tabs v-model="moduleName" @tab-click="GetUploadList()">
+        <el-tab-pane label="在野" name="public" >
+          <UploadTable v-bind:displayData="tableData"></UploadTable>
+        </el-tab-pane>
+        <el-tab-pane label="校内" name="private">
+          <UploadTable v-bind:displayData="tableData"></UploadTable>
+        </el-tab-pane>
+      </el-tabs>
     </el-card>
   </div>
 </template>
@@ -10,20 +16,18 @@
 <script>
 // import { myGet } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import JudgeTable from '@/components/admin/JudgeTable.vue'
+import UploadTable from '@/components/admin/UploadTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
-import AceContainer from '@/components/star/AceContainer.vue'
 
 export default {
   components: {
-    JudgeTable,
-    AceContainer
+    UploadTable
   },
   beforeCreate () {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.getUploadList()
+    this.GetUploadList()
   },
   data () {
     return {
@@ -55,24 +59,26 @@ export default {
     }
   },
   methods: {
-    // 啊这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
-    // 好的，收到
-    getUploadList () {
-      let tmpdata = {
+    GetUploadList () {
+      let tmpData = {
         token: this.$store.getters.getUserToken,
         mine: false,
-        school: 1,
-        statuslow: 2,
-        statusup: 5
+        school_id: -1,
+        status_low: 2,
+        status_up: 5
       }
-
+      if (this.moduleName === 'public') {
+        tmpData.school_id = 0
+      } else {
+        tmpData.school_id = localStorage.getItem('school_id')
+      }
       myGet(
         '/api/program/list/get',
-        tmpdata,
+        tmpData,
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
-            this.tableData = res.data.data.codelist
+            this.tableData = res.data.data.code_list
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -81,9 +87,6 @@ export default {
           this.$message.error(`${err.message}`, 'ERROR!')
         }
       )
-    },
-    UpdateCode (code) {
-      this.$refs.AceContainer.code = code
     }
   }
 }

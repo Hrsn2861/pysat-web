@@ -6,9 +6,10 @@
     height="500"
   >
     <el-table-column prop="submit_time" label="提交时间" width="300"></el-table-column>
-    <el-table-column prop="name" label="程序名" :formatter="formatter"></el-table-column>
+    <el-table-column prop="name" label="程序名" ></el-table-column>
+    <el-table-column prop="school_name" label="学校" width="180"></el-table-column>
+    <el-table-column prop="theme_name" label="主题" width="180"></el-table-column>
     <el-table-column prop="status" label="审核状态" width="180" fixed="right" :formatter="statusFormatter"></el-table-column>
-
     <el-table-column label="下载" width="150" fixed="right">
       <template slot-scope="scope">
         <el-button  v-bind:class="{active : tableStatus.likeIconOn}" icon="el-icon-download" circle @click="Download(scope.row)"></el-button>
@@ -43,27 +44,26 @@ export default {
     }
   },
   methods: {
-    formatter (row, column) {
-      return row.name
-    },
     statusFormatter (row, column) {
       return this.statusDict[row.status.toString()]
     },
     Download (row) {
       // console.log(this.displayData)
-      let tmpdata = {
+      let tmpData = {
         token: this.$store.getters.getUserToken,
-        codeid: row.id
+        code_id: row.id
       }
       // console.log(tmpdata)
       myGet(
         '/api/program/user/download',
-        tmpdata,
+        tmpData,
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
-            var file = new File([res.data.data.code], 'newcode.py', {type: 'text/plain;charset=utf-8'})
-            saveAs(file)
+            var codeContent = new File([res.data.data.code.content], 'code.py', {type: 'text/plain;charset=utf-8'})
+            saveAs(codeContent)
+            var codeReadme = new File([res.data.data.code.readme], 'readme.py', {type: 'text/plain;charset=utf-8'})
+            saveAs(codeReadme)
           } else {
             this.$message.error(`${res.data.msg}`)
           }
