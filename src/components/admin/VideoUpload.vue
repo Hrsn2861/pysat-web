@@ -31,13 +31,16 @@
                 @uploadError="onUploadError"
                 @error="onError"
                 :description="videoDescription"
+                :title="videoTitle"
         ></vue-upload>
+        <el-input v-model="videoTitle" placeholder="请输入教程名，呵呵"></el-input>
         <el-input
          type="textarea"
         :autosize="{ minRows: 2, maxRows: 4}"
         placeholder="请输入视频简介，呵呵"
         v-model="videoDescription">
         </el-input>
+
     </div>
 </template>
 
@@ -50,7 +53,8 @@ export default {
   data () {
     return {
       fileList: [],
-      videoDescription: ''
+      videoDescription: '',
+      videoTitle: ''
     }
   },
   mounted () {

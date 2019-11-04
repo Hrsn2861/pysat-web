@@ -14,6 +14,10 @@ export default {
       type: String,
       default: ''
     },
+    title: {
+      type: String,
+      default: ''
+    },
     accept: {
       type: String,
       default: 'video'
@@ -21,7 +25,7 @@ export default {
     // 上传地址
     url: {
       type: String,
-      default: 'http://59.110.159.203:51305/file/test'
+      default: 'https://pysat-server-CTRL.app.secoder.net/file/upload/chunk' // hard-code...
     },
     // 上传最大数量 默认为100
     fileNumLimit: {
@@ -93,19 +97,23 @@ export default {
 
       this.uploader.on('uploadStart', (file) => {
         // 在这里可以准备好formData的数据
-        // this.uploader.options.formData.key = this.keyGenerator(file);
-        this.key = this.keyGenerator(file)
         let tmpData = {
           token: this.$store.getters.getUserToken,
-          key: this.key
+          school_id: localStorage.getItem('school_id'),
+          category_id: 0,
+          filename: file.name,
+          video_title: this.title,
+          description: this.description
         }
         myPost(
-          '/api/...',
+          '/api/file/upload/start',
           tmpData,
           res => {
             if (res.data.status === 1) {
-              console.log(res.data.data)
-              this.tableData = res.data.data.codelist
+              console.log(res.data)
+              this.key = res.data.data.key
+              this.uploader.options.formData.key = this.key
+              this.uploader.options.formData.token = this.$store.getters.getUserToken
             } else {
               this.$message.error(`${res.data.msg}`)
             }
@@ -115,6 +123,12 @@ export default {
           }
         )
       })
+      /*
+      this.uploader.on('uploadBeforeSend', (object, data, headers) => {
+        data.token = this.$store.getters.getUserToken
+        data.key = this.key
+      })
+      */
 
       // 文件上传过程中创建进度条实时显示。
       this.uploader.on('uploadProgress', (file, percentage) => {
@@ -124,17 +138,14 @@ export default {
       this.uploader.on('uploadSuccess', (file, response) => {
         let tmpData = {
           token: this.$store.getters.getUserToken,
-          key: this.key,
-          file_name: file.name,
-          file_description: this.description
+          key: this.key
         }
         myPost(
-          '/api/...',
+          '/api/file/upload/done',
           tmpData,
           res => {
             if (res.data.status === 1) {
-              console.log(res.data.data)
-              this.tableData = res.data.data.codelist
+              console.log(res.data)
             } else {
               this.$message.error(`${res.data.msg}`)
             }
