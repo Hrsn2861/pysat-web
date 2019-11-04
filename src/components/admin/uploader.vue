@@ -5,9 +5,15 @@
 
 <script>
 import WebUploader from 'webuploader'
+import { myPost } from '@/utils/requestFunc.js'
+
 export default {
   name: 'vue-upload',
   props: {
+    description: {
+      type: String,
+      default: ''
+    },
     accept: {
       type: String,
       default: 'video'
@@ -33,14 +39,7 @@ export default {
       default: null
     },
     // 生成formData中文件的key，下面只是个例子，具体哪种形式和后端商议
-    keyGenerator: {
-      type: Function,
-      default (file) {
-        const currentTime = new Date().getTime()
-        const key = `${currentTime}.${file.name}`
-        return key
-      }
-    },
+
     multiple: {
       type: Boolean,
       default: false
@@ -53,13 +52,20 @@ export default {
   },
   data () {
     return {
-      uploader: null
+      uploader: null,
+      key: ''
     }
   },
   mounted () {
     this.initWebUpload()
   },
   methods: {
+    keyGenerator (file) {
+      const currentTime = new Date().getTime()
+      const key = `${currentTime}.${file.name}`
+      return key
+    },
+
     initWebUpload () {
       this.uploader = WebUploader.create({
         auto: true, // 选完文件后，是否自动上传
@@ -88,6 +94,26 @@ export default {
       this.uploader.on('uploadStart', (file) => {
         // 在这里可以准备好formData的数据
         // this.uploader.options.formData.key = this.keyGenerator(file);
+        this.key = this.keyGenerator(file)
+        let tmpData = {
+          token: this.$store.getters.getUserToken,
+          key: this.key
+        }
+        myPost(
+          '/api/...',
+          tmpData,
+          res => {
+            if (res.data.status === 1) {
+              console.log(res.data.data)
+              this.tableData = res.data.data.codelist
+            } else {
+              this.$message.error(`${res.data.msg}`)
+            }
+          },
+          err => {
+            this.$message.error(`${err.message}`, 'ERROR!')
+          }
+        )
       })
 
       // 文件上传过程中创建进度条实时显示。
@@ -96,7 +122,28 @@ export default {
       })
 
       this.uploader.on('uploadSuccess', (file, response) => {
-        this.$emit('success', file, response)
+        let tmpData = {
+          token: this.$store.getters.getUserToken,
+          key: this.key,
+          file_name: file.name,
+          file_description: this.description
+        }
+        myPost(
+          '/api/...',
+          tmpData,
+          res => {
+            if (res.data.status === 1) {
+              console.log(res.data.data)
+              this.tableData = res.data.data.codelist
+            } else {
+              this.$message.error(`${res.data.msg}`)
+            }
+          },
+          err => {
+            this.$message.error(`${err.message}`, 'ERROR!')
+          }
+        )
+        // this.$emit('success', file, response)
       })
 
       this.uploader.on('uploadError', (file, reason) => {

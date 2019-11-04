@@ -30,7 +30,14 @@
                 @success="onSuccess"
                 @uploadError="onUploadError"
                 @error="onError"
+                :description="videoDescription"
         ></vue-upload>
+        <el-input
+         type="textarea"
+        :autosize="{ minRows: 2, maxRows: 4}"
+        placeholder="请输入视频简介，呵呵"
+        v-model="videoDescription">
+        </el-input>
     </div>
 </template>
 
@@ -40,10 +47,10 @@ import WebUploader from 'webuploader'
 import $ from 'jquery'
 
 export default {
-
   data () {
     return {
-      fileList: []
+      fileList: [],
+      videoDescription: ''
     }
   },
   mounted () {
@@ -71,24 +78,6 @@ export default {
     onSuccess (file, response) {
       console.log('上传成功', response)
       this.$message.success(`${file.name}: ${response}`)
-
-      if (response.needMerge) {
-        /*
-        api.mergeUpload({
-          tempName: response.tempName,
-          fileName: file.name
-        }).then(res => {
-          let $fileStatus = $(`.file-${file.id} .file-status`)
-          console.log(res)
-          if (res.status === 0) {
-            $fileStatus.html('上传成功，转码中')
-          } else if (res.status === 1) {
-            $fileStatus.html('上传失败')
-          } else if (res.status === 2) {
-            $fileStatus.html('上传成功')
-          }
-        }) */
-      }
     },
 
     onUploadError (file, reason) {
