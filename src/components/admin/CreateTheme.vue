@@ -6,7 +6,7 @@
         <el-select v-model="currentSchoolId" placeholder="学校" @change="GetSchoolList()">
           <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
-        <el-button @click="NewTheme">点击创建</el-button>
+        <el-button @click="NewTheme()">点击创建</el-button>
         <el-button @click="GetThemeList">刷新主题</el-button>
       </el-row>
       <el-table :data="themeList" style="width: 100%" height="800">
@@ -29,8 +29,8 @@
         </el-table-column>
       </el-table>
       <el-dialog :title="themeStatus" :visible.sync="themeDialogVisible" width="30%">
-        <el-input v-model="formCreateTheme.name" placeholder="请输入主题名称"></el-input>
-        <el-input v-model="formCreateTheme.description" placeholder="请输入主题描述"></el-input>
+        <el-input v-model="formCreateTheme.theme_name" placeholder="请输入主题名称"></el-input>
+        <el-input v-model="formCreateTheme.theme_description" placeholder="请输入主题描述"></el-input>
         <el-select
           v-model="formCreateTheme.school_id"
           placeholder="发布区域"
@@ -39,10 +39,10 @@
         >
           <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
-        <el-date-picker v-model="formCreateTheme.deadline" type="date" placeholder="选择日期"></el-date-picker>
+        <el-date-picker v-model="formCreateTheme.theme_deadline" type="date" placeholder="选择日期"></el-date-picker>
         <span slot="footer" class="dialog-footer">
           <el-button @click="themeDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="createTheme">确 定</el-button>
+          <el-button type="primary" @click="UpdateTheme()">确 定</el-button>
         </span>
       </el-dialog>
     </el-card>
