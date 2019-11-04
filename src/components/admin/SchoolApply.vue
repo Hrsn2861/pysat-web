@@ -1,6 +1,6 @@
 <template>
   <div class="main-div">
-    <el-table-column class="box-card">
+    <el-card class="box-card">
       <el-table :data="applyList" style="width:100%" height="500">
         <el-table-column prop="id" label="申请id" width="200"></el-table-column>
         <el-table-column prop="username" label="用户名" width="120"></el-table-column>
@@ -27,7 +27,7 @@
       </el-select>
       <el-button type="text" @click="GetApplyList()">刷新名单</el-button>
       <el-button type="text">...</el-button>
-    </el-table-column>
+    </el-card>
 
   </div>
 </template>
@@ -41,12 +41,8 @@ export default {
     return {
       applyList: [
       ],
-      currentSchoolId: 1,
+      currentSchoolId: 3,
       schoolList: [
-        {
-          id: localStorage['school_id'],
-          name: localStorage['school_name']
-        }
       ]
     }
   },
@@ -92,7 +88,8 @@ export default {
         tmpdata,
         res => {
           if (res.data.status === 1) {
-            this.applyList = res.data.data
+            console.log(res.data.data)
+            this.applyList = res.data.data.apply_list
           } else {
             this.$message.error(`${res.data.msg}`)
           }
