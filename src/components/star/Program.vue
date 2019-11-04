@@ -50,8 +50,10 @@
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 import ProgramTable from '@/components/star/ProgramTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
+import getSchoolAndThemeMixin from '@/utils/getListUtils/getThemeAndSchoolList'
 
 export default {
+  mixins: [getSchoolAndThemeMixin],
   components: {
     ProgramTable
   },
@@ -147,22 +149,7 @@ export default {
       let tmpData = {
         token: this.$store.getters.getUserToken
       }
-      myGet(
-        '/api/school/get_list',
-        tmpData,
-        res => {
-          if (res.data.status === 1) {
-            this.$message.success(`${res.data.msg}`)
-            this.schoolList = res.data.data.school_list
-            console.log(this.schoolList)
-          } else {
-            this.$message.error(`${res.data.msg}`)
-          }
-        },
-        err => {
-          this.$message.error(`${err.message}`, 'ERROR!')
-        }
-      )
+      this.GetSchoolListFromMixin(tmpData)
     },
     GetThemeList () {
       // 先判断ProgramTable里面是否显示author_school
@@ -181,29 +168,13 @@ export default {
         tmpData.school_id = 0
       } else {
         if (this.permission_public >= 8) {
-          tmpData.school_id = localStorage.getItem('school_id')
-        } else {
           tmpData.school_id = this.currentSchoolId
+        } else {
+          tmpData.school_id = localStorage.getItem('school_id')
         }
       }
       console.log(tmpData)
-
-      myGet(
-        '/api/school/theme/list/get',
-        tmpData,
-        res => {
-          if (res.data.status === 1) {
-            this.$message.success(`${res.data.msg}`)
-            this.themeList = res.data.data.theme_list
-            console.log(this.themeList)
-          } else {
-            this.$message.error(`${res.data.msg}`)
-          }
-        },
-        err => {
-          this.$message.error(`${err.message}`, 'ERROR!')
-        }
-      )
+      this.GetThemeListFromMixin(tmpData)
     },
 
     // 啊这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
@@ -225,7 +196,6 @@ export default {
       } else {
         tmpData.school_id = localStorage.getItem('school_id')
       }
-
       if (this.activeTabName === 'tabNew') {
         tmpData.sort_type = 0
       } else {

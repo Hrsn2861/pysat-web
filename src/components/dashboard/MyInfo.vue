@@ -184,7 +184,7 @@
             <el-table-column fixed="right" label="操作" width="150">
               <template slot-scope="scope">
                 <el-button
-                  @click="applyDialogVisible = true;formChangeSchool.schoolname = scope.row.name"
+                  @click="applyDialogVisible = true;formApplySchool.schoolname = scope.row.name"
                   type="text"
                   size="small"
                 >申请加入</el-button>
@@ -195,8 +195,8 @@
         </div>
       </transition>
 
-      <el-dialog :title="'加入: ' + formChangeSchool.schoolname + '（一个同学只有一次选择的权利）'" :visible.sync="applyDialogVisible" width="30%">
-        <el-input placeholder="请输入你的验证信息" v-model="formChangeSchool.reason" clearable></el-input>
+      <el-dialog :title="'加入: ' + formApplySchool.schoolname + '（一个同学只有一次选择的权利）'" :visible.sync="applyDialogVisible" width="30%">
+        <el-input placeholder="请输入你的验证信息" v-model="formApplySchool.reason" clearable></el-input>
 
         <span slot="footer" class="dialog-footer">
           <el-button @click="applyDialogVisible = false">取 消</el-button>
@@ -276,7 +276,7 @@ export default {
       changeSchoolButtonText: '选择学校',
       applyDialogVisible: false,
       isSelect: false,
-      formChangeSchool: {
+      formApplySchool: {
         reason: '',
         schoolname: ''
       },
@@ -557,8 +557,8 @@ export default {
       this.applyDialogVisible = false
       let tmpdata = {
         token: this.$store.getters.getUserToken,
-        reason: this.formChangeSchool.reason,
-        schoolname: this.formChangeSchool.schoolname
+        reason: this.formApplySchool.reason,
+        schoolname: this.formApplySchool.schoolname
       }
       myPost(
         '/api/school/user/apply',

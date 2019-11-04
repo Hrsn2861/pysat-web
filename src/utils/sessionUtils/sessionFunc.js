@@ -87,8 +87,6 @@ export async function logout (context) {
   await myPost('api/user/sign/logout', {token: context.$store.getters.getUserToken},
     res => {
       context.$store.dispatch('userLogOut') // userlogout不删除会话,只删除用户
-      localStorage.removeItem('permission_public')
-      localStorage.removeItem('permission_private')
     },
     err => {
       context.$message.error(`${err.message}`)
