@@ -20,6 +20,24 @@ export const getters = {
     }
     return state.user
   },
+
+  getPermission_Public: (state) => {
+    if (!state.permission_public) {
+      if (localStorage.getItem('permission_public') != null) {
+        state.permission_public = localStorage['permission_public']
+      }
+    }
+    return state.permission_public
+  },
+  getPermission_Private: (state) => {
+    if (!state.permission_private) {
+      if (localStorage.getItem('permission_private') != null) {
+        state.permission_private = localStorage['permission_private']
+      }
+    }
+    return state.permission_private
+  },
+
   getUserNameFromSessionId: (state) => {
     return state.chatSystem.sessions[state.chatSystem.currentSessionId].user // 通过sessionid返回用户名
   },
