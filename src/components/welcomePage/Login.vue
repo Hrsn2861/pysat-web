@@ -141,6 +141,7 @@ export default {
                 this.$store.dispatch('setUser', this.formLogin.identity)
                 // 登录成功 跳转至首页
                 this.$router.push('overview')
+                window.location.reload()
                 // this.$router.push({name: 'myinfo', params: {username: '___default'}})
               } else {
                 this.$message.error(`${res.data.msg}`)
