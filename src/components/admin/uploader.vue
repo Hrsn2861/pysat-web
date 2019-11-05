@@ -95,7 +95,7 @@ export default {
         // fileSingleSizeLimit: this.fileSingleSizeLimit, // 限制单个上传图片的大小
         formData: this.formData, // 上传所需参数  // 这玩意儿咋没用啊，妈的
         chunked: true, // 分片上传
-        chunkSize: 2 * 1024 * 1024, // 分片大小
+        chunkSize: 512 * 1024, // 分片大小
         duplicate: true // 重复上传
       })
 
