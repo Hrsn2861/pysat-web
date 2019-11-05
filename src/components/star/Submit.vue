@@ -1,6 +1,28 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
+      <el-form>
+        <el-form-item label="版块">
+          <el-select v-model="moduleId" placeholder="版块" @change="GetThemeList">
+            <el-option
+              v-for="item in moduleList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="主题">
+          <el-select v-model="currentThemeId" placeholder="主题">
+            <el-option
+              v-for="item in themeList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
       <AceContainer ref="AceContainer"></AceContainer>
       <el-col :span="4">
         <el-input
@@ -28,13 +50,6 @@
         ref="upload"
         action="https://jsonplaceholder.typicode.com/posts/"
         :on-preview="handlePreview"
-        :on-remove="handleRemove"
-        :on-success="handleSuccess"
-        :on-error="handleError"
-        :on-progress="handleProgress"
-        :on-change="handleChange"
-        :before-upload="beforeUpload"
-        :before-remove="beforeRemove"
         :file-list="fileList"
         :auto-upload="false">
         <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -46,26 +61,82 @@
 
 <script>
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import { myPost } from '@/utils/requestFunc.js'
+import { myPost, myGet } from '@/utils/requestFunc.js'
 
 import AceContainer from '@/components/star/AceContainer.vue'
 
 export default {
   components: {
     AceContainer
-    // PrismEditor
   },
   beforeCreate () {
     checkSession(this, '', '/')
+  },
+  mounted () {
+    this.GetThemeList()
   },
   data () {
     return {
       codename: '',
       readme: '',
+
+      currentThemeId: 0,
+      themeList: [
+        {
+          id: 0,
+          name: '共产主义'
+        },
+        {
+          id: 1,
+          name: '大家随意提交的题目'
+        }
+      ],
+      moduleId: 0,
+      moduleList: [
+        {
+          value: 0,
+          label: '在野'
+        },
+        {
+          value: 1,
+          label: '校内'
+        }
+      ],
+
       fileList: []
     }
   },
   methods: {
+    GetThemeList () {
+      let tmpData = {
+        token: this.$store.getters.getUserToken,
+        school_id: -1
+      }
+      if (this.moduleId === 0) {
+        tmpData.school_id = 0
+      } else {
+        tmpData.school_id = localStorage.getItem('school_id')
+      }
+      console.log(tmpData)
+
+      myGet(
+        '/api/school/theme/list/get',
+        tmpData,
+        res => {
+          if (res.data.status === 1) {
+            this.$message.success(`${res.data.msg}`)
+            this.themeList = res.data.data.theme_list
+            console.log(this.themeList)
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
+    },
+
     readFile (file) {
       var reader = new FileReader()
       console.log(file.raw)
@@ -104,17 +175,24 @@ export default {
         this.$message.error('请提交有效的程序和程序名')
       } else {
         console.log(this.$refs.AceContainer.code)
-        let uploadData = {
+        let tmpData = {
           token: this.$store.getters.getUserToken,
-          codename: this.codename,
-          readme: this.readme,
-          code: this.$refs.AceContainer.code
+          code_name: this.codename,
+          code_content: this.$refs.AceContainer.code,
+          code_readme: this.readme,
+          school_id: -1,
+          theme_id: this.currentThemeId
         }
+        if (this.moduleId === 0) {
+          tmpData.school_id = 0
+        } else {
+          tmpData.school_id = localStorage.getItem('school_id')
+        }
+        console.log(tmpData)
         myPost(
           '/api/program/user/submit',
-          uploadData,
+          tmpData,
           res => {
-            console.log(uploadData)
             if (res.data.status === 1) {
               this.$message.success(`${res.data.msg}`)
             } else {
@@ -127,49 +205,10 @@ export default {
         )
       }
     },
-    /*
-    submitUpload () {
-      console.log('submitUpload')
-      this.$refs.upload.submit()
-    },
-    handleRemove (file, fileList) {
-      console.log('handleRemove')
-      // console.log(file, fileList)
-    },
-    */
     handlePreview (file) {
       console.log('handlePreview')
       this.readFile(file)
-      // console.log(file)
     }
-    /*
-    handleSuccess (res, file, fileList) {
-      console.log('handleSucess')
-      this.readFile(file)
-      // console.log(fileList)
-    },
-    // eslint-disable-next-line handle-callback-err
-    handleError (err, file, fileList) {
-      console.log('handleError')
-      // console.log(err)
-    },
-    handleChange (file, fileList) {
-      console.log('handleChange')
-      // console.log(file)
-    },
-    handleProgress (event, file, fileList) {
-      console.log('handleProgress')
-      // console.log(event)
-    },
-    beforeUpload (file) {
-      console.log('beforeUpload')
-      // console.log(file)
-    },
-    beforeRemove (file, fileList) {
-      console.log('beforeRemove')
-      // console.log(file)
-    }
-    */
   }
 }
 </script>

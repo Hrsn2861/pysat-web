@@ -27,7 +27,7 @@
         <el-menu-item index="/star/program">星上程序</el-menu-item>
         <el-menu-item index="/star/queue">上传队列</el-menu-item>
         <el-menu-item index="/star/mine">我的程序</el-menu-item>
-        <el-menu-item index="/star/upload" >上传程序</el-menu-item>
+        <el-menu-item index="/star/submit" >提交程序</el-menu-item>
       </el-submenu>
 
       <el-submenu v-if="permission_public >= 2 || permission_private >= 2">
@@ -63,8 +63,16 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'Sidebar',
+  beforeMount () {
+    this.permission_public = Number(localStorage.getItem('permission_public'))
+    this.permission_private = Number(localStorage.getItem('permission_private'))
+  },
+
   data () {
-    return { permission: localStorage.getItem('permission') }
+    return {
+      permission_public: -1,
+      permission_private: -1
+    }
   },
   computed: {
     ...mapGetters(['sidebar']),

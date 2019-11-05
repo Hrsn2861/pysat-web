@@ -1,12 +1,12 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tabs v-model="moduleName" @tab-click="GetQueueList()">
+      <el-tabs v-model="moduleName" @tab-click="GetUploadList()">
         <el-tab-pane label="在野" name="public" >
-          <QueueTable v-bind:displayData="tableData"></QueueTable>
+          <UploadTable v-bind:displayData="tableData"></UploadTable>
         </el-tab-pane>
         <el-tab-pane label="校内" name="private">
-          <QueueTable v-bind:displayData="tableData"></QueueTable>
+          <UploadTable v-bind:displayData="tableData"></UploadTable>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -16,45 +16,55 @@
 <script>
 // import { myGet } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import QueueTable from '@/components/star/QueueTable.vue'
+import UploadTable from '@/components/admin/UploadTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
 
 export default {
   components: {
-    QueueTable
+    UploadTable
   },
   beforeCreate () {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.GetQueueList()
+    this.GetUploadList()
   },
   data () {
     return {
       tableData: [
         {
           submit_time: '2016-05-02',
+          author: '陈旭',
           name: '面向陈旭程序设计基础',
-          author: '陈旭老师',
-          id: 'woshishuji'
+          status: 0,
+          id: 'imchenxulaoshi'
         },
         {
           submit_time: '6102-05-02',
+          author: '顾掀宇',
           name: '编译原理PA1-B',
-          author: '大牛顾掀宇',
-          id: 'woshidaniu'
+          status: 1,
+          id: 'imxianyu'
+        },
+        {
+          submit_time: '6102-05-02',
+          author: '陈浩展',
+          name: '大学生恋爱',
+          status: 2,
+          id: 'imxianyu'
         }
+
       ],
-      moduleName: 'public'
+      currentCode: ''
     }
   },
   methods: {
-    GetQueueList () {
+    GetUploadList () {
       let tmpData = {
         token: this.$store.getters.getUserToken,
         mine: false,
         school_id: -1,
-        status_low: 3,
+        status_low: 2,
         status_up: 5
       }
       if (this.moduleName === 'public') {
@@ -62,7 +72,6 @@ export default {
       } else {
         tmpData.school_id = localStorage.getItem('school_id')
       }
-      console.log(tmpData)
       myGet(
         '/api/program/list/get',
         tmpData,
