@@ -53,30 +53,6 @@ import getSchoolAndThemeMixin from '@/utils/getListUtils/getThemeAndSchoolList'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 export default {
   mixins: [getSchoolAndThemeMixin],
-  computed: {
-    // 这里暂时好像没有用
-    isPrivateAdmin () {
-      return (
-        localStorage['permission_private'] >= 2
-      )
-    },
-    isPublicAdmin () {
-      return (
-        localStorage['permission_public'] >= 2
-      )
-    },
-    isGreatAdmin () {
-      return localStorage['permission_public'] >= 8
-    },
-    isHeadmasterOrGreater () {
-      // return localStorage['permission_private'] >= 4 || localStorage['permission_public'] >= 4
-      if (this.currentSchoolId === 0) {
-        return localStorage['permission_public'] >= 4
-      } else {
-        return localStorage['permission_private'] >= 4
-      }
-    }
-  },
   beforeCreate () {
     checkSession(this, '', '/')
   },
@@ -123,6 +99,12 @@ export default {
         this.GetSchoolListFromMixin(tmpData).then(
           res => {
             console.log(this.schoolList)
+            this.schoolList.splice(0, 0,
+              {
+                id: 0,
+                name: '公共区域'
+              }
+            )
             this.currentSchoolId = this.schoolList[0].id
             this.GetThemeList()
           }

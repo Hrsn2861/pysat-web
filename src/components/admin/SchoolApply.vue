@@ -22,7 +22,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-select v-model="currentSchoolId" placeholder="学校" @change="GetSchoolList()">
+      <el-select v-model="currentSchoolId" placeholder="学校" @change="GetApplyList()">
         <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
       <el-button type="text" @click="GetApplyList">刷新名单</el-button>
@@ -79,7 +79,12 @@ export default {
         let tmpData = {
           token: this.$store.getters.getUserToken
         }
-        this.GetSchoolListFromMixin(tmpData)
+        this.GetSchoolListFromMixin(tmpData).then(
+          res => {
+            this.currentSchoolId = this.schoolList[0].id
+            this.GetApplyList()
+          }
+        )
       } else {
         if (this.isPublicAdmin) {
           this.schoolList.push(
@@ -99,6 +104,7 @@ export default {
           )
           this.currentSchoolId = localStorage['school_id']
         }
+        this.GetApplyList()
       }
     },
     GetApplyList () {
@@ -132,11 +138,10 @@ export default {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         apply_id: row.id,
-        username: row.username,
         approve: approveOrNot
       }
       myPost(
-        '/api/school/admin/applylist',
+        '/api/school/admin/approve',
         tmpdata,
         res => {
           if (res.data.status === 1) {
