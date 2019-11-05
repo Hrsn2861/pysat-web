@@ -6,6 +6,7 @@
 <script>
 import WebUploader from 'webuploader'
 import { myPost } from '@/utils/requestFunc.js'
+import { async } from 'q'
 
 export default {
   name: 'vue-upload',
@@ -64,9 +65,18 @@ export default {
     this.initWebUpload()
   },
   methods: {
-    keyGenerator (file) {
+    randomString(len) {
+    　　var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
+    　　var maxPos = $chars.length;
+    　　var pwd = '';
+    　　for (var i = 0; i < len; i++) {
+    　　　　pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+    　　}
+    　　return pwd;
+    },
+    keyGenerator () {
       const currentTime = new Date().getTime()
-      const key = `${currentTime}.${file.name}`
+      const key = `${currentTime}` + this.randomString(12)
       return key
     },
 
@@ -97,6 +107,8 @@ export default {
 
       this.uploader.on('uploadStart', (file) => {
         console.log('uploadStart')
+        this.key = this.keyGenerator()
+        console.log('key' + this.key)
         // 在这里可以准备好formData的数据
         let tmpData = {
           token: this.$store.getters.getUserToken,
@@ -104,7 +116,8 @@ export default {
           category_id: 0,
           filename: file.name,
           video_title: this.title,
-          description: this.description
+          description: this.description,
+          key: this.key
         }
         myPost(
           '/api/file/upload/start',
@@ -112,9 +125,6 @@ export default {
           res => {
             if (res.data.status === 1) {
               console.log(res.data)
-              this.key = res.data.data.key
-              this.uploader.options.formData.key = this.key // 無駄
-              this.uploader.options.formData.token = this.$store.getters.getUserToken // 無駄
             } else {
               this.$message.error(`${res.data.msg}`)
             }
