@@ -6,7 +6,6 @@
 <script>
 import WebUploader from 'webuploader'
 import { myPost } from '@/utils/requestFunc.js'
-import { async } from 'q'
 
 export default {
   name: 'vue-upload',
@@ -65,14 +64,14 @@ export default {
     this.initWebUpload()
   },
   methods: {
-    randomString(len) {
-    　　var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
-    　　var maxPos = $chars.length;
-    　　var pwd = '';
-    　　for (var i = 0; i < len; i++) {
-    　　　　pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
-    　　}
-    　　return pwd;
+    randomString (len) {
+      var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
+      var maxPos = $chars.length
+      var pwd = ''
+      for (var i = 0; i < len; i++) {
+        pwd += $chars.charAt(Math.floor(Math.random() * maxPos))
+      }
+      return pwd
     },
     keyGenerator () {
       const currentTime = new Date().getTime()
