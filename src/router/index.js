@@ -8,6 +8,7 @@ import Navi from '@/components/welcomePage/Navigation.vue'
 import MyInfo from '@/components/dashboard/MyInfo.vue'
 import ViewUser from '@/components/admin/ViewUser.vue'
 import Judge from '@/components/admin/Judge.vue'
+import School from '@/components/admin/SetSchool.vue'
 import Upload from '@/components/admin/Upload'
 import SchoolApply from '@/components/admin/SchoolApply.vue'
 import CreateTheme from '@/components/admin/CreateTheme.vue'
@@ -67,6 +68,10 @@ export default new Router({
         {
           path: 'admin/upload',
           component: Upload
+        },
+        {
+          path: 'admin/school',
+          component: School
         },
         {
           path: 'admin/apply',

@@ -40,6 +40,7 @@
         <el-menu-item index="/admin/video">上传教程</el-menu-item>
         <el-menu-item index="/admin/upload" v-if="permission_public >= 4 || permission_private >= 4">待传程序</el-menu-item>
         <el-menu-item index="/admin/apply">加入申请</el-menu-item>
+        <el-menu-item index="/admin/school" v-if="permission_public >= 8 || permission_private >= 8">管理学校</el-menu-item>
         <el-menu-item index="/admin/theme">管理主题</el-menu-item>
       </el-submenu>
       <el-menu-item index="/myinfo/___default">

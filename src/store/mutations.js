@@ -28,7 +28,8 @@ export const mutations = {
       localStorage.setItem('identity', data.user.username)
       localStorage.setItem('permission_public', Number(data.user.permission_public))
       localStorage.setItem('permission_private', Number(data.user.permission_private))
-      localStorage.setItem('school', data.user.school)
+      localStorage.setItem('school_name', data.user.school.name)
+      localStorage.setItem('school_id', data.user.school.id)
     }
   },
 
@@ -37,7 +38,8 @@ export const mutations = {
     localStorage.removeItem('identity')
     localStorage.removeItem('permission_public')
     localStorage.removeItem('permission_private')
-    localStorage.removeItem('school')
+    localStorage.removeItem('school_name')
+    localStorage.removeItem('school_id')
   },
   [types.TESTFUNC] (state) { // For test only
     state.user = {
