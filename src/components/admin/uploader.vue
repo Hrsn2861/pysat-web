@@ -157,6 +157,7 @@ export default {
           res => {
             if (res.data.status === 1) {
               console.log(res.data)
+              this.$message.success(`${res.data.msg}`)
             } else {
               console.log(res.data)
               this.$message.error(`${res.data.msg}`)
