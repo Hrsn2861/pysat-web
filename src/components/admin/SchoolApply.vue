@@ -25,7 +25,7 @@
       <el-select v-model="currentSchoolId" placeholder="学校" @change="GetSchoolList()">
         <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
-      <el-button type="text" @click="GetApplyList()">刷新名单</el-button>
+      <el-button type="text" @click="GetApplyList">刷新名单</el-button>
       <el-button type="text">...</el-button>
     </el-card>
 
@@ -99,10 +99,11 @@ export default {
           )
           this.currentSchoolId = localStorage['school_id']
         }
-        console.log(this.schoolList)
       }
     },
     GetApplyList () {
+      console.log(this.schoolList)
+      console.log(this.currentSchoolId)
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         school_id: this.currentSchoolId,

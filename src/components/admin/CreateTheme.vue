@@ -3,19 +3,19 @@
     <el-card class="box-card">
       <el-row style="margin-bottom:2%;">
         <!-- change为选中值发生变化时触发 -->
-        <el-select v-model="currentSchoolId" placeholder="学校">
-          <el-option v-for="item in schoolList" :key="item.id" :label="item.schoolname" :value="item.id"></el-option>
+        <el-select v-model="currentSchoolId" placeholder="学校" @change="GetThemeList()">
+          <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
         <el-button @click="NewThemeDialog()">点击创建</el-button>
-        <el-button @click="GetThemeList">刷新主题</el-button>
+        <el-button @click="GetThemeList">刷新一下</el-button>
       </el-row>
       <el-table :data="themeList" style="width: 100%" height="800">
         <el-table-column prop="id" label="主题ID" width="80"></el-table-column>
-        <el-table-column prop="name" label="主题名称" width="150"></el-table-column>
+        <el-table-column prop="title" label="主题名称" width="150"></el-table-column>
         <el-table-column prop="description" label="描述" :resizable="true"></el-table-column>
         <el-table-column prop="create_time" label="发布时间" width="150"></el-table-column>
         <el-table-column prop="deadline" label="截止日期" width="150"></el-table-column>
-        <el-table-column prop="count" label="相关主题数" width="120"></el-table-column>
+        <el-table-column prop="count" label="相关数目" width="120"></el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
             <el-button
@@ -36,7 +36,7 @@
           placeholder="发布区域"
           v-if='themeStatus === "新建主题"'
         >
-          <el-option v-for="item in schoolList" :key="item.id" :label="item.schoolname" :value="item.id"></el-option>
+          <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
         <el-date-picker v-model="formCreateTheme.theme_deadline" type="date" placeholder="选择日期" value-format="yyyy-MM-dd">></el-date-picker>
         <span slot="footer" class="dialog-footer">
@@ -82,7 +82,9 @@ export default {
   },
   mounted: function () {
     this.GetSchoolList()
-    this.GetThemeList()
+    // NOTE: GetThemeList在GetSchooollist里面被调用，原因在于同时调用两个函数并不是同步执行的
+    // GetSchoolList也可以返回一个Promise什么的
+    // 但是这不算事一个好的做法
   },
   data () {
     return {
@@ -117,8 +119,14 @@ export default {
         let tmpData = {
           token: this.$store.getters.getUserToken
         }
-        // FIXME ： 这里如果在函数调用下面使用consolelog，打印的不是正常值
-        this.GetSchoolListFromMixin(tmpData)
+        // FIXME ： 这里如果在函数调用下一行使用consolelog，打印的不是正常值
+        this.GetSchoolListFromMixin(tmpData).then(
+          res => {
+            console.log(this.schoolList)
+            this.currentSchoolId = this.schoolList[0].id
+            this.GetThemeList()
+          }
+        )
       } else {
         if (this.isPublicAdmin) {
           this.schoolList.push(
@@ -139,6 +147,7 @@ export default {
           this.currentSchoolId = localStorage['school_id']
         }
         console.log(this.schoolList)
+        this.GetThemeList()
       }
     },
     GetThemeList () {

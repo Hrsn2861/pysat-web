@@ -68,7 +68,7 @@
                 class="my-info-item"
                 v-model="formInfo.school"
                 placeholder
-                :disabled="changeInfoVisible"
+                :disabled="true"
               ></el-input>
             </el-form-item>
             <el-form-item label="真实姓名">
@@ -180,14 +180,14 @@
         <div v-if="changeSchoolVisible" class="change-school">
           <el-table :data="schoolList" style="width: 100%">
             <el-table-column prop="id" label="学校ID" width="150"></el-table-column>
-            <el-table-column prop="schoolname" label="学校名称" width="150"></el-table-column>
+            <el-table-column prop="name" label="学校名称" width="150"></el-table-column>
             <el-table-column prop="headmaster" label="校长" width="150"></el-table-column>
             <el-table-column prop="description" label="学校描述" width="300"></el-table-column>
             <el-table-column prop="population" label="当前人数" width="150"></el-table-column>
             <el-table-column fixed="right" label="操作" width="150">
               <template slot-scope="scope">
                 <el-button
-                  @click="applyDialogVisible = true;formApplySchool.school_name = scope.row.schoolname;formApplySchool.school_id = scope.row.id"
+                  @click="applyDialogVisible = true;formApplySchool.school_name = scope.row.name;formApplySchool.school_id = scope.row.id"
                   type="text"
                   size="small"
                 >申请加入</el-button>
@@ -266,8 +266,8 @@ export default {
       },
       schoolList: [],
 
-      myPermissionPrivate: '',
-      myPermissionPublic: '',
+      myPermissionPrivate: -1,
+      myPermissionPublic: -1,
       isSelf: false, // 判断是不是自己的信息
 
       changeAvatarVisible: false,
@@ -369,7 +369,7 @@ export default {
       return localStorage['permission_public'] >= 8
     },
     hasSelectedSchool () {
-      return localStorage['school_id'] !== 0
+      return localStorage['permission_private'] > -1
     }
   },
   methods: {
@@ -387,7 +387,7 @@ export default {
       this.formInfo.realname = this.currentInfo.realname
       this.formInfo.motto = this.currentInfo.motto
       this.formInfo.permission_private = this.currentInfo.permission_private
-      this.formInfo.permission_public = this.currentInfo.permission_pulic
+      this.formInfo.permission_public = this.currentInfo.permission_public
     },
 
     setcurrentInfo () {
@@ -398,7 +398,7 @@ export default {
       this.currentInfo.realname = this.formInfo.realname
       this.currentInfo.motto = this.formInfo.motto
       this.currentInfo.permission_private = this.formInfo.permission_private
-      this.formInfo.permission_public = this.currentInfo.permission_public
+      this.currentInfo.permission_public = this.formInfo.permission_public
     },
     resetChangepwd () {
       this.formChangepwd.oldpwd = ''

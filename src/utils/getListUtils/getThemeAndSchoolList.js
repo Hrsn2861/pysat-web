@@ -20,23 +20,25 @@ export default {
       )
     },
     GetSchoolListFromMixin (tmpData) {
-      myGet(
-        '/api/school/school/get_list',
-        tmpData,
-        res => {
-          if (res.data.status === 1) {
-            this.$message.success(`${res.data.msg}`)
-            this.schoolList = res.data.data.school_list
-            console.log(this.schoolList)
-            this.currentSchoolId = this.schoolList[0].id
-          } else {
-            this.$message.error(`${res.data.msg}`)
+      return new Promise(resolve => {
+        myGet(
+          '/api/school/school/get_list',
+          tmpData,
+          res => {
+            if (res.data.status === 1) {
+              this.$message.success(`${res.data.msg}`)
+              this.schoolList = res.data.data.school_list
+              resolve(true)
+            } else {
+              this.$message.error(`${res.data.msg}`)
+              resolve(false)
+            }
+          },
+          err => {
+            this.$message.error(`${err.message}`, 'ERROR!')
           }
-        },
-        err => {
-          this.$message.error(`${err.message}`, 'ERROR!')
-        }
-      )
+        )
+      })
     }
   }
 }
