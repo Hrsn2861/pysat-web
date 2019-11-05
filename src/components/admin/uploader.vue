@@ -25,7 +25,7 @@ export default {
     // 上传地址
     url: {
       type: String,
-      default: 'https://pysat-server-CTRL.app.secoder.net/file/upload/chunk' // hard-code...
+      default: '/api/file/upload/chunk' // hard-code...
     },
     // 上传最大数量 默认为100
     fileNumLimit: {
@@ -39,7 +39,7 @@ export default {
     },
     // 上传时传给后端的参数，一般为token，key等
     formData: {
-      type: Object,
+      key: Object,
       default: null
     },
     // 生成formData中文件的key，下面只是个例子，具体哪种形式和后端商议
@@ -99,7 +99,7 @@ export default {
         // 在这里可以准备好formData的数据
         let tmpData = {
           token: this.$store.getters.getUserToken,
-          school_id: localStorage.getItem('school_id'),
+          school_id: 0,
           category_id: 0,
           filename: file.name,
           video_title: this.title,
@@ -147,6 +147,7 @@ export default {
             if (res.data.status === 1) {
               console.log(res.data)
             } else {
+              console.log(res.data)
               this.$message.error(`${res.data.msg}`)
             }
           },
