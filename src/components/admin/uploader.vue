@@ -84,7 +84,7 @@ export default {
         threads: 3,
         fileNumLimit: this.fileNumLimit, // 限制上传个数
         // fileSingleSizeLimit: this.fileSingleSizeLimit, // 限制单个上传图片的大小
-        formData: this.formData, // 上传所需参数
+        formData: this.formData, // 上传所需参数  // 这玩意儿咋没用啊，妈的
         chunked: true, // 分片上传
         chunkSize: 2 * 1024 * 1024, // 分片大小
         duplicate: true // 重复上传
@@ -96,6 +96,7 @@ export default {
       })
 
       this.uploader.on('uploadStart', (file) => {
+        console.log('uploadStart')
         // 在这里可以准备好formData的数据
         let tmpData = {
           token: this.$store.getters.getUserToken,
@@ -112,8 +113,8 @@ export default {
             if (res.data.status === 1) {
               console.log(res.data)
               this.key = res.data.data.key
-              this.uploader.options.formData.key = this.key
-              this.uploader.options.formData.token = this.$store.getters.getUserToken
+              this.uploader.options.formData.key = this.key // 無駄
+              this.uploader.options.formData.token = this.$store.getters.getUserToken // 無駄
             } else {
               this.$message.error(`${res.data.msg}`)
             }
@@ -123,12 +124,13 @@ export default {
           }
         )
       })
-      /*
+
       this.uploader.on('uploadBeforeSend', (object, data, headers) => {
+        console.log('uploadBeforeSend')
         data.token = this.$store.getters.getUserToken
         data.key = this.key
+        console.log(data)
       })
-      */
 
       // 文件上传过程中创建进度条实时显示。
       this.uploader.on('uploadProgress', (file, percentage) => {
