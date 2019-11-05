@@ -72,6 +72,10 @@ export default {
   beforeCreate () {
     checkSession(this, '', '/')
   },
+  created () {
+    this.permission_public = localStorage.getItem('permission_public')
+    this.permission_private = localStorage.getItem('permission_private')
+  },
   mounted () {
     this.GetThemeList()
   },
@@ -95,15 +99,19 @@ export default {
       moduleList: [
         {
           value: 0,
-          label: '在野'
+          label: '在野',
+          disabled: this.permission_public < 1
         },
         {
           value: 1,
-          label: '校内'
+          label: '校内',
+          disabled: this.permission_private < 1
         }
       ],
 
-      fileList: []
+      fileList: [],
+      permission_public: -1,
+      permission_private: -1
     }
   },
   methods: {

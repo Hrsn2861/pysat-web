@@ -2,10 +2,10 @@
   <div class="main-div">
     <el-card class="box-card">
       <el-tabs v-model="moduleName" @tab-click="GetQueueList()">
-        <el-tab-pane label="在野" name="public" >
+        <el-tab-pane label="在野" name="public" v-if="permission_public>=1">
           <QueueTable v-bind:displayData="tableData"></QueueTable>
         </el-tab-pane>
-        <el-tab-pane label="校内" name="private">
+        <el-tab-pane label="校内" name="private" v-if="permission_private>=1">
           <QueueTable v-bind:displayData="tableData"></QueueTable>
         </el-tab-pane>
       </el-tabs>
@@ -26,6 +26,10 @@ export default {
   beforeCreate () {
     checkSession(this, '', '/')
   },
+  created () {
+    this.permission_public = localStorage.getItem('permission_public')
+    this.permission_private = localStorage.getItem('permission_private')
+  },
   mounted: function () {
     this.GetQueueList()
   },
@@ -45,7 +49,9 @@ export default {
           id: 'woshidaniu'
         }
       ],
-      moduleName: 'public'
+      moduleName: 'public',
+      permission_public: -1,
+      permission_private: -1
     }
   },
   methods: {

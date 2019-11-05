@@ -136,7 +136,7 @@
         <el-button
           type="warning"
           @click="changePermission()"
-          v-if="isSameSchoolAndHeadMaster || isNoSchoolAndAdmin "
+          v-if="!isSelf && (isSameSchoolAndHeadMaster || isNoSchoolAndAdmin || isGreatAdmin)"
         >{{changePermissionButtonText}}</el-button>
         <el-button
           type="warning"
@@ -298,58 +298,60 @@ export default {
         phone: ''
       },
       permissionPublicOptions: [
-
         {
           value: 0,
-          label: '封禁用户（校外）'
+          label: '在野封禁'
         },
         {
           value: 1,
-          label: '普通用户（校外）'
+          label: '在野用户'
         },
         {
           value: 2,
-          label: '普通管理员（校外）'
+          label: '在野审核员'
         },
         {
           value: 4,
-          label: '高级管理员（校外）'
+          label: '在野头目'
         },
         {
           value: 8,
-          label: '网站管理员（校外）'
+          label: '网站管理员'
         },
         {
           value: 16,
-          label: '新世界的神（校外）'
+          label: '新世界的神'
         }
 
       ],
       permissionPrivateOptions: [
-
+        {
+          value: -1,
+          label: '无学校'
+        },
         {
           value: 0,
-          label: '封禁用户（校内）'
+          label: '校内封禁'
         },
         {
           value: 1,
-          label: '普通用户（校内）'
+          label: '学生'
         },
         {
           value: 2,
-          label: '普通管理员（校内）'
+          label: '老师'
         },
         {
           value: 4,
-          label: '高级管理员（校内）'
+          label: '校长'
         },
         {
           value: 8,
-          label: '网站管理员（校内）'
+          label: '网站管理员'
         },
         {
           value: 16,
-          label: '新世界的神（校内）'
+          label: '新世界的神'
         }
 
       ]
@@ -362,7 +364,7 @@ export default {
     },
     // 如果是在野头目，可以修改无学校信息同学的信息与提升权限
     isNoSchoolAndAdmin () {
-      return this.formInfo.school === '' && localStorage['permission_public'] >= 4
+      return this.formInfo.school === 'public area' && localStorage['permission_public'] >= 4
     },
     // 伟大的管理员可以为所欲为，不过这个属性可能不重要
     isGreatAdmin () {
