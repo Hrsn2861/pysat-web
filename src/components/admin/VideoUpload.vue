@@ -1,7 +1,14 @@
 <template>
     <div class="page">
         <div id="filePicker">选择文件</div>
-
+          <el-select v-model="currentSchoolId" placeholder="学校">
+            <el-option
+              v-for="item in schoolList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
         <div class="file-panel">
             <h2>文件列表</h2>
             <div class="file-list">
@@ -32,15 +39,28 @@
                 @error="onError"
                 :description="videoDescription"
                 :title="videoTitle"
+                :school_id="currentSchoolId"
         ></vue-upload>
-        <el-input v-model="videoTitle" placeholder="请输入教程名，呵呵"></el-input>
-        <el-input
-         type="textarea"
-        :autosize="{ minRows: 2, maxRows: 4}"
-        placeholder="请输入视频简介，呵呵"
-        v-model="videoDescription">
-        </el-input>
-
+        <el-col :span="3">
+          <el-input
+          type="textarea"
+          :autosize="{ minRows: 2, maxRows: 4}"
+          placeholder="请输入教程名，呵呵"
+          v-model="videoTitle"
+          maxlength="10"
+          show-word-limit>
+          </el-input>
+        </el-col>
+        <el-col :span="20">
+          <el-input
+          type="textarea"
+          :autosize="{ minRows: 2, maxRows: 4}"
+          placeholder="请输入视频简介，呵呵"
+          v-model="videoDescription"
+          maxlength="30"
+          show-word-limit>
+          </el-input>
+        </el-col>
     </div>
 </template>
 
@@ -48,17 +68,33 @@
 import vueUpload from '@/components/admin/uploader'
 import WebUploader from 'webuploader'
 import $ from 'jquery'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 
 export default {
+  mixins: [getSchoolAndThemeMixin],
   data () {
     return {
       fileList: [],
       videoDescription: '',
-      videoTitle: ''
+      videoTitle: '',
+      schoolList: [
+        {
+          id: 0,
+          name: '在野'
+        },
+        {
+          id: localStorage.getItem('school_id'),
+          name: '校内',
+          disabled: localStorage.getItem('school_id') === 0
+        }
+      ],
+      currentSchoolId: 0
     }
   },
   mounted () {
-
+    if (localStorage.getItem('permission_public') >= 8) {
+      this.GetSchoolList()
+    }
   },
   computed: {
     uploader () {
@@ -66,6 +102,22 @@ export default {
     }
   },
   methods: {
+    GetSchoolList () {
+      let tmpData = {
+        token: this.$store.getters.getUserToken
+      }
+      this.GetSchoolListFromMixin(tmpData).then(
+        res => {
+          console.log(res)
+          this.schoolList.push(
+            {
+              id: 0,
+              name: '在野'
+            }
+          )
+        }
+      )
+    },
     fileChange (file) {
       if (!file.size) return
 
