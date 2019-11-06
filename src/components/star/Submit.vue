@@ -17,7 +17,7 @@
             <el-option
               v-for="item in themeList"
               :key="item.id"
-              :label="item.name"
+              :label="item.title"
               :value="item.id"
             ></el-option>
           </el-select>
@@ -64,8 +64,10 @@ import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 import { myPost, myGet } from '@/utils/requestFunc.js'
 
 import AceContainer from '@/components/star/AceContainer.vue'
+import getSchoolAndThemeMixin from '@/utils/getListUtils/getThemeAndSchoolList'
 
 export default {
+  mixins: [getSchoolAndThemeMixin],
   components: {
     AceContainer
   },
@@ -88,11 +90,11 @@ export default {
       themeList: [
         {
           id: 0,
-          name: '共产主义'
+          title: '共产主义'
         },
         {
           id: 1,
-          name: '大家随意提交的题目'
+          title: '大家随意提交的题目'
         }
       ],
       moduleId: 0,
@@ -126,23 +128,7 @@ export default {
         tmpData.school_id = localStorage.getItem('school_id')
       }
       console.log(tmpData)
-
-      myGet(
-        '/api/school/theme/list/get',
-        tmpData,
-        res => {
-          if (res.data.status === 1) {
-            this.$message.success(`${res.data.msg}`)
-            this.themeList = res.data.data.theme_list
-            console.log(this.themeList)
-          } else {
-            this.$message.error(`${res.data.msg}`)
-          }
-        },
-        err => {
-          this.$message.error(`${err.message}`, 'ERROR!')
-        }
-      )
+      this.GetThemeListFromMixin(tmpData)
     },
 
     readFile (file) {
