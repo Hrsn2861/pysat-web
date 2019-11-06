@@ -8,6 +8,13 @@
 
 <script>
 export default {
+  mounted () {
+    console.log(this.$route.params)
+    var suffix = '?token=' + this.$route.params.token + '&?video_id=' + this.$route.params.video_id
+    var url = '/api/file/play' + suffix
+    console.log(url)
+    // this.playerOptions.sources.src = url
+  },
   data () {
     return {
       playerOptions: {
@@ -22,6 +29,7 @@ export default {
         sources: [{
           type: '', // 这里的种类支持很多种：基本视频格式、直播、流媒体等，具体可以参看git网址项目
           src: 'https://v-cdn.zjol.com.cn/280443.mp4' // url地址
+          // src: 'https://pysat-web-ctrl.app.secoder.net/api/file/download/video?token=YCGQZESDISCMVVKCMHCZPXWXVCRCOOTWXCXQTMCWKIMWCVFEELUGVPQFZJHHGUJWYKVUFULDMGASTPTQHBYXBXVUZBZDVIEXANKSKDMMPCWMKJRPTZRWJMHHZPIESFMJ&video_id=1'
         }],
         poster: '../../assets/cx.png', // 你的封面地址
         // width: document.documentElement.clientWidth, //播放器宽度

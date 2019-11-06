@@ -1,12 +1,12 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tabs v-model="moduleName" @tab-click="GetQueueList()">
+      <el-tabs v-model="moduleName" @tab-click="GetCourseList()">
         <el-tab-pane label="在野" name="public" v-if="permission_public>=1">
-          <QueueTable v-bind:displayData="tableData"></QueueTable>
+          <CourseTable v-bind:displayData="tableData"></CourseTable>
         </el-tab-pane>
         <el-tab-pane label="校内" name="private" v-if="permission_private>=1">
-          <QueueTable v-bind:displayData="tableData"></QueueTable>
+          <CourseTable v-bind:displayData="tableData"></CourseTable>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -16,12 +16,12 @@
 <script>
 // import { myGet } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import QueueTable from '@/components/star/QueueTable.vue'
+import CourseTable from '@/components/course/CourseTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
 
 export default {
   components: {
-    QueueTable
+    CourseTable
   },
   beforeCreate () {
     checkSession(this, '', '/')
@@ -29,24 +29,31 @@ export default {
   created () {
     this.permission_public = localStorage.getItem('permission_public')
     this.permission_private = localStorage.getItem('permission_private')
+    if (this.permission_public >= 1) {
+      this.moduleName = 'public'
+    } else if (this.permission_private >= 1) {
+      this.moduleName = 'private'
+    }
   },
   mounted: function () {
-    this.GetQueueList()
+    this.GetCourseList()
   },
   data () {
     return {
       tableData: [
         {
-          submit_time: '2016-05-02',
-          name: '面向陈旭程序设计基础',
-          author: '陈旭老师',
-          id: 'woshishuji'
+          upload_time: '2016-05-02',
+          name: '陈旭老师的奇妙冒险',
+          uploader: '陈浩展',
+          size: '1JB',
+          description: '这是陈旭老师的奇妙冒险，赞！'
         },
         {
-          submit_time: '6102-05-02',
-          name: '编译原理PA1-B',
-          author: '大牛顾掀宇',
-          id: 'woshidaniu'
+          upload_time: '6102-05-02',
+          name: 'ZBZY',
+          uploader: '顾掀宇',
+          size: '1KB',
+          description: 'xb, zbzy'
         }
       ],
       moduleName: 'public',
@@ -55,13 +62,11 @@ export default {
     }
   },
   methods: {
-    GetQueueList () {
+    GetCourseList () {
       let tmpData = {
         token: this.$store.getters.getUserToken,
-        mine: false,
         school_id: -1,
-        status_low: 3,
-        status_up: 5
+        category_id: 0
       }
       if (this.moduleName === 'public') {
         tmpData.school_id = 0
@@ -70,12 +75,12 @@ export default {
       }
       console.log(tmpData)
       myGet(
-        '/api/program/list/get',
+        '/api/file/list/info',
         tmpData,
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
-            this.tableData = res.data.data.code_list
+            this.tableData = res.data.data.video_list
           } else {
             this.$message.error(`${res.data.msg}`)
           }

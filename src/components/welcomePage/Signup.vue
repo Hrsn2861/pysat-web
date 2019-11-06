@@ -186,7 +186,7 @@ export default {
       }
       myPost('api/user/sign/verify', data,
         res => {
-          this.$message.error(`${res.data.msg}`)
+          this.$message.success(`${res.data.msg}`)
           this.step++
         },
         err => {
