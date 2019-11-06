@@ -24,7 +24,7 @@
           @change="GetUserList"
         >
           <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-      </el-select>
+      </el-select>fa
     </el-card>
   </div>
 </template>
@@ -32,10 +32,11 @@
 <script>
 import { myGet } from '@/utils/requestFunc.js'
 import {checkSession} from '@/utils/sessionUtils/sessionFunc'
-import getSchoolAndThemeMixin from '@/utils/getListUtils/getThemeAndSchoolList'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
+import permissionComputer from '@/utils/functionUtils/permissionComputer'
 
 export default {
-  mixins: [getSchoolAndThemeMixin],
+  mixins: [getSchoolAndThemeMixin, permissionComputer],
   beforeCreate () {
     checkSession(this, '', '/')
   },
@@ -52,7 +53,6 @@ export default {
         let tmpData = {
           token: this.$store.getters.getUserToken
         }
-        // FIXME ： 这里如果在函数调用下一行使用consolelog，打印的不是正常值
         this.GetSchoolListFromMixin(tmpData).then(
           res => {
             console.log(this.schoolList)

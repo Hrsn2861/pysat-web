@@ -49,10 +49,11 @@
 </template>
 <script>
 import { myGet, myPost } from '@/utils/requestFunc.js'
-import getSchoolAndThemeMixin from '@/utils/getListUtils/getThemeAndSchoolList'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
+import permissionComputer from '@/utils/functionUtils/permissionComputer'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 export default {
-  mixins: [getSchoolAndThemeMixin],
+  mixins: [getSchoolAndThemeMixin, permissionComputer],
   beforeCreate () {
     checkSession(this, '', '/')
   },

@@ -95,7 +95,7 @@
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
-                  :disabled="!changePermissionEnable"
+                  :disabled="!changePermissionEnable && isSelf && isPrivateAndGreater"
                 ></el-option>
               </el-select>
               <el-select v-model="formInfo.permission_public" placeholder="公共权限">
@@ -105,7 +105,7 @@
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
-                  :disabled="!changePermissionEnable"
+                  :disabled="!changePermissionEnable && isSelf && isPrivateAndGreater"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -121,22 +121,22 @@
         <el-button
           type="primary"
           @click="changePwdVisible = true"
-          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin || isGreatAdmin"
+          v-if="isSelf ||  isGreatAdmin"
         >修改密码</el-button>
         <el-button
           type="primary"
           @click="changePhoneVisible = true"
-          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin || isGreatAdmin"
+          v-if="isSelf ||  isGreatAdmin"
         >修改手机号码</el-button>
         <el-button
           type="primary"
           @click="changeInfo()"
-          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin || isGreatAdmin"
+          v-if="isSelf ||  isGreatAdmin"
         >{{updateButtonText}}</el-button>
         <el-button
           type="warning"
           @click="changePermission()"
-          v-if="isSameSchoolAndHeadMaster || isNoSchoolAndAdmin "
+          v-if="isPrivateAndGreater || isPublicAndGreater "
         >{{changePermissionButtonText}}</el-button>
         <el-button
           type="warning"
@@ -214,7 +214,7 @@
 import { myGet, myPost } from '@/utils/requestFunc.js'
 import { Encrypt } from '@/utils/crypt.js'
 import { checkSession, logout } from '@/utils/sessionUtils/sessionFunc'
-import getSchoolAndThemeMixin from '@/utils/getListUtils/getThemeAndSchoolList'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 
 export default {
   mixins: [getSchoolAndThemeMixin],
@@ -357,12 +357,11 @@ export default {
   },
   computed: {
     // 如果是同一个学校的校长，可以修改信息与权限（不可以大于自己）
-    isSameSchoolAndHeadMaster () {
-      return this.formInfo.school === localStorage['school'] && localStorage['permission_private'] >= 4
+    isPrivateAndGreater () {
+      return this.formInfo.school === localStorage['school_name'] && localStorage['permission_private'] > this.formInfo.permission_private
     },
-    // 如果是在野头目，可以修改无学校信息同学的信息与提升权限
-    isNoSchoolAndAdmin () {
-      return this.formInfo.school === '' && localStorage['permission_public'] >= 4
+    isPublicAndGreater () {
+      return localStorage['permission_public'] > this.formInfo.permission_public
     },
     // 伟大的管理员可以为所欲为，不过这个属性可能不重要
     isGreatAdmin () {
