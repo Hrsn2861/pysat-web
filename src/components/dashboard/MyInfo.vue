@@ -360,7 +360,7 @@ export default {
   computed: {
     // 如果是同一个学校的校长，可以修改信息与权限（不可以大于自己）
     isPrivateAndGreater () {
-      return this.formInfo.school === localStorage['school_name'] && localStorage['permission_private'] > this.formInfo.permission_private
+      return (this.formInfo.school === localStorage['school_name'] && localStorage['permission_private'] > this.formInfo.permission_private)
     },
     isPublicAndGreater () {
       return localStorage['permission_public'] > this.formInfo.permission_public
@@ -613,11 +613,17 @@ export default {
         this.changePermissionEnable = true
         this.changePermissionButtonText = '更新权限！'
       } else {
-        if (this.isPrivateAndGreater) {
+        let tmpData = {
+          token: this.$store.getters.getUserToken,
+          username: this.formInfo.username
+        }
+        if (this.isPrivateAndGreater || this.isGreatAdmin) {
           if (this.formInfo.permission_private >= this.myPermissionPrivate) {
             this.$message.error('您只能赋予别人低于自己的校内权限！')
             this.setformInfo()
             return
+          } else {
+            if (this.formInfo.permission_private !== this.currentInfo.permission_private) { tmpData['permission_private'] = this.formInfo.permission_private }
           }
         }
         if (this.isPublicAndGreater) {
@@ -625,19 +631,15 @@ export default {
             this.$message.error('您只能赋予别人低于自己的在野权限！')
             this.setformInfo()
             return
+          } else {
+            if (this.formInfo.permission_public !== this.currentInfo.permission_public) { tmpData['permission_public'] = this.formInfo.permission_public }
           }
         }
-        let tmpdata = {
-          token: this.$store.getters.getUserToken,
-          username: this.formInfo.username,
-          permission_private: this.formInfo.permission_private,
-          permission_public: this.formInfo.permission_public
-        }
+        console.log(tmpData)
         myPost(
           '/api/user/info/modify',
-          tmpdata,
+          tmpData,
           res => {
-            console.log(tmpdata)
             if (res.data.status === 1) {
               this.$message.success(`${res.data.msg}`)
               this.changePermissionEnable = false
@@ -645,6 +647,8 @@ export default {
               this.setcurrentInfo()
             } else {
               this.$message.error(`${res.data.msg}`)
+              this.changePermissionEnable = false
+              this.changePermissionButtonText = '修改权限'
               this.setformInfo()
             }
           },

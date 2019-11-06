@@ -7,7 +7,7 @@
       </el-row>
       <el-table :data="schoolList" style="width: 100%" height="800">
         <el-table-column prop="id" label="学校ID" width="80"></el-table-column>
-        <el-table-column prop="schoolname" label="学校名称" width="150"></el-table-column>
+        <el-table-column prop="name" label="学校名称" width="150"></el-table-column>
         <el-table-column prop="headmaster" label="校长" width="150"></el-table-column>
         <el-table-column prop="description" label="学校描述" :resizable="true"></el-table-column>
         <el-table-column prop="population" label="学校人数" width="150"></el-table-column>
@@ -91,6 +91,7 @@ export default {
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
             this.schoolDialogVisible = false
+            this.GetSchoolList()
           } else {
             console.log(tmpData)
             this.$message.error(`${res.data.msg}`)
