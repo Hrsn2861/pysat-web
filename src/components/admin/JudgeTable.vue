@@ -2,7 +2,6 @@
   <el-table
     :data="displayData"
     style="width: 100%"
-    :default-sort="{prop: 'submit_time', order: 'descending'}"
     height="500"
   >
     <el-table-column prop="submit_time" label="提交时间" width="300"></el-table-column>
