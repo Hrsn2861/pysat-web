@@ -20,6 +20,8 @@ import StarQueue from '@/components/star/Queue.vue'
 import StarMine from '@/components/star/Mine.vue'
 import StarSubmit from '@/components/star/Submit.vue'
 import Chat from '@/components/chat/ChatLayout.vue'
+import Course from '@/components/course/Course.vue'
+import VideoPlay from '@/components/course/videoplay.vue'
 
 // import { start } from 'repl'
 
@@ -117,6 +119,15 @@ export default new Router({
         {
           path: 'chat',
           component: Chat
+        },
+        {
+          path: 'course',
+          component: Course
+        },
+        {
+          path: 'videoplay',
+          name: 'videoplay',
+          component: VideoPlay
         }
       ]
     }

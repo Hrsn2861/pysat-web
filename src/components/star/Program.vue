@@ -27,7 +27,7 @@
             <el-option
               v-for="item in themeList"
               :key="item.id"
-              :label="item.name"
+              :label="item.title"
               :value="item.id"
             ></el-option>
           </el-select>
@@ -61,8 +61,8 @@ export default {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.permission_public = localStorage.getItem('permission_public')
-    this.permission_private = localStorage.getItem('permission_private')
+    this.permission_public = Number(localStorage.getItem('permission_public'))
+    this.permission_private = Number(localStorage.getItem('permission_private'))
     if (this.permission_public >= 8) {
       this.GetSchoolList()
     }
@@ -113,11 +113,11 @@ export default {
       themeList: [
         {
           id: 0,
-          name: '共产主义'
+          title: '共产主义'
         },
         {
           id: 1,
-          name: '大家随意提交的题目'
+          title: '大家随意提交的题目'
         }
       ],
 
@@ -166,14 +166,13 @@ export default {
         token: this.$store.getters.getUserToken,
         school_id: -1
       }
-      if (this.currentModuleId === 0) {
+      if (this.permission_public >= 8) {
+        tmpData.school_id = this.currentSchoolId
+        console.log('嗯？')
+      } else if (this.currentModuleId === 0) {
         tmpData.school_id = 0
       } else {
-        if (this.permission_public >= 8) {
-          tmpData.school_id = this.currentSchoolId
-        } else {
-          tmpData.school_id = localStorage.getItem('school_id')
-        }
+        tmpData.school_id = localStorage.getItem('school_id')
       }
       console.log(tmpData)
       this.GetThemeListFromMixin(tmpData)
@@ -189,11 +188,13 @@ export default {
         mine: false,
         sort_type: -1,
         school_id: -1,
-        theme_id: -1,
+        theme_id: this.currentThemeId,
         status_low: 4,
         status_up: 6
       }
-      if (this.currentModuleId === 0) {
+      if (this.permission_public >= 8) {
+        tmpData.school_id = this.currentSchoolId
+      } else if (this.currentModuleId === 0) {
         tmpData.school_id = 0
       } else {
         tmpData.school_id = localStorage.getItem('school_id')
@@ -210,7 +211,7 @@ export default {
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
-            this.tableData = res.data.data.codelist
+            this.tableData = res.data.data.code_list
           } else {
             this.$message.error(`${res.data.msg}`)
           }

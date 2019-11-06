@@ -7,9 +7,12 @@ import store from './store/index.js'
 import ElementUI from 'element-ui'
 import VueResource from 'vue-resource'
 import axios from 'axios'
+import VideoPlayer from 'vue-video-player'
+import 'video.js/dist/video-js.css'
 
 import './assets/animation/transform.css'
-import 'element-ui/lib/theme-chalk/index.css' // import the styles
+import 'element-ui/lib/theme-chalk/index.css'
+Vue.use(VideoPlayer) // import the styles
 Vue.use(VueResource)
 Vue.prototype.$axios = axios
 Vue.use(ElementUI)
