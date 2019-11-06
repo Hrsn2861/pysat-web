@@ -39,9 +39,6 @@ export default {
   props: [
     'displayData'
   ],
-  mounted () {
-    console.log(this.displayData)
-  },
   data () {
     return {
       tableStatus: {
@@ -133,6 +130,7 @@ export default {
         return
       }
       console.log('Finish')
+      console.log(row.name)
       let tmpData = {
         token: this.$store.getters.getUserToken,
         code_id: row.id,
@@ -145,14 +143,11 @@ export default {
         tmpData,
         res => {
           if (res.data.status === 1) {
+            console.log(res.data.data)
             // 需要更新row.status
-            // row.status = 5
-            console.log('index:')
-            console.log(index)
-            console.log(this.displayData)
+            row.status = 5
             this.displayData.splice(index, 1)
             this.$message.success('运行完毕！')
-            console.log(this.displayData)
           } else {
             this.$message.error(`${res.data.msg}`)
           }
