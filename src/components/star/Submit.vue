@@ -64,7 +64,7 @@ import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 import { myPost } from '@/utils/requestFunc.js'
 
 import AceContainer from '@/components/star/AceContainer.vue'
-import getSchoolAndThemeMixin from '@/utils/getListUtils/getThemeAndSchoolList'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 
 export default {
   mixins: [getSchoolAndThemeMixin],

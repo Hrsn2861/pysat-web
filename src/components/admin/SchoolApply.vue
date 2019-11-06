@@ -34,9 +34,10 @@
 <script>
 import { myPost } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import getSchoolAndThemeMixin from '@/utils/getListUtils/getThemeAndSchoolList'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
+import permissionComputer from '@/utils/functionUtils/permissionComputer'
 export default {
-  mixins: [getSchoolAndThemeMixin],
+  mixins: [getSchoolAndThemeMixin, permissionComputer],
   data () {
     return {
       applyList: [

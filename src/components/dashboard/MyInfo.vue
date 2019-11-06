@@ -95,7 +95,7 @@
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
-                  :disabled="!changePermissionEnable"
+                  :disabled="!changePermissionEnable || (isSelf && !isPrivateAndGreater)"
                 ></el-option>
               </el-select>
               <el-select v-model="formInfo.permission_public" placeholder="公共权限">
@@ -105,7 +105,7 @@
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
-                  :disabled="!changePermissionEnable"
+                  :disabled="!changePermissionEnable || (!isSelf && !isPublicAndGreater)"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -121,22 +121,22 @@
         <el-button
           type="primary"
           @click="changePwdVisible = true"
-          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin || isGreatAdmin"
+          v-if="isSelf || isGreatAdmin"
         >修改密码</el-button>
         <el-button
           type="primary"
           @click="changePhoneVisible = true"
-          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin || isGreatAdmin"
+          v-if="isSelf || isGreatAdmin"
         >修改手机号码</el-button>
         <el-button
           type="primary"
           @click="changeInfo()"
-          v-if="isSelf || isSameSchoolAndHeadMaster || isNoSchoolAndAdmin || isGreatAdmin"
+          v-if="isSelf || isGreatAdmin"
         >{{updateButtonText}}</el-button>
         <el-button
           type="warning"
           @click="changePermission()"
-          v-if="!isSelf && (isSameSchoolAndHeadMaster || isNoSchoolAndAdmin || isGreatAdmin)"
+          v-if="!isSelf && (isPrivateAndGreater || isPublicAndGreater || isGreatAdmin)"
         >{{changePermissionButtonText}}</el-button>
         <el-button
           type="warning"
@@ -214,7 +214,7 @@
 import { myGet, myPost } from '@/utils/requestFunc.js'
 import { Encrypt } from '@/utils/crypt.js'
 import { checkSession, logout } from '@/utils/sessionUtils/sessionFunc'
-import getSchoolAndThemeMixin from '@/utils/getListUtils/getThemeAndSchoolList'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 
 export default {
   mixins: [getSchoolAndThemeMixin],
@@ -359,12 +359,11 @@ export default {
   },
   computed: {
     // 如果是同一个学校的校长，可以修改信息与权限（不可以大于自己）
-    isSameSchoolAndHeadMaster () {
-      return this.formInfo.school === localStorage['school'] && localStorage['permission_private'] >= 4
+    isPrivateAndGreater () {
+      return this.formInfo.school === localStorage['school_name'] && localStorage['permission_private'] > this.formInfo.permission_private
     },
-    // 如果是在野头目，可以修改无学校信息同学的信息与提升权限
-    isNoSchoolAndAdmin () {
-      return this.formInfo.school === 'public area' && localStorage['permission_public'] >= 4
+    isPublicAndGreater () {
+      return localStorage['permission_public'] > this.formInfo.permission_public
     },
     // 伟大的管理员可以为所欲为，不过这个属性可能不重要
     isGreatAdmin () {
@@ -606,24 +605,27 @@ export default {
         return
       }
       if (!this.changePermissionEnable) {
-        if (this.currentInfo.permission_public >= this.myPermissionPublic && this.currentInfo.permission_private >= this.myPermissionPrivate) {
-          // 如果要改的人的权限全方位碾压自己，这个是不能改的
-          // 如果要改的人权限有低于自己的，那就是可以的
+        if (!(this.isPrivateAndGreater || this.isPublicAndGreater)) {
+          // 如果自己的哪个都不比对方大
           this.$message.error('您的权限太低了！')
           return
         }
         this.changePermissionEnable = true
         this.changePermissionButtonText = '更新权限！'
       } else {
-        if (this.formInfo.permission_private >= this.myPermissionPrivate || this.formInfo.permission_public >= this.myPermissionPublic) {
-          this.$message.error('您只能赋予别人低于自己的权限！')
-          this.setformInfo()
-          return
+        if (this.isPrivateAndGreater) {
+          if (this.formInfo.permission_private >= this.myPermissionPrivate) {
+            this.$message.error('您只能赋予别人低于自己的校内权限！')
+            this.setformInfo()
+            return
+          }
         }
-        if (this.formInfo.school === '' && this.formInfo.permission_private > 0) {
-          this.$message.error('不能修改无学校用户的校内权限！')
-          this.setformInfo()
-          return
+        if (this.isPublicAndGreater) {
+          if (this.formInfo.permission_public >= this.myPermissionPublic) {
+            this.$message.error('您只能赋予别人低于自己的在野权限！')
+            this.setformInfo()
+            return
+          }
         }
         let tmpdata = {
           token: this.$store.getters.getUserToken,

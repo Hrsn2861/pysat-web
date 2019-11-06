@@ -50,7 +50,7 @@
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 import ProgramTable from '@/components/star/ProgramTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
-import getSchoolAndThemeMixin from '@/utils/getListUtils/getThemeAndSchoolList'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 
 export default {
   mixins: [getSchoolAndThemeMixin],
