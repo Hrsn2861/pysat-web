@@ -24,7 +24,7 @@
           @change="GetUserList"
         >
           <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-      </el-select>fa
+      </el-select>
     </el-card>
   </div>
 </template>

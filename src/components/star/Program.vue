@@ -99,11 +99,13 @@ export default {
       moduleList: [
         {
           value: 0,
-          label: '在野'
+          label: '在野',
+          disabled: this.permission_public < 1
         },
         {
           value: 1,
-          label: '校内'
+          label: '校内',
+          disabled: this.permission_private < 1
         }
       ],
 

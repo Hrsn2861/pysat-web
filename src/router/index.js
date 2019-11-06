@@ -12,6 +12,7 @@ import School from '@/components/admin/SetSchool.vue'
 import Upload from '@/components/admin/Upload'
 import SchoolApply from '@/components/admin/SchoolApply.vue'
 import CreateTheme from '@/components/admin/CreateTheme.vue'
+import VideoUpload from '@/components/admin/VideoUpload.vue'
 import Hangout from '@/components/browse/Hangout.vue'
 import Overview from '@/components/browse/Overview.vue'
 import StarProgram from '@/components/star/Program.vue'
@@ -79,6 +80,11 @@ export default new Router({
         {
           path: 'admin/theme',
           component: CreateTheme
+        },
+
+        {
+          path: 'admin/video',
+          component: VideoUpload
         },
         {
           path: 'hangout',

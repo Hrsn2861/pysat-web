@@ -2,10 +2,10 @@
   <div class="main-div">
     <el-card class="box-card">
       <el-tabs v-model="moduleName" @tab-click="GetUploadList()">
-        <el-tab-pane label="在野" name="public" >
+        <el-tab-pane label="在野" name="public" v-if="permission_public>=4">
           <UploadTable v-bind:displayData="tableData"></UploadTable>
         </el-tab-pane>
-        <el-tab-pane label="校内" name="private">
+        <el-tab-pane label="校内" name="private" v-if="permission_private>=4">
           <UploadTable v-bind:displayData="tableData"></UploadTable>
         </el-tab-pane>
       </el-tabs>
@@ -25,6 +25,15 @@ export default {
   },
   beforeCreate () {
     checkSession(this, '', '/')
+  },
+  created () {
+    this.permission_public = localStorage.getItem('permission_public')
+    this.permission_private = localStorage.getItem('permission_private')
+    if (this.permission_public >= 4) {
+      this.moduleName = 'public'
+    } else if (this.permission_private >= 4) {
+      this.moduleName = 'private'
+    }
   },
   mounted: function () {
     this.GetUploadList()
@@ -55,7 +64,9 @@ export default {
         }
 
       ],
-      currentCode: ''
+      currentCode: '',
+      permission_public: -1,
+      permission_private: -1
     }
   },
   methods: {
