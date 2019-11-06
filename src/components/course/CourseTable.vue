@@ -60,6 +60,7 @@ export default {
       )
     },
     PlayVideo (index, row) {
+      localStorage.setItem('video_id', row.id)
       this.$router.push(
         {
           name: 'videoplay',
