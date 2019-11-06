@@ -99,6 +99,7 @@ export default {
       // 首先应当下载过（根据row.status判断），否则报错
       // 如果通过，则仍然出现在列表里
       // 如果不通过，则需要删掉
+      console.log(this.displayData)
       if (row.status === 0) {
         this.$message.error('您应当先下载程序再进行审核！')
         return
@@ -128,14 +129,15 @@ export default {
         tmpData,
         res => {
           if (res.data.status === 1) {
-            console.log(res.data.data)
+            // console.log(res.data.data)
             // 需要更新row.status
             if (approve) {
               row.status = 2
               this.$message.success('审核通过！')
             } else {
-              row.status = -1
+              // row.status = -1
               this.displayData.splice(index, 1)
+              console.log(this.displayData)
               this.$message.error('审核不通过！')
             }
           } else {
@@ -170,7 +172,7 @@ export default {
           if (res.data.status === 1) {
             console.log(res.data.data)
             // 需要更新row.status
-            row.status = 3
+            // row.status = 3
             this.displayData.splice(index, 1)
             this.$message.success('上传成功！')
           } else {
