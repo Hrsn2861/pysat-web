@@ -61,7 +61,7 @@
 
 <script>
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import { myPost, myGet } from '@/utils/requestFunc.js'
+import { myPost } from '@/utils/requestFunc.js'
 
 import AceContainer from '@/components/star/AceContainer.vue'
 import getSchoolAndThemeMixin from '@/utils/getListUtils/getThemeAndSchoolList'
