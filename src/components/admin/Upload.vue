@@ -29,6 +29,11 @@ export default {
   created () {
     this.permission_public = localStorage.getItem('permission_public')
     this.permission_private = localStorage.getItem('permission_private')
+    if (this.permission_public >= 4) {
+      this.moduleName = 'public'
+    } else if (this.permission_private >= 4) {
+      this.moduleName = 'private'
+    }
   },
   mounted: function () {
     this.GetUploadList()
