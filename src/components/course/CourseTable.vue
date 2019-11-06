@@ -21,11 +21,11 @@
   </el-table>
 </template>
 <script>
-import getSchoolAndThemeMixin from '@/utils/getListUtils/getThemeAndSchoolList'
+import permissionComputer from '@/utils/functionUtils/permissionComputer'
 import { myPost } from '@/utils/requestFunc.js'
 
 export default {
-  mixins: [getSchoolAndThemeMixin],
+  mixins: [permissionComputer],
   props: [
     'displayData'
   ],
