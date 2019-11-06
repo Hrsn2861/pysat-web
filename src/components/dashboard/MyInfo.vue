@@ -14,7 +14,7 @@
           justify="center"
           style="height:auto !important; user-select: none;"
         >現在不可以修改頭像！呵呵</el-row>
-        <!-- <transition name="fade">
+        <transition name="fade">
           <el-row
             type="flex"
             justify="center"
@@ -28,16 +28,15 @@
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
             >
-              <img class="el-icon-plus avatar-uploader-icon" />
-
+            <el-button class="upload-btn" type="primitive">点击上传！</el-button>
             </el-upload>
           </el-row>
-        </transition>-->
+        </transition>
       </div>
       <el-row
         type="flex"
         justify="center"
-        v-if="!changePwdVisible && !changePhoneVisible && !changeSchoolVisible "
+        v-if="!changePwdVisible && !changePhoneVisible && !changeSchoolVisible && !changeAvatarVisible"
       >
         <el-col class="my-info">
           <center>
@@ -95,7 +94,7 @@
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
-                  :disabled="!changePermissionEnable || (isSelf && !isPrivateAndGreater)"
+                  :disabled="!changePermissionEnable || (isSelf && !isPrivateAndGreater) || item.disabled || !ViewUserHasSelectedSchool"
                 ></el-option>
               </el-select>
               <el-select v-model="formInfo.permission_public" placeholder="公共权限">
@@ -105,7 +104,7 @@
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
-                  :disabled="!changePermissionEnable || (!isSelf && !isPublicAndGreater)"
+                  :disabled="!changePermissionEnable || (!isSelf && !isPublicAndGreater) || item.disabled"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -115,7 +114,7 @@
       <el-row
         type="flex"
         justify="center"
-        v-if="!changePwdVisible && !changePhoneVisible && !changeSchoolVisible"
+        v-if="!changePwdVisible && !changePhoneVisible && !changeSchoolVisible && !changeAvatarVisible"
       >
         <el-button type="danger" @click="logOut()" v-if="isSelf">登出</el-button>
         <el-button
@@ -308,26 +307,31 @@ export default {
         },
         {
           value: 2,
-          label: '在野审核员'
+          label: '在野审核员',
+          disabled: localStorage['permission_public'] <= 2
         },
         {
           value: 4,
-          label: '在野头目'
+          label: '在野头目',
+          disabled: localStorage['permission_public'] <= 4
         },
         {
           value: 8,
-          label: '网站管理员'
+          label: '网站管理员',
+          disabled: localStorage['permission_public'] <= 8
         },
         {
           value: 16,
-          label: '新世界的神'
+          label: '新世界的神',
+          disabled: localStorage['permission_public'] <= 16
         }
 
       ],
       permissionPrivateOptions: [
         {
           value: -1,
-          label: '无学校'
+          label: '无学校',
+          disabled: true
         },
         {
           value: 0,
@@ -339,19 +343,23 @@ export default {
         },
         {
           value: 2,
-          label: '老师'
+          label: '老师',
+          disabled: Number(localStorage['permission_private']) <= 2
         },
         {
           value: 4,
-          label: '校长'
+          label: '校长',
+          disabled: true
         },
         {
           value: 8,
-          label: '网站管理员'
+          label: '网站管理员',
+          disabled: Number(localStorage['permission_private']) <= 8
         },
         {
           value: 16,
-          label: '新世界的神'
+          label: '新世界的神',
+          disabled: Number(localStorage['permission_private']) <= 16
         }
 
       ]
@@ -371,6 +379,9 @@ export default {
     },
     hasSelectedSchool () {
       return localStorage['permission_private'] > -1
+    },
+    ViewUserHasSelectedSchool () {
+      return this.formInfo.permission_private > -1
     }
   },
   methods: {
@@ -617,23 +628,26 @@ export default {
           token: this.$store.getters.getUserToken,
           username: this.formInfo.username
         }
+        var cnt = 0
         if (this.isPrivateAndGreater || this.isGreatAdmin) {
           if (this.formInfo.permission_private >= this.myPermissionPrivate) {
             this.$message.error('您只能赋予别人低于自己的校内权限！')
-            this.setformInfo()
-            return
           } else {
-            if (this.formInfo.permission_private !== this.currentInfo.permission_private) { tmpData['permission_private'] = this.formInfo.permission_private }
+            if (this.formInfo.permission_private !== this.currentInfo.permission_private) { cnt++; tmpData['permission_private'] = this.formInfo.permission_private }
           }
         }
         if (this.isPublicAndGreater) {
           if (this.formInfo.permission_public >= this.myPermissionPublic) {
             this.$message.error('您只能赋予别人低于自己的在野权限！')
-            this.setformInfo()
-            return
           } else {
-            if (this.formInfo.permission_public !== this.currentInfo.permission_public) { tmpData['permission_public'] = this.formInfo.permission_public }
+            if (this.formInfo.permission_public !== this.currentInfo.permission_public) { cnt++; tmpData['permission_public'] = this.formInfo.permission_public }
           }
+        }
+        if (cnt === 0) {
+          this.changePermissionButtonText = '修改权限'
+          this.changePermissionEnable = false
+          this.setformInfo()
+          return
         }
         console.log(tmpData)
         myPost(
@@ -751,24 +765,8 @@ export default {
 .change-school-button{
   width: 100%;
 }
+.upload-btn{
+  align-self: center
+}
 
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  margin: 0%;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 100px;
-  height: 100px;
-  line-height: 100px;
-  text-align: center;
-}
 </style>
