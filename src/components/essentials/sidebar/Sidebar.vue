@@ -37,11 +37,11 @@
         </template>
         <el-menu-item index="/admin/userlist">用户列表</el-menu-item>
         <el-menu-item index="/admin/judge">待审程序</el-menu-item>
-        <el-menu-item index="/admin/video">上传教程</el-menu-item>
         <el-menu-item index="/admin/upload" v-if="permission_public >= 4 || permission_private >= 4">待传程序</el-menu-item>
         <el-menu-item index="/admin/apply">加入申请</el-menu-item>
         <el-menu-item index="/admin/school" v-if="permission_public >= 8 || permission_private >= 8">管理学校</el-menu-item>
         <el-menu-item index="/admin/theme">管理主题</el-menu-item>
+        <el-menu-item index="/admin/video">上传教程</el-menu-item>
       </el-submenu>
       <el-menu-item index="/myinfo/___default">
         <i class="el-icon-service"></i>
@@ -51,7 +51,7 @@
         <i class="el-icon-message"></i>
         <span slot="title">消息系统</span>
       </el-menu-item>
-      <el-menu-item >
+      <el-menu-item index="/course">
         <i class="el-icon-s-opportunity"></i>
         <span slot="title">线上教程</span>
       </el-menu-item>
