@@ -18,6 +18,10 @@ export default {
       type: String,
       default: ''
     },
+    school_id: {
+      type: Number,
+      default: -1
+    },
     accept: {
       type: String,
       default: 'video'
@@ -111,7 +115,7 @@ export default {
         // 在这里可以准备好formData的数据
         let tmpData = {
           token: this.$store.getters.getUserToken,
-          school_id: 0,
+          school_id: this.school_id,
           category_id: 0,
           filename: file.name,
           video_title: this.title,

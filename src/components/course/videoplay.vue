@@ -7,7 +7,12 @@
 </template>
 
 <script>
+import { checkSession } from '@/utils/sessionUtils/sessionFunc'
+
 export default {
+  beforeCreate () {
+    checkSession(this, '', '/')
+  },
   mounted () {
     console.log(this.$route.params)
     var suffix = '?token=' + this.$route.params.token + '&video_id=' + this.$route.params.video_id

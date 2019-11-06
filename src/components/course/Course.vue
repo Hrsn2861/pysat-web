@@ -68,6 +68,7 @@ export default {
         school_id: -1,
         category_id: 0
       }
+      console.log(tmpData)
       if (this.moduleName === 'public') {
         tmpData.school_id = 0
       } else {
