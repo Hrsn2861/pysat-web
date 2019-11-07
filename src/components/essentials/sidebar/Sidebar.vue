@@ -19,42 +19,64 @@
         <i class="el-icon-view"></i>
         <span slot="title">隨便逛逛</span>
       </el-menu-item>
+
+      <el-submenu index="/personal">
+        <template slot="title">
+          <i class="el-icon-s-home"></i>
+          <span slot="title">个人中心</span>
+        </template>
+        <el-menu-item index="/personal/myinfo/___default">个人信息</el-menu-item>
+        <el-menu-item index="/personal/myprogram">我的程序</el-menu-item>
+      </el-submenu>
+
+      <el-submenu index="/admin/program">
+        <template slot="title">
+          <i class="el-icon-s-home"></i>
+          <span slot="title">程序管理</span>
+        </template>
+        <el-menu-item index="/admin/program/judge">审核程序</el-menu-item>
+        <el-menu-item index="/admin/program/upload">上传程序</el-menu-item>
+        <el-menu-item index="/admin/program/theme">程序主题</el-menu-item>
+      </el-submenu>
+
+      <el-submenu index="/admin/user">
+        <template slot="title">
+          <i class="el-icon-s-home"></i>
+          <span slot="title">用户管理</span>
+        </template>
+        <el-menu-item index="/admin/user/list">用户列表</el-menu-item>
+        <el-menu-item index="/admin/user/school">管理学校</el-menu-item>
+        <el-menu-item index="/admin/user/apply">加入申请</el-menu-item>
+      </el-submenu>
+
+      <el-menu-item index="/submit">
+        <i class="el-icon-view"></i>
+        <span slot="title">提交程序</span>
+      </el-menu-item>
+
       <el-submenu index="/star">
         <template slot="title">
           <i class="el-icon-star-on"></i>
           <span slot="title">星上程序</span>
         </template>
-        <el-menu-item index="/star/program">星上程序</el-menu-item>
-        <el-menu-item index="/star/queue">上传队列</el-menu-item>
-        <el-menu-item index="/star/mine">我的程序</el-menu-item>
-        <el-menu-item index="/star/submit" >提交程序</el-menu-item>
+        <el-menu-item index="/star/onstar">星上程序</el-menu-item>
+        <el-menu-item index="/star/inqueue">上传队列</el-menu-item>
       </el-submenu>
 
-      <el-submenu v-if="Permission_Public >= 2 || Permission_Private >= 2">
+      <el-submenu index="/course">
         <template slot="title">
-          <i class="el-icon-s-home"></i>
-          <span slot="title">管理中心</span>
+          <i class="el-icon-star-on"></i>
+          <span slot="title">线上教程</span>
         </template>
-        <el-menu-item index="/admin/userlist">用户列表</el-menu-item>
-        <el-menu-item index="/admin/judge">待审程序</el-menu-item>
-        <el-menu-item index="/admin/upload" v-if="permission_public >= 4 || permission_private >= 4">待传程序</el-menu-item>
-        <el-menu-item index="/admin/apply">加入申请</el-menu-item>
-        <el-menu-item index="/admin/school" v-if="permission_public >= 8 || permission_private >= 8">管理学校</el-menu-item>
-        <el-menu-item index="/admin/theme">管理主题</el-menu-item>
-        <el-menu-item index="/admin/video">上传教程</el-menu-item>
+        <el-menu-item index="/course/view">查看教程</el-menu-item>
+        <el-menu-item index="/course/upload">发布教程</el-menu-item>
       </el-submenu>
-      <el-menu-item index="/myinfo/___default">
-        <i class="el-icon-service"></i>
-        <span slot="title">个人信息</span>
-      </el-menu-item>
+
       <el-menu-item index="/chat">
         <i class="el-icon-message"></i>
         <span slot="title">消息系统</span>
       </el-menu-item>
-      <el-menu-item index="/course">
-        <i class="el-icon-s-opportunity"></i>
-        <span slot="title">线上教程</span>
-      </el-menu-item>
+
     </el-menu>
   </div>
 </template>
