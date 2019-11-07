@@ -21,7 +21,7 @@
       </el-row>
       <el-row>
         <center>
-          <h1>派塞特 : {{schoolName}}</h1>
+          <h1>派塞特{{schoolName}}</h1>
         </center>
       </el-row>
       <el-row>
@@ -88,7 +88,7 @@ export default {
     GetThemeList () {
       let tmpData = {
         token: this.$store.getters.getUserToken,
-        school_id: localStorage['school_id']
+        school_id: 0
       }
       this.GetThemeListFromMixin(tmpData)
     },
