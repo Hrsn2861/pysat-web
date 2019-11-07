@@ -3,10 +3,10 @@
     <el-card class="box-card">
       <el-tabs v-model="moduleName" @tab-click="GetCourseList()">
         <el-tab-pane label="在野" name="public" v-if="permission_public>=1">
-          <CourseTable v-bind:displayData="tableData"></CourseTable>
+          <CourseTable v-bind:displayData="videoList"></CourseTable>
         </el-tab-pane>
         <el-tab-pane label="校内" name="private" v-if="permission_private>=1">
-          <CourseTable v-bind:displayData="tableData"></CourseTable>
+          <CourseTable v-bind:displayData="videoList"></CourseTable>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -17,12 +17,12 @@
 // import { myGet } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 import CourseTable from '@/components/course/CourseTable.vue'
-import { myGet } from '@/utils/requestFunc.js'
-
+import GetCourseListMixin from '@/utils/functionUtils/getCourseListMixin'
 export default {
   components: {
     CourseTable
   },
+  mixins: [GetCourseListMixin],
   beforeCreate () {
     checkSession(this, '', '/')
   },
@@ -40,7 +40,7 @@ export default {
   },
   data () {
     return {
-      tableData: [
+      videoList: [
         {
           upload_time: '2016-05-02',
           name: '陈旭老师的奇妙冒险',
@@ -68,27 +68,14 @@ export default {
         school_id: -1,
         category_id: 0
       }
+      console.log(tmpData)
       if (this.moduleName === 'public') {
         tmpData.school_id = 0
       } else {
         tmpData.school_id = localStorage.getItem('school_id')
       }
       console.log(tmpData)
-      myGet(
-        '/api/file/list/info',
-        tmpData,
-        res => {
-          if (res.data.status === 1) {
-            console.log(res.data.data)
-            this.tableData = res.data.data.video_list
-          } else {
-            this.$message.error(`${res.data.msg}`)
-          }
-        },
-        err => {
-          this.$message.error(`${err.message}`, 'ERROR!')
-        }
-      )
+      this.GetCourseListFromMixin(tmpData)
     }
   }
 }

@@ -14,7 +14,7 @@
           justify="center"
           style="height:auto !important; user-select: none;"
         >現在不可以修改頭像！呵呵</el-row>
-        <!-- <transition name="fade">
+        <transition name="fade">
           <el-row
             type="flex"
             justify="center"
@@ -28,16 +28,15 @@
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
             >
-              <img class="el-icon-plus avatar-uploader-icon" />
-
+            <el-button class="upload-btn" type="primitive">点击上传！</el-button>
             </el-upload>
           </el-row>
-        </transition>-->
+        </transition>
       </div>
       <el-row
         type="flex"
         justify="center"
-        v-if="!changePwdVisible && !changePhoneVisible && !changeSchoolVisible "
+        v-if="!changePwdVisible && !changePhoneVisible && !changeSchoolVisible && !changeAvatarVisible"
       >
         <el-col class="my-info">
           <center>
@@ -95,7 +94,7 @@
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
-                  :disabled="!changePermissionEnable || (isSelf && !isPrivateAndGreater)"
+                  :disabled="!changePermissionEnable || isSelf || !isPrivateAndGreater || item.disabled || !viewUserHasSelectedSchool || isHeadMaster"
                 ></el-option>
               </el-select>
               <el-select v-model="formInfo.permission_public" placeholder="公共权限">
@@ -105,7 +104,7 @@
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
-                  :disabled="!changePermissionEnable || (!isSelf && !isPublicAndGreater)"
+                  :disabled="!changePermissionEnable || isSelf || !isPublicAndGreater || item.disabled"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -115,7 +114,7 @@
       <el-row
         type="flex"
         justify="center"
-        v-if="!changePwdVisible && !changePhoneVisible && !changeSchoolVisible"
+        v-if="!changePwdVisible && !changePhoneVisible && !changeSchoolVisible && !changeAvatarVisible"
       >
         <el-button type="danger" @click="logOut()" v-if="isSelf">登出</el-button>
         <el-button
@@ -130,12 +129,12 @@
         >修改手机号码</el-button>
         <el-button
           type="primary"
-          @click="changeInfo()"
+          @click="ChangeInfo()"
           v-if="isSelf || isGreatAdmin"
         >{{updateButtonText}}</el-button>
         <el-button
           type="warning"
-          @click="changePermission()"
+          @click="ChangePermission()"
           v-if="!isSelf && (isPrivateAndGreater || isPublicAndGreater || isGreatAdmin)"
         >{{changePermissionButtonText}}</el-button>
         <el-button
@@ -161,7 +160,7 @@
             type="password"
           ></el-input>
           <el-button @click="changePwdVisible = false" class="change-button">取消</el-button>
-          <el-button type="primary" @click="changePwd" class="change-button">更新</el-button>
+          <el-button type="primary" @click="ChangePwd" class="change-button">更新</el-button>
         </div>
       </transition>
 
@@ -169,8 +168,8 @@
         <div v-if="changePhoneVisible" class="change">
           <el-input class="change-input" v-model="formChangephone.CAPTCHA" placeholder="验证码"></el-input>
           <el-input class="change-input" v-model="formChangephone.phone" placeholder="新号码"></el-input>
-          <el-button id="update-btn" type="primary" @click="sendCAPTCHA" class="change-button">发送验证码</el-button>&nbsp;
-          <el-button id="update-btn" type="primary" @click="changePhone" class="change-button">更新</el-button>
+          <el-button id="update-btn" type="primary" @click="SendCAPTCHA" class="change-button">发送验证码</el-button>&nbsp;
+          <el-button id="update-btn" type="primary" @click="ChangePhone" class="change-button">更新</el-button>
           <el-button @click="changePhoneVisible = false" class="change-button">取消</el-button>
         </div>
       </transition>
@@ -235,10 +234,10 @@ export default {
       this.$route.params.username === localStorage['identity']
     ) {
       this.isSelf = true
-      this.getMyInfo('')
+      this.GetMyInfo('')
     } else {
       this.isSelf = false
-      this.getMyInfo(this.$route.params.username)
+      this.GetMyInfo(this.$route.params.username)
     }
   },
   data () {
@@ -308,26 +307,31 @@ export default {
         },
         {
           value: 2,
-          label: '在野审核员'
+          label: '在野审核员',
+          disabled: localStorage['permission_public'] <= 2
         },
         {
           value: 4,
-          label: '在野头目'
+          label: '在野头目',
+          disabled: localStorage['permission_public'] <= 4
         },
         {
           value: 8,
-          label: '网站管理员'
+          label: '网站管理员',
+          disabled: localStorage['permission_public'] <= 8
         },
         {
           value: 16,
-          label: '新世界的神'
+          label: '新世界的神',
+          disabled: localStorage['permission_public'] <= 16
         }
 
       ],
       permissionPrivateOptions: [
         {
           value: -1,
-          label: '无学校'
+          label: '无学校',
+          disabled: true
         },
         {
           value: 0,
@@ -339,19 +343,23 @@ export default {
         },
         {
           value: 2,
-          label: '老师'
+          label: '老师',
+          disabled: Number(localStorage['permission_private']) <= 2
         },
         {
           value: 4,
-          label: '校长'
+          label: '校长',
+          disabled: true
         },
         {
           value: 8,
-          label: '网站管理员'
+          label: '网站管理员',
+          disabled: Number(localStorage['permission_private']) <= 8
         },
         {
           value: 16,
-          label: '新世界的神'
+          label: '新世界的神',
+          disabled: Number(localStorage['permission_private']) <= 16
         }
 
       ]
@@ -359,6 +367,8 @@ export default {
   },
   computed: {
     // 如果是同一个学校的校长，可以修改信息与权限（不可以大于自己）
+    // 这里的formInfo是实际的、当前随时变化的值，（有着意想不到的效果，比如如果修改了一个大于自己的权限，按钮就消失了）
+    // 当然，更改了list的disabled的属性之后，就不可能有这种情况发生了。
     isPrivateAndGreater () {
       return (this.formInfo.school === localStorage['school_name'] && localStorage['permission_private'] > this.formInfo.permission_private)
     },
@@ -371,7 +381,14 @@ export default {
     },
     hasSelectedSchool () {
       return localStorage['permission_private'] > -1
+    },
+    viewUserHasSelectedSchool () {
+      return this.formInfo.permission_private > -1
+    },
+    isHeadMaster () {
+      return Number(this.formInfo.permission_private) === 4
     }
+
   },
   methods: {
     async logOut () {
@@ -379,8 +396,8 @@ export default {
       await logout(this)
       this.$router.go(0) // 刷新页面
     },
-    changeAvatar () {},
-    setformInfo () {
+    ChangeAvatar () {},
+    SetFormInfo () {
       this.formInfo.username = this.currentInfo.username
       this.formInfo.phone = this.currentInfo.phone
       this.formInfo.email = this.currentInfo.email
@@ -391,7 +408,7 @@ export default {
       this.formInfo.permission_public = this.currentInfo.permission_public
     },
 
-    setcurrentInfo () {
+    SetCurrentInfo () {
       this.currentInfo.username = this.formInfo.username
       this.currentInfo.phone = this.formInfo.phone
       this.currentInfo.email = this.formInfo.email
@@ -401,16 +418,16 @@ export default {
       this.currentInfo.permission_private = this.formInfo.permission_private
       this.currentInfo.permission_public = this.formInfo.permission_public
     },
-    resetChangepwd () {
+    ResetChangepwd () {
       this.formChangepwd.oldpwd = ''
       this.formChangepwd.newpwd = ''
     },
-    resetChangephone () {
+    ResetChangephone () {
       this.formChangephone.phone = ''
       this.formChangephone.CAPTCHA = ''
     },
 
-    getMyInfo (queryUser) {
+    GetMyInfo (queryUser) {
       var queryJson = {
         token: this.$store.getters.getUserToken
       }
@@ -431,7 +448,7 @@ export default {
             this.currentInfo.motto = res.data.data.user.motto
             this.currentInfo.permission_private = res.data.data.user.permission_private
             this.currentInfo.permission_public = res.data.data.user.permission_public
-            this.setformInfo()
+            this.SetFormInfo()
             this.myPermissionPrivate = localStorage.getItem('permission_private')
             this.myPermissionPublic = localStorage.getItem('permission_public')
 
@@ -474,7 +491,7 @@ export default {
       return isJPGPNG && isLt2M
     },
 
-    changePwd () {
+    ChangePwd () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         oldpassword: Encrypt(this.formChangepwd.oldpwd),
@@ -488,7 +505,7 @@ export default {
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
             this.changePwdVisible = false
-            this.resetChangepwd()
+            this.ResetChangepwd()
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -499,7 +516,7 @@ export default {
       )
     },
 
-    changePhone () {
+    ChangePhone () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         phone: this.formChangephone.phone,
@@ -515,7 +532,7 @@ export default {
             this.formInfo.phone = this.currentInfo.phone
             this.$message.success(`${res.data.msg}`)
             this.changePhoneVisible = false
-            this.resetChangephone()
+            this.ResetChangephone()
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -525,7 +542,7 @@ export default {
         }
       )
     },
-    changeInfo () {
+    ChangeInfo () {
       if (this.changeInfoVisible === true) {
         this.changeInfoVisible = false
         this.updateButtonText = '更新信息'
@@ -548,15 +565,15 @@ export default {
               this.$message.success(`${res.data.msg}`)
               this.changeInfoVisible = true
               this.updateButtonText = '修改信息'
-              this.setcurrentInfo()
+              this.SetCurrentInfo()
             } else {
               this.$message.error(`${res.data.msg}`)
-              this.setformInfo()
+              this.SetFormInfo()
             }
           },
           err => {
             this.$message.error(`${err.message}`, 'ERROR!')
-            this.setformInfo()
+            this.SetFormInfo()
           }
         )
       }
@@ -598,7 +615,7 @@ export default {
       this.GetSchoolListFromMixin(tmpData)
     },
 
-    changePermission () {
+    ChangePermission () {
       if (this.isSelf) {
         // 不能修改自己的权限
         this.$message.error('您不能修改自己的权限！')
@@ -606,7 +623,7 @@ export default {
       }
       if (!this.changePermissionEnable) {
         if (!(this.isPrivateAndGreater || this.isPublicAndGreater)) {
-          // 如果自己的哪个都不比对方大
+          // 这里其实在显示按钮的时候就判断过了
           this.$message.error('您的权限太低了！')
           return
         }
@@ -617,23 +634,29 @@ export default {
           token: this.$store.getters.getUserToken,
           username: this.formInfo.username
         }
+        var cnt = 0
         if (this.isPrivateAndGreater || this.isGreatAdmin) {
           if (this.formInfo.permission_private >= this.myPermissionPrivate) {
+            // 这里其实在对应的参数列表里就设定好了
             this.$message.error('您只能赋予别人低于自己的校内权限！')
-            this.setformInfo()
-            return
           } else {
-            if (this.formInfo.permission_private !== this.currentInfo.permission_private) { tmpData['permission_private'] = this.formInfo.permission_private }
+            if (this.formInfo.permission_private !== this.currentInfo.permission_private) { cnt++; tmpData['permission_private'] = this.formInfo.permission_private }
           }
         }
         if (this.isPublicAndGreater) {
           if (this.formInfo.permission_public >= this.myPermissionPublic) {
+            // 这里其实在对应的参数列表里就设定好了
             this.$message.error('您只能赋予别人低于自己的在野权限！')
-            this.setformInfo()
-            return
           } else {
-            if (this.formInfo.permission_public !== this.currentInfo.permission_public) { tmpData['permission_public'] = this.formInfo.permission_public }
+            if (this.formInfo.permission_public !== this.currentInfo.permission_public) { cnt++; tmpData['permission_public'] = this.formInfo.permission_public }
           }
+        }
+        // 如果什么都没有设置
+        if (cnt === 0) {
+          this.changePermissionButtonText = '修改权限'
+          this.changePermissionEnable = false
+          this.SetFormInfo()
+          return
         }
         console.log(tmpData)
         myPost(
@@ -644,23 +667,23 @@ export default {
               this.$message.success(`${res.data.msg}`)
               this.changePermissionEnable = false
               this.changePermissionButtonText = '修改权限'
-              this.setcurrentInfo()
+              this.SetCurrentInfo()
             } else {
               this.$message.error(`${res.data.msg}`)
               this.changePermissionEnable = false
               this.changePermissionButtonText = '修改权限'
-              this.setformInfo()
+              this.SetFormInfo()
             }
           },
           err => {
             this.$message.error(`${err.message}`, 'ERROR!')
-            this.setformInfo()
+            this.SetFormInfo()
           }
         )
       }
     },
 
-    sendCAPTCHA () {
+    SendCAPTCHA () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         // username: this.username,
@@ -751,24 +774,8 @@ export default {
 .change-school-button{
   width: 100%;
 }
+.upload-btn{
+  align-self: center
+}
 
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  margin: 0%;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 100px;
-  height: 100px;
-  line-height: 100px;
-  text-align: center;
-}
 </style>

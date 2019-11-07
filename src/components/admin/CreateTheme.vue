@@ -48,7 +48,7 @@
   </div>
 </template>
 <script>
-import { myGet, myPost } from '@/utils/requestFunc.js'
+import { myPost } from '@/utils/requestFunc.js'
 import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 import permissionComputer from '@/utils/functionUtils/permissionComputer'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
@@ -152,15 +152,15 @@ export default {
       // console.log(row.id)
       let tmpData = {
         token: this.$store.getters.getUserToken,
-        theme_id: row
+        theme_id: row.id
       }
-      myGet(
+      myPost(
         '/api/school/theme/delete',
         tmpData,
         res => {
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
-            this.GetSchoolList()
+            this.GetThemeList()
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -175,7 +175,7 @@ export default {
       console.log(row)
       this.themeStatus = '修改主题'
       this.formCreateTheme.theme_id = row.id
-      this.formCreateTheme.theme_name = row.name
+      this.formCreateTheme.theme_name = row.title
       this.formCreateTheme.theme_description = row.description
       this.formCreateTheme.theme_deadline = row.deadline
     },

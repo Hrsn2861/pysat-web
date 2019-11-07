@@ -86,7 +86,7 @@ export default {
       codename: '',
       readme: '',
 
-      currentThemeId: 0,
+      currentThemeId: -1,
       themeList: [
         {
           id: 0,
@@ -128,7 +128,18 @@ export default {
         tmpData.school_id = localStorage.getItem('school_id')
       }
       console.log(tmpData)
-      this.GetThemeListFromMixin(tmpData)
+      this.GetThemeListFromMixin(tmpData).then(res => {
+        if (this.themeList.length === 0) { // 无主题
+          this.themeList.push(
+            {
+              id: -1,
+              title: '无主题',
+              disabled: true
+            }
+          )
+        }
+        this.currentThemeId = this.themeList[0].id
+      })
     },
 
     readFile (file) {
@@ -165,39 +176,44 @@ export default {
       console.log(reader.result)
     },
     upload () {
+      if (this.currentThemeId < 0) {
+        this.$message.error('当前没有主题可以提交！')
+        return
+      }
+
       if (this.codename === '' || this.$refs.AceContainer.code === '') {
         this.$message.error('请提交有效的程序和程序名')
-      } else {
-        console.log(this.$refs.AceContainer.code)
-        let tmpData = {
-          token: this.$store.getters.getUserToken,
-          code_name: this.codename,
-          code_content: this.$refs.AceContainer.code,
-          code_readme: this.readme,
-          school_id: -1,
-          theme_id: this.currentThemeId
-        }
-        if (this.moduleId === 0) {
-          tmpData.school_id = 0
-        } else {
-          tmpData.school_id = localStorage.getItem('school_id')
-        }
-        console.log(tmpData)
-        myPost(
-          '/api/program/user/submit',
-          tmpData,
-          res => {
-            if (res.data.status === 1) {
-              this.$message.success(`${res.data.msg}`)
-            } else {
-              this.$message.error(`${res.data.msg}`)
-            }
-          },
-          err => {
-            this.$message.error(`${err.message}`, 'ERROR!')
-          }
-        )
+        return
       }
+      console.log(this.$refs.AceContainer.code)
+      let tmpData = {
+        token: this.$store.getters.getUserToken,
+        code_name: this.codename,
+        code_content: this.$refs.AceContainer.code,
+        code_readme: this.readme,
+        school_id: -1,
+        theme_id: this.currentThemeId
+      }
+      if (this.moduleId === 0) {
+        tmpData.school_id = 0
+      } else {
+        tmpData.school_id = localStorage.getItem('school_id')
+      }
+      console.log(tmpData)
+      myPost(
+        '/api/program/user/submit',
+        tmpData,
+        res => {
+          if (res.data.status === 1) {
+            this.$message.success(`${res.data.msg}`)
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
     },
     handlePreview (file) {
       console.log('handlePreview')
