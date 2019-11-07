@@ -3,7 +3,7 @@
     <header>
       <!-- 我暂时不知道为什么用v-bind不能绑定图片 -->
       <!-- <img class="avatar" v-bind:src="user.img" v-bind:alt="user.name"> -->
-      <img class="avatar" src="../../assets/cx.png" v-bind:alt="user.name" />
+      <img class="avatar" src="@/assets/cx.png" v-bind:alt="user.name" />
       <p class="name">{{user.name}}</p>
     </header>
     <footer>
@@ -22,7 +22,7 @@ export default {
       queryUser: '',
       user: {
         name: '',
-        img: '../../assets/cx.png'
+        img: '@/assets/cx.png'
       }
     }
   },

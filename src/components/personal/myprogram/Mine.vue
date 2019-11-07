@@ -8,7 +8,7 @@
 
 <script>
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import MineTable from '@/components/star/MineTable.vue'
+import MineTable from '@/components/personal/myprogram/MineTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
 
 export default {
@@ -90,7 +90,7 @@ export default {
   align-content: center;
   justify-content: center;
   padding: 0%;
-  background: url("../../assets/background16-9-2.jpg");
+  background: url("~@/assets/background16-9-2.jpg");
   background-size: cover;
   background-repeat: none;
   height: 100%;

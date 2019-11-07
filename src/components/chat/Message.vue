@@ -12,7 +12,7 @@
             <span>{{entry.date}}</span>
           </p></center>
           <div class="main" :class="{self:entry.self}">
-            <img class="avatar" src="../../assets/cx.png" alt />
+            <img class="avatar" src="@/assets/cx.png" alt />
             <p class="text">{{entry.content}}</p>
           </div>
         </li>
@@ -29,7 +29,7 @@ export default {
   name: 'message',
   data () {
     return {
-      img: '../../src/assets/logo.png'
+      img: '@/assets/logo.png'
     }
   },
   methods: {

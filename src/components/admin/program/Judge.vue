@@ -1,12 +1,12 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tabs v-model="moduleName" @tab-click="GetQueueList()">
-        <el-tab-pane label="在野" name="public" v-if="permission_public>=1">
-          <QueueTable v-bind:displayData="tableData"></QueueTable>
+      <el-tabs v-model="moduleName" @tab-click="GetJudgeList()">
+        <el-tab-pane label="在野" name="public" v-if="permission_public>=2">
+          <JudgeTable v-bind:displayData="tableData"></JudgeTable>
         </el-tab-pane>
-        <el-tab-pane label="校内" name="private" v-if="permission_private>=1">
-          <QueueTable v-bind:displayData="tableData"></QueueTable>
+        <el-tab-pane label="校内" name="private" v-if="permission_private>=2">
+          <JudgeTable v-bind:displayData="tableData"></JudgeTable>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -16,12 +16,12 @@
 <script>
 // import { myGet } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import QueueTable from '@/components/star/QueueTable.vue'
+import JudgeTable from '@/components/admin/program/JudgeTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
 
 export default {
   components: {
-    QueueTable
+    JudgeTable
   },
   beforeCreate () {
     checkSession(this, '', '/')
@@ -29,25 +29,40 @@ export default {
   created () {
     this.permission_public = localStorage.getItem('permission_public')
     this.permission_private = localStorage.getItem('permission_private')
+    if (this.permission_public >= 2) {
+      this.moduleName = 'public'
+    } else if (this.permission_private >= 2) {
+      this.moduleName = 'private'
+    }
   },
   mounted: function () {
-    this.GetQueueList()
+    this.GetJudgeList()
   },
   data () {
     return {
       tableData: [
         {
           submit_time: '2016-05-02',
+          author: '陈旭',
           name: '面向陈旭程序设计基础',
-          author: '陈旭老师',
-          id: 'woshishuji'
+          status: 0,
+          id: 'imchenxulaoshi'
         },
         {
           submit_time: '6102-05-02',
+          author: '顾掀宇',
           name: '编译原理PA1-B',
-          author: '大牛顾掀宇',
-          id: 'woshidaniu'
+          status: 1,
+          id: 'imxianyu'
+        },
+        {
+          submit_time: '6102-05-02',
+          author: '陈浩展',
+          name: '大学生恋爱',
+          status: 2,
+          id: 'imxianyu'
         }
+
       ],
       moduleName: 'public',
       permission_public: -1,
@@ -55,20 +70,21 @@ export default {
     }
   },
   methods: {
-    GetQueueList () {
+    // 啊这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
+    // 好的，收到
+    GetJudgeList () {
       let tmpData = {
         token: this.$store.getters.getUserToken,
         mine: false,
         school_id: -1,
-        status_low: 3,
-        status_up: 5
+        status_low: -1,
+        status_up: 3
       }
       if (this.moduleName === 'public') {
         tmpData.school_id = 0
       } else {
         tmpData.school_id = localStorage.getItem('school_id')
       }
-      console.log(tmpData)
       myGet(
         '/api/program/list/get',
         tmpData,
@@ -114,7 +130,7 @@ export default {
   align-content: center;
   justify-content: center;
   padding: 0%;
-  background: url("../../assets/background16-9-2.jpg");
+  background: url("~@/assets/background16-9-2.jpg");
   background-size: cover;
   background-repeat: none;
   height: 100%;

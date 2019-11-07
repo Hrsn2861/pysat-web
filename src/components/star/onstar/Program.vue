@@ -48,7 +48,7 @@
 <script>
 // import { myGet } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import ProgramTable from '@/components/star/ProgramTable.vue'
+import ProgramTable from '@/components/star/onstar/ProgramTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
 import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 
@@ -263,7 +263,7 @@ export default {
   align-content: center;
   justify-content: center;
   padding: 0%;
-  background: url("../../assets/background16-9-2.jpg");
+  background: url("~@/assets/background16-9-2.jpg");
   background-size: cover;
   background-repeat: none;
   height: 100%;

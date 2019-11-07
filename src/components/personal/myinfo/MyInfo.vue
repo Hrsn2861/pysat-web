@@ -286,7 +286,7 @@ export default {
         school_id: -1
 
       },
-      imageURL: require('../../assets/cx.png'),
+      imageURL: require('@/assets/cx.png'),
 
       formChangepwd: {
         oldpwd: '',
@@ -732,7 +732,7 @@ export default {
   align-content: center;
   justify-content: center;
   padding: 0%;
-  background: url("../../assets/background16-9-2.jpg");
+  background: url("~@/assets/background16-9-2.jpg");
   background-size: cover;
   background-repeat: none;
   height: 100%;
