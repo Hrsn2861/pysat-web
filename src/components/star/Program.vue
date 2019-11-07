@@ -109,7 +109,7 @@ export default {
         }
       ],
 
-      currentThemeId: 0,
+      currentThemeId: -1,
       themeList: [
         {
           id: 0,
@@ -123,26 +123,15 @@ export default {
 
       tableData: [
         {
-          upload_time: '2016-05-02',
-          author: '陈旭',
-          name: '面向陈旭程序设计基础',
-          likes: 250,
-          downloads: 250,
+          upload_time: '9999-12-31',
+          author: '？？？',
+          name: '？？？？？',
+          likes: 0,
+          downloads: 0,
           liked: false,
           downloaded: true,
-          id: 'imchenxulaoshi'
-        },
-        {
-          upload_time: '6102-05-02',
-          author: '顾掀宇',
-          name: '编译原理PA1-B',
-          likes: -100,
-          downloads: -100,
-          liked: true,
-          downloaded: false,
-          id: 'imxianyu'
+          id: -1
         }
-
       ]
     }
   },
@@ -151,7 +140,16 @@ export default {
       let tmpData = {
         token: this.$store.getters.getUserToken
       }
-      this.GetSchoolListFromMixin(tmpData)
+      this.GetSchoolListFromMixin(tmpData).then(res => {
+        this.schoolList.unshift(
+          {
+            id: 0,
+            name: '公开区域'
+          }
+        )
+        this.currentSchoolId = 0
+      }
+      )
     },
     GetThemeList () {
       // 先判断ProgramTable里面是否显示author_school
@@ -175,12 +173,27 @@ export default {
         tmpData.school_id = localStorage.getItem('school_id')
       }
       console.log(tmpData)
-      this.GetThemeListFromMixin(tmpData)
+      this.GetThemeListFromMixin(tmpData).then(res => {
+        if (this.themeList.length === 0) { // 无主题
+          this.themeList.push(
+            {
+              id: -1,
+              title: '无主题',
+              disabled: true
+            }
+          )
+        }
+        this.currentThemeId = this.themeList[0].id
+      })
     },
 
     // 啊这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
     // 呵呵
     GetProgramList () {
+      // 如果主题为-1（说明该版块现在没有任何主题），则直接return
+      if (this.currentThemeId < 0) {
+        return
+      }
       console.log(this.moduleName)
       console.log(this.activeTabName)
       let tmpData = {
