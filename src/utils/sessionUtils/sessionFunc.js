@@ -16,14 +16,14 @@ export async function checkSession (context, loggedUrl, unloggedUrl) {
           // 已登陆
           context.$message.success('已登陆！')
           logged = true
-          localStorage.setItem('permission', Number(res.data.data.user.permission))
+          console.log(res.data.data.user)
+          context.$store.dispatch('checkSession', {user: res.data.data.user}) // 不管登陆还是没有登陆都要将改变user，（没有登陆，vuex的user的状态空）
         } else {
           // 未登录
           context.$message.success('未登录！')
+          context.$store.dispatch('userLogOut')
         }
         // console.log('index: ' + res.data.data.user)
-
-        context.$store.dispatch('checkSession', {user: res.data.data.user}) // 不管登陆还是没有登陆都要将改变user，（没有登陆，vuex的user的状态空）
       } else {
         // 建立会话
         toStart = true
@@ -49,6 +49,28 @@ export async function checkSession (context, loggedUrl, unloggedUrl) {
     )
   }
   if (logged) {
+    // 检查消息数目
+    // 在调用之前，如果登陆的话全局检查消息数目
+    let queryJson = {
+      token: context.$store.getters.getUserToken
+    }
+    myPost(
+      '/api/message/chat/list',
+      queryJson,
+      res => {
+        if (res.data.status === 1) {
+          context.$store.dispatch('initData', res.data.data)
+          // this.changeCurrentSessionId(this.currentSessionId)
+        }
+      },
+      err => {
+        context.$message({
+          type: 'error',
+          message: err,
+          duration: 1000
+        })
+      }
+    )
     if (loggedUrl !== '') {
       console.log('sessionFunc.js Jumpto: ', loggedUrl)
       if (loggedUrl === 'myinfo') {
@@ -66,7 +88,6 @@ export async function logout (context) {
   await myPost('api/user/sign/logout', {token: context.$store.getters.getUserToken},
     res => {
       context.$store.dispatch('userLogOut') // userlogout不删除会话,只删除用户
-      localStorage.removeItem('permission')
     },
     err => {
       context.$message.error(`${err.message}`)

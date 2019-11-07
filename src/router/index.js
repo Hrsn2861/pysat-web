@@ -8,13 +8,20 @@ import Navi from '@/components/welcomePage/Navigation.vue'
 import MyInfo from '@/components/dashboard/MyInfo.vue'
 import ViewUser from '@/components/admin/ViewUser.vue'
 import Judge from '@/components/admin/Judge.vue'
+import School from '@/components/admin/SetSchool.vue'
+import Upload from '@/components/admin/Upload'
+import SchoolApply from '@/components/admin/SchoolApply.vue'
+import CreateTheme from '@/components/admin/CreateTheme.vue'
+import VideoUpload from '@/components/admin/VideoUpload.vue'
 import Hangout from '@/components/browse/Hangout.vue'
 import Overview from '@/components/browse/Overview.vue'
 import StarProgram from '@/components/star/Program.vue'
 import StarQueue from '@/components/star/Queue.vue'
 import StarMine from '@/components/star/Mine.vue'
-import StarUpload from '@/components/star/Upload.vue'
+import StarSubmit from '@/components/star/Submit.vue'
 import Chat from '@/components/chat/ChatLayout.vue'
+import Course from '@/components/course/Course.vue'
+import VideoPlay from '@/components/course/videoplay.vue'
 
 // import { start } from 'repl'
 
@@ -61,12 +68,37 @@ export default new Router({
           component: Judge
         },
         {
+          path: 'admin/upload',
+          component: Upload
+        },
+        {
+          path: 'admin/school',
+          component: School
+        },
+        {
+          path: 'admin/apply',
+          component: SchoolApply
+        },
+        {
+          path: 'admin/theme',
+          component: CreateTheme
+        },
+
+        {
+          path: 'admin/video',
+          component: VideoUpload
+        },
+        {
           path: 'hangout',
           component: Hangout
         },
         {
           path: 'overview',
           component: Overview
+        },
+        {
+          path: 'star/program',
+          component: StarProgram
         },
         {
           path: 'star/program',
@@ -81,12 +113,21 @@ export default new Router({
           component: StarMine
         },
         {
-          path: 'star/upload',
-          component: StarUpload
+          path: 'star/submit',
+          component: StarSubmit
         },
         {
           path: 'chat',
           component: Chat
+        },
+        {
+          path: 'course',
+          component: Course
+        },
+        {
+          path: 'videoplay',
+          name: 'videoplay',
+          component: VideoPlay
         }
       ]
     }

@@ -1,24 +1,30 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-table :data="tableData" style="width:100%" height="500">
+      <el-table :data="userList" style="width:100%" height="500">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="username" label="用戶" width="120"></el-table-column>
         <el-table-column prop="motto" label="座右铭" :resizable="true"></el-table-column>
         <el-table-column prop="permission" label="用户权限" width="120"></el-table-column>
-        <el-table-column prop="rating" label="打分" width="150">
+        <el-table-column prop="download" label="下载数" width="120"></el-table-column>
+        <!-- <el-table-column prop="rating" label="打分" width="150">
           <el-rate></el-rate>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column fixed="right" label="操作" width="100">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="viewCurrentUser(scope.$index, scope.row)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-button type="text" @click="addUser()">点击添加新用户</el-button>
-      <el-button type="text">封禁用戶</el-button>
-      <el-button type="text" @click="getUserList()">刷新名单</el-button>
+      <el-button type="text" @click="GetUserList()">刷新名单</el-button>
       <el-button type="text">...</el-button>
+      <el-select
+          v-model="currentSchoolId"
+          placeholder="发布区域"
+          @change="GetUserList"
+        >
+          <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+      </el-select>
     </el-card>
   </div>
 </template>
@@ -26,32 +32,76 @@
 <script>
 import { myGet } from '@/utils/requestFunc.js'
 import {checkSession} from '@/utils/sessionUtils/sessionFunc'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
+import permissionComputer from '@/utils/functionUtils/permissionComputer'
 
 export default {
+  mixins: [getSchoolAndThemeMixin, permissionComputer],
   beforeCreate () {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.getUserList()
+    this.GetSchoolList()
   },
   methods: {
     viewCurrentUser (index, row) {
       console.log('View user index: ', index)
       this.$router.push({name: 'myinfo', params: {username: row.username}})
     },
-
-    getUserList () {
+    GetSchoolList () {
+      if (this.isGreatAdmin) {
+        let tmpData = {
+          token: this.$store.getters.getUserToken
+        }
+        this.GetSchoolListFromMixin(tmpData).then(
+          res => {
+            console.log(this.schoolList)
+            this.schoolList.splice(0, 0,
+              {
+                id: 0,
+                name: '全部区域'
+              }
+            )
+            this.currentSchoolId = this.schoolList[0].id
+            this.GetUserList()
+          }
+        )
+      } else {
+        if (this.isPublicAdmin) {
+          this.schoolList.push(
+            {
+              id: 0,
+              name: '公共区域'
+            }
+          )
+          this.currentSchoolId = 0
+        }
+        if (this.isPrivateAdmin) {
+          this.schoolList.push(
+            {
+              id: localStorage['school_id'],
+              name: localStorage['school_name']
+            }
+          )
+          this.currentSchoolId = localStorage['school_id']
+        }
+        console.log(this.schoolList)
+        this.GetUserList()
+      }
+    },
+    GetUserList () {
       myGet(
         '/api/user/list/get',
         {
           token: this.$store.getters.getUserToken,
           show_invalid: 'true',
-          manager_first: 'true'
+          manager_first: 'true',
+          school_id: this.currentSchoolId
         },
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
-            this.tableData = res.data.data.userlist
+            this.userList = res.data.data.user_list
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -67,24 +117,18 @@ export default {
     },
     handleClick (row) {
       console.log('click from Hangout.vue')
-    },
-    addUser () {
-      this.tableData.push({
-
-        username: '陈旭',
-        motto: '陈旭牛逼',
-        permission: 0
-      })
     }
   },
 
   data () {
     return {
-      tableData: [
-        {
-        }
+      currentSchoolId: 0,
+      userList: [
+
       ],
-      permission: localStorage.getItem('permission')
+      schoolList: [
+
+      ]
     }
   }
 }

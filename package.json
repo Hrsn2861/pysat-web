@@ -18,6 +18,9 @@
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "crypto-js": "^3.1.9-1",
     "element-ui": "^2.12.0",
+    "file-saver": "^2.0.2",
+    "jquery": "^3.4.1",
+    "lodash": "^4.17.15",
     "md5-node": "^1.0.1",
     "node-sass": "^4.5.0",
     "sass-loader": "^5.0.1",
@@ -27,8 +30,10 @@
     "vue": "^2.5.2",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1",
+    "vue-video-player": "^5.0.2",
     "vue2-ace-editor": "0.0.13",
-    "vuex": "^3.1.1"
+    "vuex": "^3.1.1",
+    "webuploader": "^0.1.8"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

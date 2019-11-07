@@ -46,7 +46,7 @@
             <el-button class="forget-button" type="primary" @click="sendCAPTCHA">发送验证码</el-button>
             <el-button class="forget-button" type="primary" @click="updatePwd">更 新</el-button>
             <el-button @click="forgetVisible = false; resetForm()">取 消</el-button>
-            <!-- TODO :发送消息 -->
+
           </el-row>
         </transition>
 
@@ -141,6 +141,7 @@ export default {
                 this.$store.dispatch('setUser', this.formLogin.identity)
                 // 登录成功 跳转至首页
                 this.$router.push('overview')
+                window.location.reload()
                 // this.$router.push({name: 'myinfo', params: {username: '___default'}})
               } else {
                 this.$message.error(`${res.data.msg}`)

@@ -10,7 +10,7 @@ export const mutations = {
   },
 
   [types.LOGIN] (state, data) {
-    state.token = data.token // TODO: 姑且认为这里有token
+    state.token = data.token
     localStorage.setItem('token', data.token)
     // localStorage.setItem('session', data.session.user) //另一种写法
   },
@@ -22,15 +22,24 @@ export const mutations = {
   // CHECKSESSION实际上用来设置用户数据
   [types.CHECKSESSION] (state, data) {
     // CheckSession获取过来的东西包含很多用户其它信息
-    if (!data.user === null) {
+
+    if (data.user !== null) {
       state.user = data.user.username
       localStorage.setItem('identity', data.user.username)
+      localStorage.setItem('permission_public', Number(data.user.permission_public))
+      localStorage.setItem('permission_private', Number(data.user.permission_private))
+      localStorage.setItem('school_name', data.user.school.name)
+      localStorage.setItem('school_id', data.user.school.id)
     }
   },
 
   [types.LOGOUT] (state) {
     state.user = null
     localStorage.removeItem('identity')
+    localStorage.removeItem('permission_public')
+    localStorage.removeItem('permission_private')
+    localStorage.removeItem('school_name')
+    localStorage.removeItem('school_id')
   },
   [types.TESTFUNC] (state) { // For test only
     state.user = {
@@ -80,30 +89,16 @@ export const mutations = {
       )
     }
   },
-  [types.ADD_MESSAGE_TO_CURRENT_SESSION] (state, msg) {
-    // state.chatSystem.sessions[state.chatSystem.currentSessionId - 1].messages.push({
-    //   content: msg,
-    //   date: new Date(),
-    //   self: true // Self = true看起来是在向外发送消息
-    // })
-    // 我们暂时不需要这个东西，添加信息后需要添加界面
-  },
-  [types.ADD_MESSAGE_OPPOSITE] (state, msg) {
-    state.chatSystem.sessions[state.chatSystem.currentSessionId - 1].messages.push({
-      content: msg,
-      date: new Date(),
-      self: false // Self = true看起来是在向外发送消息
-    })
-  },
   [types.INIT_DATA] (state, data) {
     state.chatSystem.sessions = []
-    // console.log('From Mutations INIT_DATA', data.chat_list)
+    console.log('From Mutations INIT_DATA', data.chat_list)
     // console.log(state.user)
     state.chatSystem.msgCount = data.msg_count
     state.chatSystem.sessions.push(
       {
         id: 0,
         user: '官方小助手',
+        unread: 0,
         avatar: ''
       }
     )
@@ -115,6 +110,7 @@ export const mutations = {
         {
           id: index,
           user: chat.user.username, // 目前的接口
+          unread: chat.unread,
           // 这里chat的user有一些杂七杂八的信息
           // 需要用chat.user过滤
           avatar: ''
@@ -122,6 +118,10 @@ export const mutations = {
       )
       index += 1
     }
+  },
+  [types.SET_UNREAD_TO_ZERO] (state) {
+    state.chatSystem.msgCount -= state.chatSystem.sessions[state.chatSystem.currentSessionId].unread
+    state.chatSystem.sessions[state.chatSystem.currentSessionId].unread = 0
   }
 }
 

@@ -14,7 +14,7 @@
           justify="center"
           style="height:auto !important; user-select: none;"
         >現在不可以修改頭像！呵呵</el-row>
-        <!-- <transition name="fade">
+        <transition name="fade">
           <el-row
             type="flex"
             justify="center"
@@ -28,57 +28,139 @@
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
             >
-              <img class="el-icon-plus avatar-uploader-icon" />
-
+            <el-button class="upload-btn" type="primitive">点击上传！</el-button>
             </el-upload>
           </el-row>
-        </transition> -->
+        </transition>
       </div>
-      <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible ">
+      <el-row
+        type="flex"
+        justify="center"
+        v-if="!changePwdVisible && !changePhoneVisible && !changeSchoolVisible && !changeAvatarVisible"
+      >
         <el-col class="my-info">
-          <center><h1>个人信息</h1></center>
+          <center>
+            <h1>个人信息</h1>
+          </center>
           <el-form ref="myInfo" label-width="100px">
             <el-form-item label="用户名">
-              <el-input class="my-info-item" v-model="formInfo.username" placeholder="" :disabled="true"></el-input>
+              <el-input
+                class="my-info-item"
+                v-model="formInfo.username"
+                placeholder
+                :disabled="true"
+              ></el-input>
             </el-form-item>
             <el-form-item label="电话号码">
-              <el-input class="my-info-item" v-model="formInfo.phone" placeholder="" :disabled="true"></el-input>
+              <el-input class="my-info-item" v-model="formInfo.phone" placeholder :disabled="true"></el-input>
             </el-form-item>
             <el-form-item label="Email">
-              <el-input class="my-info-item" v-model="formInfo.email" placeholder="填了也没用" :disabled="changeInfoVisible"></el-input>
+              <el-input
+                class="my-info-item"
+                v-model="formInfo.email"
+                placeholder="填了也没用"
+                :disabled="changeInfoVisible"
+              ></el-input>
             </el-form-item>
             <el-form-item label="学校">
-              <el-input class="my-info-item" v-model="formInfo.school" placeholder="" :disabled="changeInfoVisible"></el-input>
+              <el-input
+                class="my-info-item"
+                v-model="formInfo.school"
+                placeholder
+                :disabled="true"
+              ></el-input>
             </el-form-item>
             <el-form-item label="真实姓名">
-              <el-input class="my-info-item" v-model="formInfo.realname" placeholder="" :disabled="changeInfoVisible"></el-input>
+              <el-input
+                class="my-info-item"
+                v-model="formInfo.realname"
+                placeholder
+                :disabled="changeInfoVisible"
+              ></el-input>
             </el-form-item>
             <el-form-item label="座右铭" style="margin-bottom:2%;">
-              <el-input class="my-info-item" v-model="formInfo.motto" placeholder="" :disabled="changeInfoVisible"></el-input>
+              <el-input
+                class="my-info-item"
+                v-model="formInfo.motto"
+                placeholder
+                :disabled="changeInfoVisible"
+              ></el-input>
             </el-form-item>
             <el-form-item label="权限" style="margin-bottom:2%;">
-              <el-select v-model="formInfo.permission" placeholder="请选择">
-                <el-option class="my-info-item" v-for="item in permissionOptions" :key="item.value" :label="item.label" :value="item.value" :disabled="!changePermissionEnable"></el-option>
+              <el-select v-model="formInfo.permission_private" placeholder="校内权限">
+                <el-option
+                  class="my-info-item"
+                  v-for="item in permissionPrivateOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="!changePermissionEnable || isSelf || !isPrivateAndGreater || item.disabled || !viewUserHasSelectedSchool || isHeadMaster"
+                ></el-option>
+              </el-select>
+              <el-select v-model="formInfo.permission_public" placeholder="公共权限">
+                <el-option
+                  class="my-info-item"
+                  v-for="item in permissionPublicOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="!changePermissionEnable || isSelf || !isPublicAndGreater || item.disabled"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-form>
         </el-col>
       </el-row>
-      <el-row type="flex" justify="center" v-if="!changePwdVisible && !changePhoneVisible">
+      <el-row
+        type="flex"
+        justify="center"
+        v-if="!changePwdVisible && !changePhoneVisible && !changeSchoolVisible && !changeAvatarVisible"
+      >
         <el-button type="danger" @click="logOut()" v-if="isSelf">登出</el-button>
-        <el-button type="primary" @click="changePwdVisible = true" v-if="isSelf || myPermission >= 8">修改密码</el-button>
-        <el-button type="primary" @click="changePhoneVisible = true" v-if="isSelf || myPermission >= 8">修改手机号码</el-button>
-        <el-button type="primary" @click="changeInfo()" v-if="isSelf || myPermission >= 8">{{updateButtonText}}</el-button>
-        <el-button type="warning" @click="changePermission()" v-if="myPermission >= 4">{{changePermissionButtonText}}</el-button>
+        <el-button
+          type="primary"
+          @click="changePwdVisible = true"
+          v-if="isSelf || isGreatAdmin"
+        >修改密码</el-button>
+        <el-button
+          type="primary"
+          @click="changePhoneVisible = true"
+          v-if="isSelf || isGreatAdmin"
+        >修改手机号码</el-button>
+        <el-button
+          type="primary"
+          @click="ChangeInfo()"
+          v-if="isSelf || isGreatAdmin"
+        >{{updateButtonText}}</el-button>
+        <el-button
+          type="warning"
+          @click="ChangePermission()"
+          v-if="!isSelf && (isPrivateAndGreater || isPublicAndGreater || isGreatAdmin)"
+        >{{changePermissionButtonText}}</el-button>
+        <el-button
+          type="warning"
+          @click="GetSchoolList()"
+          v-if="!hasSelectedSchool && isSelf && !isGreatAdmin"
+        >{{changeSchoolButtonText}}</el-button>
+
       </el-row>
 
       <transition name="fade">
         <div v-if="changePwdVisible" class="change">
-
-            <el-input class="change-input" v-model="formChangepwd.oldpwd" placeholder="旧密码" type="password"></el-input>
-            <el-input class="change-input" v-model="formChangepwd.newpwd" placeholder="新密码" type="password"></el-input>
-            <el-button @click="changePwdVisible = false" class="change-button">取消</el-button>
-            <el-button type="primary" @click="changePwd" class="change-button">更新</el-button>
+          <el-input
+            class="change-input"
+            v-model="formChangepwd.oldpwd"
+            placeholder="旧密码"
+            type="password"
+          ></el-input>
+          <el-input
+            class="change-input"
+            v-model="formChangepwd.newpwd"
+            placeholder="新密码"
+            type="password"
+          ></el-input>
+          <el-button @click="changePwdVisible = false" class="change-button">取消</el-button>
+          <el-button type="primary" @click="ChangePwd" class="change-button">更新</el-button>
         </div>
       </transition>
 
@@ -86,23 +168,55 @@
         <div v-if="changePhoneVisible" class="change">
           <el-input class="change-input" v-model="formChangephone.CAPTCHA" placeholder="验证码"></el-input>
           <el-input class="change-input" v-model="formChangephone.phone" placeholder="新号码"></el-input>
-          <el-button id="update-btn" type="primary" @click="sendCAPTCHA" class="change-button">发送验证码</el-button>&nbsp;
-          <el-button id="update-btn" type="primary" @click="changePhone" class="change-button">更新</el-button>
+          <el-button id="update-btn" type="primary" @click="SendCAPTCHA" class="change-button">发送验证码</el-button>&nbsp;
+          <el-button id="update-btn" type="primary" @click="ChangePhone" class="change-button">更新</el-button>
           <el-button @click="changePhoneVisible = false" class="change-button">取消</el-button>
         </div>
       </transition>
+
+      <transition name="fade">
+        <!-- 这里名字叫做changeSchool，只是为了名字呼应，但是实际上只可以修改一次 -->
+        <div v-if="changeSchoolVisible" class="change-school">
+          <el-table :data="schoolList" style="width: 100%">
+            <el-table-column prop="id" label="学校ID" width="150"></el-table-column>
+            <el-table-column prop="name" label="学校名称" width="150"></el-table-column>
+            <el-table-column prop="headmaster" label="校长" width="150"></el-table-column>
+            <el-table-column prop="description" label="学校描述" width="300"></el-table-column>
+            <el-table-column prop="population" label="当前人数" width="150"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="150">
+              <template slot-scope="scope">
+                <el-button
+                  @click="applyDialogVisible = true;formApplySchool.school_name = scope.row.name;formApplySchool.school_id = scope.row.id"
+                  type="text"
+                  size="small"
+                >申请加入</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-button @click="changeSchoolVisible = false" class="change-school-button">取消</el-button>
+        </div>
+      </transition>
+
+      <el-dialog :title="'加入: ' + formApplySchool.school_name + '（一个同学只有一次选择的权利）'" :visible.sync="applyDialogVisible" width="30%">
+        <el-input placeholder="请输入你的验证信息" v-model="formApplySchool.reason" clearable></el-input>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="applyDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="ApplySchool">确 定</el-button>
+        </span>
+      </el-dialog>
     </el-card>
   </div>
-  <!-- <el-dialog class="my-dialog" title="提示" :visible.sync="changePassWdVisible" width="50%" :before-close="handleClose"> -->
 </template>
 
 <script>
 import { myGet, myPost } from '@/utils/requestFunc.js'
 import { Encrypt } from '@/utils/crypt.js'
-
-import {checkSession, logout} from '@/utils/sessionUtils/sessionFunc'
+import { checkSession, logout } from '@/utils/sessionUtils/sessionFunc'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 
 export default {
+  mixins: [getSchoolAndThemeMixin],
   props: ['username'], // 呃， props没有用？？？？
   name: 'MyInfo',
   beforeCreate () {
@@ -112,14 +226,18 @@ export default {
   // 这里看起来如果我引入了beforeCreate的Mixin，vue-router会给我报一个warning，显示重复跳转
   // 事实证明这里并没有覆盖掉beforeCreate
   // 混入对象的钩子将在组件自身钩子之前调用。
-  mounted: function () { // 感觉通过url中的username是否为空来进行后续判断有点蛋疼...把username存到localStorage应该会好一点...
+  mounted: function () {
+    // 感觉通过url中的username是否为空来进行后续判断有点蛋疼...把username存到localStorage应该会好一点...
     console.log('params.username: ', this.$route.params.username)
-    if (this.$route.params.username === '___default' || this.$route.params.username === localStorage['identity']) {
+    if (
+      this.$route.params.username === '___default' ||
+      this.$route.params.username === localStorage['identity']
+    ) {
       this.isSelf = true
-      this.getMyInfo('')
+      this.GetMyInfo('')
     } else {
       this.isSelf = false
-      this.getMyInfo(this.$route.params.username)
+      this.GetMyInfo(this.$route.params.username)
     }
   },
   data () {
@@ -131,7 +249,8 @@ export default {
         school: 'None',
         realname: 'None',
         motto: 'None',
-        permission: 0
+        permission_public: 0,
+        permission_private: 0
       },
 
       formInfo: {
@@ -141,10 +260,13 @@ export default {
         school: 'None',
         realname: 'None',
         motto: 'None',
-        permission: 0
+        permission_private: 0,
+        permission_public: 0
       },
+      schoolList: [],
 
-      myPermission: '',
+      myPermissionPrivate: -1,
+      myPermissionPublic: -1,
       isSelf: false, // 判断是不是自己的信息
 
       changeAvatarVisible: false,
@@ -154,7 +276,16 @@ export default {
       changePermissionEnable: false,
       updateButtonText: '修改信息',
       changePermissionButtonText: '修改权限',
+      changeSchoolVisible: false,
+      changeSchoolButtonText: '选择学校',
+      applyDialogVisible: false,
+      isSelect: false,
+      formApplySchool: {
+        reason: '',
+        school_name: '',
+        school_id: -1
 
+      },
       imageURL: require('../../assets/cx.png'),
 
       formChangepwd: {
@@ -165,66 +296,143 @@ export default {
         CAPTCHA: '',
         phone: ''
       },
-      permissionOptions: [{
-        value: 0,
-        label: '封禁用户'
-      }, {
-        value: 1,
-        label: '普通用户'
-      }, {
-        value: 2,
-        label: '高级用户'
-      }, {
-        value: 4,
-        label: '管理员'
-      }, {
-        value: 8,
-        label: '新世界的神'
-      }]
+      permissionPublicOptions: [
+        {
+          value: 0,
+          label: '在野封禁'
+        },
+        {
+          value: 1,
+          label: '在野用户'
+        },
+        {
+          value: 2,
+          label: '在野审核员',
+          disabled: localStorage['permission_public'] <= 2
+        },
+        {
+          value: 4,
+          label: '在野头目',
+          disabled: localStorage['permission_public'] <= 4
+        },
+        {
+          value: 8,
+          label: '网站管理员',
+          disabled: localStorage['permission_public'] <= 8
+        },
+        {
+          value: 16,
+          label: '新世界的神',
+          disabled: localStorage['permission_public'] <= 16
+        }
+
+      ],
+      permissionPrivateOptions: [
+        {
+          value: -1,
+          label: '无学校',
+          disabled: true
+        },
+        {
+          value: 0,
+          label: '校内封禁'
+        },
+        {
+          value: 1,
+          label: '学生'
+        },
+        {
+          value: 2,
+          label: '老师',
+          disabled: Number(localStorage['permission_private']) <= 2
+        },
+        {
+          value: 4,
+          label: '校长',
+          disabled: true
+        },
+        {
+          value: 8,
+          label: '网站管理员',
+          disabled: Number(localStorage['permission_private']) <= 8
+        },
+        {
+          value: 16,
+          label: '新世界的神',
+          disabled: Number(localStorage['permission_private']) <= 16
+        }
+
+      ]
     }
   },
+  computed: {
+    // 如果是同一个学校的校长，可以修改信息与权限（不可以大于自己）
+    // 这里的formInfo是实际的、当前随时变化的值，（有着意想不到的效果，比如如果修改了一个大于自己的权限，按钮就消失了）
+    // 当然，更改了list的disabled的属性之后，就不可能有这种情况发生了。
+    isPrivateAndGreater () {
+      return (this.formInfo.school === localStorage['school_name'] && localStorage['permission_private'] > this.formInfo.permission_private)
+    },
+    isPublicAndGreater () {
+      return localStorage['permission_public'] > this.formInfo.permission_public
+    },
+    // 伟大的管理员可以为所欲为，不过这个属性可能不重要
+    isGreatAdmin () {
+      return localStorage['permission_public'] >= 8
+    },
+    hasSelectedSchool () {
+      return localStorage['permission_private'] > -1
+    },
+    viewUserHasSelectedSchool () {
+      return this.formInfo.permission_private > -1
+    },
+    isHeadMaster () {
+      return Number(this.formInfo.permission_private) === 4
+    }
 
+  },
   methods: {
-
     async logOut () {
       localStorage.removeItem('identity')
       await logout(this)
       this.$router.go(0) // 刷新页面
     },
-    changeAvatar () {},
-    setformInfo () {
+    ChangeAvatar () {},
+    SetFormInfo () {
       this.formInfo.username = this.currentInfo.username
       this.formInfo.phone = this.currentInfo.phone
       this.formInfo.email = this.currentInfo.email
       this.formInfo.school = this.currentInfo.school
       this.formInfo.realname = this.currentInfo.realname
       this.formInfo.motto = this.currentInfo.motto
-      this.formInfo.permission = this.currentInfo.permission
+      this.formInfo.permission_private = this.currentInfo.permission_private
+      this.formInfo.permission_public = this.currentInfo.permission_public
     },
 
-    setcurrentInfo () {
+    SetCurrentInfo () {
       this.currentInfo.username = this.formInfo.username
       this.currentInfo.phone = this.formInfo.phone
       this.currentInfo.email = this.formInfo.email
       this.currentInfo.school = this.formInfo.school
       this.currentInfo.realname = this.formInfo.realname
       this.currentInfo.motto = this.formInfo.motto
-      this.currentInfo.permission = this.formInfo.permission
+      this.currentInfo.permission_private = this.formInfo.permission_private
+      this.currentInfo.permission_public = this.formInfo.permission_public
     },
-    resetChangepwd () {
+    ResetChangepwd () {
       this.formChangepwd.oldpwd = ''
       this.formChangepwd.newpwd = ''
     },
-    resetChangephone () {
+    ResetChangephone () {
       this.formChangephone.phone = ''
       this.formChangephone.CAPTCHA = ''
     },
 
-    getMyInfo (queryUser) {
+    GetMyInfo (queryUser) {
       var queryJson = {
         token: this.$store.getters.getUserToken
       }
-      if (!this.isSelf) { // 如果不是自己，则username不为空
+      if (!this.isSelf) {
+        // 如果不是自己，则username不为空
         queryJson['username'] = queryUser
       } // 陈旭的接口定义是不检查‘’，所以前端检查这个
       myGet(
@@ -232,16 +440,20 @@ export default {
         queryJson,
         res => {
           if (res.data.status === 1) {
+            console.log(res.data.data.user)
             this.currentInfo.username = res.data.data.user.username
             this.currentInfo.phone = res.data.data.user.phone
-            this.currentInfo.school = res.data.data.user.school
+            this.currentInfo.school = res.data.data.user.school_name
             this.currentInfo.realname = res.data.data.user.realname
             this.currentInfo.motto = res.data.data.user.motto
-            this.currentInfo.permission = res.data.data.user.permission
-            this.setformInfo()
-            this.myPermission = localStorage.getItem('permission')
+            this.currentInfo.permission_private = res.data.data.user.permission_private
+            this.currentInfo.permission_public = res.data.data.user.permission_public
+            this.SetFormInfo()
+            this.myPermissionPrivate = localStorage.getItem('permission_private')
+            this.myPermissionPublic = localStorage.getItem('permission_public')
 
-            console.log('myPERMISSION: ' + this.myPermission)
+            console.log('myPERMISSION-PRIVATE: ' + this.myPermissionPrivate)
+            console.log('myPERMISSION-PUBLIC: ' + this.myPermissionPublic)
           }
         },
         err => {
@@ -279,7 +491,7 @@ export default {
       return isJPGPNG && isLt2M
     },
 
-    changePwd () {
+    ChangePwd () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         oldpassword: Encrypt(this.formChangepwd.oldpwd),
@@ -293,7 +505,7 @@ export default {
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
             this.changePwdVisible = false
-            this.resetChangepwd()
+            this.ResetChangepwd()
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -304,7 +516,7 @@ export default {
       )
     },
 
-    changePhone () {
+    ChangePhone () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         phone: this.formChangephone.phone,
@@ -320,7 +532,7 @@ export default {
             this.formInfo.phone = this.currentInfo.phone
             this.$message.success(`${res.data.msg}`)
             this.changePhoneVisible = false
-            this.resetChangephone()
+            this.ResetChangephone()
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -330,7 +542,7 @@ export default {
         }
       )
     },
-    changeInfo () {
+    ChangeInfo () {
       if (this.changeInfoVisible === true) {
         this.changeInfoVisible = false
         this.updateButtonText = '更新信息'
@@ -344,7 +556,8 @@ export default {
         if (!this.isSelf) {
           tmpdata['username'] = this.formInfo.username
         }
-        myPost('/api/user/info/modify',
+        myPost(
+          '/api/user/info/modify',
           tmpdata,
           res => {
             console.log(tmpdata)
@@ -352,66 +565,125 @@ export default {
               this.$message.success(`${res.data.msg}`)
               this.changeInfoVisible = true
               this.updateButtonText = '修改信息'
-              this.setcurrentInfo()
+              this.SetCurrentInfo()
             } else {
               this.$message.error(`${res.data.msg}`)
-              this.setformInfo()
+              this.SetFormInfo()
             }
           },
           err => {
             this.$message.error(`${err.message}`, 'ERROR!')
-            this.setformInfo()
+            this.SetFormInfo()
           }
         )
       }
     },
 
-    changePermission () {
-      if (this.isSelf) { // 不能修改自己的权限
+    ApplySchool () {
+      this.applyDialogVisible = false
+      let tmpdata = {
+        token: this.$store.getters.getUserToken,
+        apply_reason: this.formApplySchool.reason,
+        apply_school_id: this.formApplySchool.school_id
+      }
+      myPost(
+        '/api/school/user/apply',
+        tmpdata,
+        res => {
+          if (res.data.status === 1) {
+            this.$message({
+              type: 'success',
+              message: '你的申请已经成功递交',
+              duration: 2000
+            })
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
+    },
+    GetSchoolList () {
+      this.changeSchoolVisible = true
+      this.changeSchoolButtonText = '选择学校'
+      // TODO: getSchoolApi
+      let tmpData = {
+        token: this.$store.getters.getUserToken
+      }
+      this.GetSchoolListFromMixin(tmpData)
+    },
+
+    ChangePermission () {
+      if (this.isSelf) {
+        // 不能修改自己的权限
         this.$message.error('您不能修改自己的权限！')
         return
       }
       if (!this.changePermissionEnable) {
-        if (this.currentInfo.permission >= this.myPermission) { // 如果要改的人的权限原本就不低于自己
+        if (!(this.isPrivateAndGreater || this.isPublicAndGreater)) {
+          // 这里其实在显示按钮的时候就判断过了
           this.$message.error('您的权限太低了！')
           return
         }
         this.changePermissionEnable = true
         this.changePermissionButtonText = '更新权限！'
       } else {
-        if (this.formInfo.permission >= this.myPermission) { // 只能改成比自己低的某个权限
-          this.$message.error('您只能赋予别人低于自己的权限！')
-          this.setformInfo()
+        let tmpData = {
+          token: this.$store.getters.getUserToken,
+          username: this.formInfo.username
+        }
+        var cnt = 0
+        if (this.isPrivateAndGreater || this.isGreatAdmin) {
+          if (this.formInfo.permission_private >= this.myPermissionPrivate) {
+            // 这里其实在对应的参数列表里就设定好了
+            this.$message.error('您只能赋予别人低于自己的校内权限！')
+          } else {
+            if (this.formInfo.permission_private !== this.currentInfo.permission_private) { cnt++; tmpData['permission_private'] = this.formInfo.permission_private }
+          }
+        }
+        if (this.isPublicAndGreater) {
+          if (this.formInfo.permission_public >= this.myPermissionPublic) {
+            // 这里其实在对应的参数列表里就设定好了
+            this.$message.error('您只能赋予别人低于自己的在野权限！')
+          } else {
+            if (this.formInfo.permission_public !== this.currentInfo.permission_public) { cnt++; tmpData['permission_public'] = this.formInfo.permission_public }
+          }
+        }
+        // 如果什么都没有设置
+        if (cnt === 0) {
+          this.changePermissionButtonText = '修改权限'
+          this.changePermissionEnable = false
+          this.SetFormInfo()
           return
         }
-        let tmpdata = {
-          token: this.$store.getters.getUserToken,
-          username: this.formInfo.username,
-          permission: this.formInfo.permission
-        }
-        myPost('/api/user/info/modify',
-          tmpdata,
+        console.log(tmpData)
+        myPost(
+          '/api/user/info/modify',
+          tmpData,
           res => {
-            console.log(tmpdata)
             if (res.data.status === 1) {
               this.$message.success(`${res.data.msg}`)
               this.changePermissionEnable = false
               this.changePermissionButtonText = '修改权限'
-              this.setcurrentInfo()
+              this.SetCurrentInfo()
             } else {
               this.$message.error(`${res.data.msg}`)
-              this.setformInfo()
+              this.changePermissionEnable = false
+              this.changePermissionButtonText = '修改权限'
+              this.SetFormInfo()
             }
           },
           err => {
             this.$message.error(`${err.message}`, 'ERROR!')
-            this.setformInfo()
+            this.SetFormInfo()
           }
         )
       }
     },
 
-    sendCAPTCHA () {
+    SendCAPTCHA () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
         // username: this.username,
@@ -451,6 +723,7 @@ export default {
   transform: scale(1.1);
   transition-duration: 1s;
 }
+
 .main-div {
   height: 100%;
   width: 100%;
@@ -459,9 +732,9 @@ export default {
   align-content: center;
   justify-content: center;
   padding: 0%;
-  background: url('../../assets/background16-9-2.jpg');
-  background-size:cover;
-  background-repeat :none;
+  background: url("../../assets/background16-9-2.jpg");
+  background-size: cover;
+  background-repeat: none;
   height: 100%;
 }
 .box-card {
@@ -479,8 +752,8 @@ export default {
   box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);
 }
 
-.el-form-item{
-  margin: 2%;
+.el-form-item {
+  margin: 1.5%;
 }
 
 .change {
@@ -492,27 +765,17 @@ export default {
 .change-input {
   margin: 1%;
 }
-.change-button{
+.change-button {
   margin: 0%;
+}
+.change-school{
+  margin-top: 3%;
+}
+.change-school-button{
+  width: 100%;
+}
+.upload-btn{
+  align-self: center
 }
 
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  margin: 0%;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 100px;
-  height: 100px;
-  line-height: 100px;
-  text-align: center;
-}
 </style>
