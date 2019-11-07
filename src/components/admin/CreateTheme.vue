@@ -175,7 +175,7 @@ export default {
       console.log(row)
       this.themeStatus = '修改主题'
       this.formCreateTheme.theme_id = row.id
-      this.formCreateTheme.theme_name = row.name
+      this.formCreateTheme.theme_name = row.title
       this.formCreateTheme.theme_description = row.description
       this.formCreateTheme.theme_deadline = row.deadline
     },
