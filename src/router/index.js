@@ -21,7 +21,7 @@ import StarMine from '@/components/star/Mine.vue'
 import StarSubmit from '@/components/star/Submit.vue'
 import Chat from '@/components/chat/ChatLayout.vue'
 import Course from '@/components/course/Course.vue'
-import VideoPlay from '@/components/course/VideoPlay.vue'
+import VideoPlay from '@/components/course/videoplay.vue'
 
 // import { start } from 'repl'
 
