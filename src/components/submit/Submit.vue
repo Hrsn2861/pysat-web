@@ -63,7 +63,7 @@
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 import { myPost } from '@/utils/requestFunc.js'
 
-import AceContainer from '@/components/star/AceContainer.vue'
+import AceContainer from '@/components/submit/AceContainer.vue'
 import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 
 export default {
@@ -251,7 +251,7 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 0%;
-  background: url("../../assets/background16-9-2.jpg");
+  background: url("~@/assets/background16-9-2.jpg");
   background-size: cover;
   background-repeat: none;
   height: 100%;

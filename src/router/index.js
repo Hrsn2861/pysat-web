@@ -10,26 +10,27 @@ import Navi from '@/components/welcomePage/Navigation.vue'
 import Overview from '@/components/browse/Overview.vue'
 import Hangout from '@/components/browse/Hangout.vue'
 
-import MyInfo from '@/components/dashboard/MyInfo.vue'
-import MyProgram from '@/components/star/Mine.vue'
+import MyInfo from '@/components/personal/myinfo/MyInfo.vue'
+import MyProgram from '@/components/personal/myprogram/Mine.vue'
 
-import ProgramJudge from '@/components/admin/Judge.vue'
-import ProgramUpload from '@/components/admin/Upload'
-import ProgramTheme from '@/components/admin/CreateTheme.vue'
+import ProgramJudge from '@/components/admin/program/Judge.vue'
+import ProgramUpload from '@/components/admin/program/Upload'
+import ProgramTheme from '@/components/admin/program/CreateTheme.vue'
 
-import UserList from '@/components/admin/ViewUser.vue'
-import SchoolManage from '@/components/admin/SetSchool.vue'
-import SchoolApply from '@/components/admin/SchoolApply.vue'
+import UserList from '@/components/admin/user/ViewUser.vue'
+import SchoolManage from '@/components/admin/user/SetSchool.vue'
+import SchoolApply from '@/components/admin/user/SchoolApply.vue'
 
-import Submit from '@/components/star/Submit.vue'
-import Onstar from '@/components/star/Program.vue'
-import Inqueue from '@/components/star/Queue.vue'
+import Submit from '@/components/submit/Submit.vue'
 
-import CourseView from '@/components/course/Course.vue'
-import CourseUpload from '@/components/admin/VideoUpload.vue'
+import Onstar from '@/components/star/onstar/Program.vue'
+import Inqueue from '@/components/star/inqueue/Queue.vue'
+
+import CourseView from '@/components/course/view/Course.vue'
+import CourseUpload from '@/components/course/upload/VideoUpload.vue'
 
 import Chat from '@/components/chat/ChatLayout.vue'
-import VideoPlay from '@/components/course/videoplay.vue'
+import VideoPlay from '@/components/course/view/videoplay.vue'
 
 // import { start } from 'repl'
 

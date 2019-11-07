@@ -37,7 +37,7 @@ export default {
           type: 'video/mp4', // 这里的种类支持很多种：基本视频格式、直播、流媒体等，具体可以参看git网址项目
           src: 'https://pysat-web-ctrl.app.secoder.net/api/file/download/video' + '?token=' + localStorage.getItem('token') + '&video_id=' + localStorage.getItem('video_id')
         }],
-        poster: '../../assets/cx.png', // 你的封面地址
+        poster: '@/assets/cx.png', // 你的封面地址
         // width: document.documentElement.clientWidth, //播放器宽度
         notSupportedMessage: '此视频暂无法播放，请稍后再试', // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
         controlBar: {

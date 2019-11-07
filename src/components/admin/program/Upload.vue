@@ -1,12 +1,12 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tabs v-model="moduleName" @tab-click="GetCourseList()">
-        <el-tab-pane label="在野" name="public" v-if="permission_public>=1">
-          <CourseTable v-bind:displayData="videoList"></CourseTable>
+      <el-tabs v-model="moduleName" @tab-click="GetUploadList()">
+        <el-tab-pane label="在野" name="public" v-if="permission_public>=4">
+          <UploadTable v-bind:displayData="tableData"></UploadTable>
         </el-tab-pane>
-        <el-tab-pane label="校内" name="private" v-if="permission_private>=1">
-          <CourseTable v-bind:displayData="videoList"></CourseTable>
+        <el-tab-pane label="校内" name="private" v-if="permission_private>=4">
+          <UploadTable v-bind:displayData="tableData"></UploadTable>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -16,66 +16,88 @@
 <script>
 // import { myGet } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import CourseTable from '@/components/course/CourseTable.vue'
-import GetCourseListMixin from '@/utils/functionUtils/getCourseListMixin'
+import UploadTable from '@/components/admin/program/UploadTable.vue'
+import { myGet } from '@/utils/requestFunc.js'
+
 export default {
   components: {
-    CourseTable
+    UploadTable
   },
-  mixins: [GetCourseListMixin],
   beforeCreate () {
     checkSession(this, '', '/')
   },
   created () {
     this.permission_public = localStorage.getItem('permission_public')
     this.permission_private = localStorage.getItem('permission_private')
-    if (this.permission_public >= 1) {
+    if (this.permission_public >= 4) {
       this.moduleName = 'public'
-    } else if (this.permission_private >= 1) {
+    } else if (this.permission_private >= 4) {
       this.moduleName = 'private'
     }
   },
   mounted: function () {
-    this.GetCourseList()
+    this.GetUploadList()
   },
   data () {
     return {
-      videoList: [
+      tableData: [
         {
-          upload_time: '2016-05-02',
-          name: '陈旭老师的奇妙冒险',
-          uploader: '陈浩展',
-          size: '1JB',
-          description: '这是陈旭老师的奇妙冒险，赞！'
+          submit_time: '2016-05-02',
+          author: '陈旭',
+          name: '面向陈旭程序设计基础',
+          status: 0,
+          id: 'imchenxulaoshi'
         },
         {
-          upload_time: '6102-05-02',
-          name: 'ZBZY',
-          uploader: '顾掀宇',
-          size: '1KB',
-          description: 'xb, zbzy'
+          submit_time: '6102-05-02',
+          author: '顾掀宇',
+          name: '编译原理PA1-B',
+          status: 1,
+          id: 'imxianyu'
+        },
+        {
+          submit_time: '6102-05-02',
+          author: '陈浩展',
+          name: '大学生恋爱',
+          status: 2,
+          id: 'imxianyu'
         }
+
       ],
-      moduleName: 'public',
+      currentCode: '',
       permission_public: -1,
       permission_private: -1
     }
   },
   methods: {
-    GetCourseList () {
+    GetUploadList () {
       let tmpData = {
         token: this.$store.getters.getUserToken,
+        mine: false,
         school_id: -1,
-        category_id: 0
+        status_low: 2,
+        status_up: 5
       }
-      console.log(tmpData)
       if (this.moduleName === 'public') {
         tmpData.school_id = 0
       } else {
         tmpData.school_id = localStorage.getItem('school_id')
       }
-      console.log(tmpData)
-      this.GetCourseListFromMixin(tmpData)
+      myGet(
+        '/api/program/list/get',
+        tmpData,
+        res => {
+          if (res.data.status === 1) {
+            console.log(res.data.data)
+            this.tableData = res.data.data.code_list
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
     }
   }
 }
@@ -106,7 +128,7 @@ export default {
   align-content: center;
   justify-content: center;
   padding: 0%;
-  background: url("../../assets/background16-9-2.jpg");
+  background: url("~@/assets/background16-9-2.jpg");
   background-size: cover;
   background-repeat: none;
   height: 100%;

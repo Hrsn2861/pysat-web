@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import vueUpload from '@/components/admin/uploader'
+import vueUpload from '@/components/course/upload/uploader'
 import WebUploader from 'webuploader'
 import $ from 'jquery'
 import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
@@ -259,13 +259,13 @@ export default {
         }
 
         .file-type[icon=text] {
-            background: url(../../assets/icon/text-icon.png);
+            background: url(~@/assets/icon/text-icon.png);
         }
         .file-type[icon=video] {
-            background: url(../../assets/icon/video-icon.png);
+            background: url(~@/assets/icon/video-icon.png);
         }
         .file-type[icon=image] {
-            background: url(../../assets/icon/image-icon.png);
+            background: url(~@/assets/icon/image-icon.png);
         }
 
         .progress {
