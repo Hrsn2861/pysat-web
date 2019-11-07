@@ -22,7 +22,7 @@
 
       <el-submenu index="/personal">
         <template slot="title">
-          <i class="el-icon-s-home"></i>
+          <i class="el-icon-user"></i>
           <span slot="title">个人中心</span>
         </template>
         <el-menu-item index="/personal/myinfo/___default">个人信息</el-menu-item>
@@ -31,7 +31,7 @@
 
       <el-submenu index="/admin/program">
         <template slot="title">
-          <i class="el-icon-s-home"></i>
+          <i class="el-icon-s-platform"></i>
           <span slot="title">程序管理</span>
         </template>
         <el-menu-item index="/admin/program/judge">审核程序</el-menu-item>
@@ -41,7 +41,7 @@
 
       <el-submenu index="/admin/user">
         <template slot="title">
-          <i class="el-icon-s-home"></i>
+          <i class="el-icon-s-check"></i>
           <span slot="title">用户管理</span>
         </template>
         <el-menu-item index="/admin/user/list">用户列表</el-menu-item>
@@ -50,7 +50,7 @@
       </el-submenu>
 
       <el-menu-item index="/submit">
-        <i class="el-icon-view"></i>
+        <i class="el-icon-upload"></i>
         <span slot="title">提交程序</span>
       </el-menu-item>
 
@@ -65,7 +65,7 @@
 
       <el-submenu index="/course">
         <template slot="title">
-          <i class="el-icon-star-on"></i>
+          <i class="el-icon-video-play"></i>
           <span slot="title">线上教程</span>
         </template>
         <el-menu-item index="/course/view">查看教程</el-menu-item>
