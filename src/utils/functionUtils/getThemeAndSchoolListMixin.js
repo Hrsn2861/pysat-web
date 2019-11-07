@@ -2,22 +2,26 @@ import { myGet } from '@/utils/requestFunc.js'
 export default {
   methods: {
     GetThemeListFromMixin (tmpData) {
-      myGet(
-        '/api/school/theme/list',
-        tmpData,
-        res => {
-          if (res.data.status === 1) {
-            this.$message.success(`${res.data.msg}`)
-            this.themeList = res.data.data.theme_list
-            console.log(res.data.data)
-          } else {
-            this.$message.error(`${res.data.msg}`)
+      return new Promise(resolve => {
+        myGet(
+          '/api/school/theme/list',
+          tmpData,
+          res => {
+            if (res.data.status === 1) {
+              this.$message.success(`${res.data.msg}`)
+              this.themeList = res.data.data.theme_list
+              resolve(true)
+            } else {
+              this.$message.error(`${res.data.msg}`)
+              resolve(false)
+            }
+          },
+          err => {
+            this.$message.error(`${err.message}`, 'ERROR!')
+            resolve(false)
           }
-        },
-        err => {
-          this.$message.error(`${err.message}`, 'ERROR!')
-        }
-      )
+        )
+      })
     },
     GetSchoolListFromMixin (tmpData) {
       return new Promise(resolve => {
@@ -36,6 +40,7 @@ export default {
           },
           err => {
             this.$message.error(`${err.message}`, 'ERROR!')
+            resolve(false)
           }
         )
       })
