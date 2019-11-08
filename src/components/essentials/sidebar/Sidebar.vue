@@ -35,13 +35,13 @@
           <i class="el-icon-s-platform"></i>
           <span slot="title">管理中心</span>
         </template>
-        <el-menu-item index="/admin/program">程序管理</el-menu-item>
+        <el-menu-item index="/theme">程序管理</el-menu-item> <!-- 程序管理和提交程序共用一个路由是有原因的....-->
         <el-menu-item index="/admin/userlist">用户列表</el-menu-item>
         <el-menu-item index="/admin/schoollist" v-if="getPermission_Public>=8">学校列表</el-menu-item>
         <el-menu-item index="/admin/applylist" v-if="getPermission_Private>=2">加入申请</el-menu-item>
       </el-submenu>
 
-      <el-menu-item index="/submit">
+      <el-menu-item index="/theme">
         <i class="el-icon-upload"></i>
         <span slot="title">提交程序</span>
       </el-menu-item>
