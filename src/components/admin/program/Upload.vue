@@ -1,14 +1,8 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tabs v-model="moduleName" @tab-click="GetUploadList()">
-        <el-tab-pane label="在野" name="public" v-if="permission_public>=4">
-          <UploadTable v-bind:displayData="tableData"></UploadTable>
-        </el-tab-pane>
-        <el-tab-pane label="校内" name="private" v-if="permission_private>=4">
-          <UploadTable v-bind:displayData="tableData"></UploadTable>
-        </el-tab-pane>
-      </el-tabs>
+      <el-tag type="info">{{themeInfo.title}}</el-tag>
+      <UploadTable v-bind:displayData="tableData"></UploadTable>
     </el-card>
   </div>
 </template>
@@ -18,24 +12,21 @@
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 import UploadTable from '@/components/admin/program/UploadTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
+import getThemeInfoMixin from '@/utils/functionUtils/getThemeInfoMixin'
 
 export default {
+  mixins: [getThemeInfoMixin],
+
   components: {
     UploadTable
   },
   beforeCreate () {
     checkSession(this, '', '/')
   },
-  created () {
-    this.permission_public = localStorage.getItem('permission_public')
-    this.permission_private = localStorage.getItem('permission_private')
-    if (this.permission_public >= 4) {
-      this.moduleName = 'public'
-    } else if (this.permission_private >= 4) {
-      this.moduleName = 'private'
-    }
-  },
+
   mounted: function () {
+    this.currentThemeId = this.$route.params.themeid
+    this.GetThemeInfo()
     this.GetUploadList()
   },
   data () {
@@ -64,9 +55,7 @@ export default {
         }
 
       ],
-      currentCode: '',
-      permission_public: -1,
-      permission_private: -1
+      currentCode: ''
     }
   },
   methods: {
@@ -99,6 +88,7 @@ export default {
         }
       )
     }
+
   }
 }
 </script>

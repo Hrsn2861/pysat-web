@@ -13,9 +13,10 @@ import Hangout from '@/components/browse/Hangout.vue'
 import MyInfo from '@/components/personal/myinfo/MyInfo.vue'
 import MyProgram from '@/components/personal/myprogram/Mine.vue'
 
+import ThemeList from '@/components/theme/ThemeList.vue'
+
 import ProgramJudge from '@/components/admin/program/Judge.vue'
-// import ProgramUpload from '@/components/admin/program/Upload'
-// import ProgramTheme from '@/components/admin/program/CreateTheme.vue'
+import ProgramUpload from '@/components/admin/program/Upload'
 
 import UserList from '@/components/admin/user/ViewUser.vue'
 import SchoolList from '@/components/admin/user/SetSchool.vue'
@@ -89,11 +90,23 @@ export default new Router({
           component: MyProgram
         },
 
+        // 主题列表（包含提交程序和程序管理）
+        {
+          path: 'theme',
+          component: ThemeList
+        },
         // 管理中心
         {
-          // 程序管理
-          path: 'admin/program',
+          // 程序审核
+          path: 'admin/program/judge/:themeid',
+          name: 'judge',
           component: ProgramJudge
+        },
+        {
+          // 程序上传
+          path: 'admin/program/upload/:themeid',
+          name: 'upload',
+          component: ProgramUpload
         },
         {
           // 用户列表
@@ -113,7 +126,8 @@ export default new Router({
 
         // 提交程序
         {
-          path: 'submit',
+          path: 'submit/:themeid',
+          name: 'submit',
           component: Submit
         },
 

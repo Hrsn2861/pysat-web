@@ -1,14 +1,8 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tabs v-model="moduleName" @tab-click="GetJudgeList()">
-        <el-tab-pane label="在野" name="public" v-if="permission_public>=2">
-          <JudgeTable v-bind:displayData="tableData"></JudgeTable>
-        </el-tab-pane>
-        <el-tab-pane label="校内" name="private" v-if="permission_private>=2">
-          <JudgeTable v-bind:displayData="tableData"></JudgeTable>
-        </el-tab-pane>
-      </el-tabs>
+      <el-tag type="info">{{themeInfo.title}}</el-tag>
+      <JudgeTable v-bind:displayData="tableData"></JudgeTable>
     </el-card>
   </div>
 </template>
@@ -18,55 +12,35 @@
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 import JudgeTable from '@/components/admin/program/JudgeTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
+import getThemeInfoMixin from '@/utils/functionUtils/getThemeInfoMixin'
 
 export default {
+  mixins: [getThemeInfoMixin],
+
   components: {
     JudgeTable
   },
   beforeCreate () {
     checkSession(this, '', '/')
   },
-  created () {
-    this.permission_public = localStorage.getItem('permission_public')
-    this.permission_private = localStorage.getItem('permission_private')
-    if (this.permission_public >= 2) {
-      this.moduleName = 'public'
-    } else if (this.permission_private >= 2) {
-      this.moduleName = 'private'
-    }
-  },
+
   mounted: function () {
+    this.currentThemeId = this.$route.params.themeid
+    this.GetThemeInfo()
     this.GetJudgeList()
   },
   data () {
     return {
       tableData: [
         {
-          submit_time: '2016-05-02',
-          author: '陈旭',
-          name: '面向陈旭程序设计基础',
+          submit_time: '9999-12-31',
+          author: 'bug',
+          name: 'bug',
           status: 0,
-          id: 'imchenxulaoshi'
-        },
-        {
-          submit_time: '6102-05-02',
-          author: '顾掀宇',
-          name: '编译原理PA1-B',
-          status: 1,
-          id: 'imxianyu'
-        },
-        {
-          submit_time: '6102-05-02',
-          author: '陈浩展',
-          name: '大学生恋爱',
-          status: 2,
-          id: 'imxianyu'
+          id: -1
         }
-
       ],
-      moduleName: 'public',
-      permission_public: -1,
-      permission_private: -1
+      currentThemeId: -1
     }
   },
   methods: {
@@ -76,15 +50,11 @@ export default {
       let tmpData = {
         token: this.$store.getters.getUserToken,
         mine: false,
-        school_id: -1,
+        theme_id: this.currentThemeId,
         status_low: -1,
         status_up: 3
       }
-      if (this.moduleName === 'public') {
-        tmpData.school_id = 0
-      } else {
-        tmpData.school_id = localStorage.getItem('school_id')
-      }
+
       myGet(
         '/api/program/list/get',
         tmpData,
@@ -101,6 +71,7 @@ export default {
         }
       )
     }
+
   }
 }
 </script>
