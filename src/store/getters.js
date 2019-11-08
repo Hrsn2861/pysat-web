@@ -38,6 +38,24 @@ export const getters = {
     return state.permission_private
   },
 
+  getSchool_Name: (state) => {
+    if (!state.school_name) {
+      if (localStorage.getItem('school_name') != null) {
+        state.school_name = localStorage['school_name']
+      }
+    }
+    return state.school_name
+  },
+
+  getSchool_Id: (state) => {
+    if (!state.school_id) {
+      if (localStorage.getItem('school_id') != null) {
+        state.school_id = localStorage['school_id']
+      }
+    }
+    return state.school_id
+  },
+
   getUserNameFromSessionId: (state) => {
     return state.chatSystem.sessions[state.chatSystem.currentSessionId].user // 通过sessionid返回用户名
   },

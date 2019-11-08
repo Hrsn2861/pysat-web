@@ -14,12 +14,12 @@ import MyInfo from '@/components/personal/myinfo/MyInfo.vue'
 import MyProgram from '@/components/personal/myprogram/Mine.vue'
 
 import ProgramJudge from '@/components/admin/program/Judge.vue'
-import ProgramUpload from '@/components/admin/program/Upload'
-import ProgramTheme from '@/components/admin/program/CreateTheme.vue'
+// import ProgramUpload from '@/components/admin/program/Upload'
+// import ProgramTheme from '@/components/admin/program/CreateTheme.vue'
 
 import UserList from '@/components/admin/user/ViewUser.vue'
-import SchoolManage from '@/components/admin/user/SetSchool.vue'
-import SchoolApply from '@/components/admin/user/SchoolApply.vue'
+import SchoolList from '@/components/admin/user/SetSchool.vue'
+import ApplyList from '@/components/admin/user/SchoolApply.vue'
 
 import Submit from '@/components/submit/Submit.vue'
 
@@ -89,38 +89,26 @@ export default new Router({
           component: MyProgram
         },
 
-        // 程序管理
+        // 管理中心
         {
-          // 审核程序
-          path: 'admin/program/judge',
+          // 程序管理
+          path: 'admin/program',
           component: ProgramJudge
         },
         {
-          // 上传程序
-          path: 'admin/program/upload',
-          component: ProgramUpload
-        },
-        {
-          // 程序主题
-          path: 'admin/program/theme',
-          component: ProgramTheme
-        },
-
-        // 用户管理
-        {
           // 用户列表
-          path: 'admin/user/list',
+          path: 'admin/userlist',
           component: UserList
         },
         {
           // 管理学校
-          path: 'admin/user/school',
-          component: SchoolManage
+          path: 'admin/schoollist',
+          component: SchoolList
         },
         {
           // 加入申请
-          path: 'admin/user/apply',
-          component: SchoolApply
+          path: 'admin/applylist',
+          component: ApplyList
         },
 
         // 提交程序

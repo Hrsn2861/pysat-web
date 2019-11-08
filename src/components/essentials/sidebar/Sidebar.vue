@@ -27,26 +27,18 @@
         </template>
         <el-menu-item index="/personal/myinfo/___default">个人信息</el-menu-item>
         <el-menu-item index="/personal/myprogram">我的程序</el-menu-item>
+        <el-menu-item>我的学校</el-menu-item>
       </el-submenu>
 
-      <el-submenu index="/admin/program">
+      <el-submenu index="/admin" v-if="getPermission_Public>=2 || getPermission_Private>=2">
         <template slot="title">
           <i class="el-icon-s-platform"></i>
-          <span slot="title">程序管理</span>
+          <span slot="title">管理中心</span>
         </template>
-        <el-menu-item index="/admin/program/judge">审核程序</el-menu-item>
-        <el-menu-item index="/admin/program/upload">上传程序</el-menu-item>
-        <el-menu-item index="/admin/program/theme">程序主题</el-menu-item>
-      </el-submenu>
-
-      <el-submenu index="/admin/user">
-        <template slot="title">
-          <i class="el-icon-s-check"></i>
-          <span slot="title">用户管理</span>
-        </template>
-        <el-menu-item index="/admin/user/list">用户列表</el-menu-item>
-        <el-menu-item index="/admin/user/school">管理学校</el-menu-item>
-        <el-menu-item index="/admin/user/apply">加入申请</el-menu-item>
+        <el-menu-item index="/admin/program">程序管理</el-menu-item>
+        <el-menu-item index="/admin/userlist">用户列表</el-menu-item>
+        <el-menu-item index="/admin/schoollist" v-if="getPermission_Public>=8">学校列表</el-menu-item>
+        <el-menu-item index="/admin/applylist" v-if="getPermission_Private>=2">加入申请</el-menu-item>
       </el-submenu>
 
       <el-menu-item index="/submit">
@@ -69,7 +61,7 @@
           <span slot="title">线上教程</span>
         </template>
         <el-menu-item index="/course/view">查看教程</el-menu-item>
-        <el-menu-item index="/course/upload">发布教程</el-menu-item>
+        <el-menu-item index="/course/upload" v-if="getPermission_Public>=2 || getPermission_Private>=2">发布教程</el-menu-item>
       </el-submenu>
 
       <el-menu-item index="/chat">
@@ -87,18 +79,10 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'Sidebar',
   props: {
-    permission_public: {
-      type: Number,
-      default: -1
-    },
-    permission_private: {
-      type: Number,
-      default: -1
-    }
+
   },
   created () {
-    this.permission_public = Number(localStorage.getItem('permission_public'))
-    this.permission_private = Number(localStorage.getItem('permission_private'))
+
   },
 
   data () {
@@ -107,7 +91,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['sidebar']),
+    ...mapGetters([
+      'sidebar',
+      'getPermission_Public',
+      'getPermission_Private',
+      'getSchool_Id'
+    ]),
     isCollapse () {
       return !this.sidebar.opened
     },
@@ -121,12 +110,6 @@ export default {
     isLogged () {
       // 检查是否已经登陆，如果已经登陆，那么user就会被设置好了，根据user返回是否显示登陆注册按钮
       return this.$store.getters.getUser === null
-    },
-    Permission_Public () {
-      return this.$store.getters.getPermission_Public
-    },
-    Permission_Private () {
-      return this.$store.getters.getPermission_Private
     }
   },
   methods: {}
