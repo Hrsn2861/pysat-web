@@ -38,7 +38,6 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import { myPost } from '@/utils/requestFunc.js'
 import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 import ThemeTable from '@/components/theme/ThemeTable'
@@ -55,41 +54,26 @@ export default {
   },
 
   mounted: function () {
-    // 并不需要，因为getthemelist的初始参数一定是school_id=0
-    // NOTE: GetThemeList在GetSchooollist里面被调用，原因在于同时调用两个函数并不是同步执行的
-    // GetSchoolList也可以返回一个Promise什么的
-    // 但是这不算事一个好的做法
-    console.log('ROUTE:!!!')
-    if (this.$route.path === '/theme/submit') {
-      console.log(true)
+    if (this.$route.path === this.urlAdmin) {
+      this.currentlevel = 2
     } else {
-      console.log(false)
+      this.currentlevel = 1
     }
-    console.log(this.schoolList)
     if (localStorage.getItem('permission_public') >= 8) {
       this.GetSchoolList()
+    } else {
+      if (localStorage.getItem('permission_public') < this.currentlevel) {
+        this.schoolList[0].disabled = true
+        this.currentSchoolId = this.schoolList[1].id // 在野权限不够，版块切换至校内
+      }
+      if (localStorage.getItem('permission_private') < this.currentlevel) {
+        this.schoolList[1].disabled = true
+      }
     }
     this.GetThemeList()
   },
 
   computed: {
-    ...mapGetters([
-      'getPermission_Public',
-      'getPermission_Private',
-      'getSchool_Id'
-    ]),
-    isRightAdmin () {
-      return function (level) {
-        if (this.getPermission_Public >= 8) {
-          return true
-        }
-        if (this.currentSchoolId === 0) {
-          return this.getPermission_Public >= level
-        } else {
-          return this.getPermission_Private >= level
-        }
-      }
-    }
 
   },
 
@@ -97,33 +81,9 @@ export default {
     return {
       urlSubmit: '/theme/submit',
       urlAdmin: '/admin/program',
+      currentlevel: -1,
       themeStatus: '',
-      currentSchoolId: 0,
       themeDialogVisible: false,
-
-      schoolList: [
-        {
-          id: 0,
-          name: '在野',
-          disabled: false
-        },
-        {
-          id: localStorage.getItem('school_id'),
-          name: '校内',
-          disabled: Number(localStorage.getItem('school_id')) === 0
-        }
-      ],
-
-      themeList: [
-        {
-          id: 0,
-          name: '编译原理PA2',
-          release_date: '2019-11-5',
-          deadline: '2019-11-6',
-          description: '编译原理的一项作业',
-          count: 199
-        }
-      ],
 
       formCreateTheme: {
         token: this.$store.getters.getUsereToken,
@@ -136,30 +96,7 @@ export default {
     }
   },
   methods: {
-    GetSchoolList () {
-      let tmpData = {
-        token: this.$store.getters.getUserToken
-      }
-      this.GetSchoolListFromMixin(tmpData).then(
-        res => { // FIXME:这里应当判断res是否为true？
-          console.log(res)
-          this.schoolList.unshift(
-            {
-              id: 0,
-              name: '公共区域'
-            }
-          )
-          this.currentSchoolId = 0
-        }
-      )
-    },
-    GetThemeList () {
-      let tmpdata = {
-        token: this.$store.getters.getUserToken,
-        school_id: this.currentSchoolId
-      }
-      this.GetThemeListFromMixin(tmpdata)
-    },
+
     NewThemeDialog () {
       this.themeDialogVisible = true
       this.themeStatus = '新建主题'

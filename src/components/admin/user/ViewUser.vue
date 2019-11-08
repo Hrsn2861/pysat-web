@@ -23,7 +23,7 @@
           placeholder="发布区域"
           @change="GetUserList"
         >
-          <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
       </el-select>
     </el-card>
   </div>
@@ -41,54 +41,25 @@ export default {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.GetSchoolList()
+    if (localStorage.getItem('permission_public') >= 8) {
+      this.GetSchoolList()
+    } else {
+      if (localStorage.getItem('permission_public') < 2) {
+        this.schoolList[0].disabled = true
+        this.currentSchoolId = this.schoolList[1].id // 在野权限不够，版块切换至校内
+      }
+      if (localStorage.getItem('permission_private') < 2) {
+        this.schoolList[1].disabled = true
+      }
+    }
+    this.GetUserList()
   },
   methods: {
     viewCurrentUser (index, row) {
       console.log('View user index: ', index)
       this.$router.push({name: 'myinfo', params: {username: row.username}})
     },
-    GetSchoolList () {
-      if (this.isGreatAdmin) {
-        let tmpData = {
-          token: this.$store.getters.getUserToken
-        }
-        this.GetSchoolListFromMixin(tmpData).then(
-          res => {
-            console.log(this.schoolList)
-            this.schoolList.splice(0, 0,
-              {
-                id: 0,
-                name: '全部区域'
-              }
-            )
-            this.currentSchoolId = this.schoolList[0].id
-            this.GetUserList()
-          }
-        )
-      } else {
-        if (this.isPublicAdmin) {
-          this.schoolList.push(
-            {
-              id: 0,
-              name: '公共区域'
-            }
-          )
-          this.currentSchoolId = 0
-        }
-        if (this.isPrivateAdmin) {
-          this.schoolList.push(
-            {
-              id: localStorage['school_id'],
-              name: localStorage['school_name']
-            }
-          )
-          this.currentSchoolId = localStorage['school_id']
-        }
-        console.log(this.schoolList)
-        this.GetUserList()
-      }
-    },
+
     GetUserList () {
       myGet(
         '/api/user/list/get',
@@ -122,13 +93,7 @@ export default {
 
   data () {
     return {
-      currentSchoolId: 0,
-      userList: [
-
-      ],
-      schoolList: [
-
-      ]
+      userList: []
     }
   }
 }
