@@ -26,9 +26,17 @@ export const mutations = {
     if (data.user !== null) {
       state.user = data.user.username
       localStorage.setItem('identity', data.user.username)
+
+      state.permission_public = data.user.permission_public
       localStorage.setItem('permission_public', Number(data.user.permission_public))
+
+      state.permission_private = data.user.permission_private
       localStorage.setItem('permission_private', Number(data.user.permission_private))
+
+      state.school_name = data.user.school.name
       localStorage.setItem('school_name', data.user.school.name)
+
+      state.school_id = data.user.school_id
       localStorage.setItem('school_id', data.user.school.id)
     }
   },
