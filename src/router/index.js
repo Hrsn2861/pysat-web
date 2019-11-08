@@ -2,26 +2,36 @@ import Vue from 'vue'
 import Router from 'vue-router'
 // import HelloWorld from '@/components/HelloWorld'
 import Index from '@/components/layout/Index'
+
 import Signup from '@/components/welcomePage/Signup.vue'
 import Login from '@/components/welcomePage/Login.vue'
 import Navi from '@/components/welcomePage/Navigation.vue'
-import MyInfo from '@/components/dashboard/MyInfo.vue'
-import ViewUser from '@/components/admin/ViewUser.vue'
-import Judge from '@/components/admin/Judge.vue'
-import School from '@/components/admin/SetSchool.vue'
-import Upload from '@/components/admin/Upload'
-import SchoolApply from '@/components/admin/SchoolApply.vue'
-import CreateTheme from '@/components/admin/CreateTheme.vue'
-import VideoUpload from '@/components/admin/VideoUpload.vue'
-import Hangout from '@/components/browse/Hangout.vue'
+
 import Overview from '@/components/browse/Overview.vue'
-import StarProgram from '@/components/star/Program.vue'
-import StarQueue from '@/components/star/Queue.vue'
-import StarMine from '@/components/star/Mine.vue'
-import StarSubmit from '@/components/star/Submit.vue'
+import Hangout from '@/components/browse/Hangout.vue'
+
+import MyInfo from '@/components/personal/myinfo/MyInfo.vue'
+import MyProgram from '@/components/personal/myprogram/Mine.vue'
+
+import ThemeList from '@/components/theme/ThemeList.vue'
+
+import ProgramJudge from '@/components/admin/program/Judge.vue'
+import ProgramUpload from '@/components/admin/program/Upload'
+
+import UserList from '@/components/admin/user/ViewUser.vue'
+import SchoolList from '@/components/admin/user/SetSchool.vue'
+import ApplyList from '@/components/admin/user/SchoolApply.vue'
+
+import Submit from '@/components/submit/Submit.vue'
+
+import Onstar from '@/components/star/onstar/Program.vue'
+import Inqueue from '@/components/star/inqueue/Queue.vue'
+
+import CourseView from '@/components/course/view/Course.vue'
+import CourseUpload from '@/components/course/upload/VideoUpload.vue'
+
 import Chat from '@/components/chat/ChatLayout.vue'
-import Course from '@/components/course/Course.vue'
-import VideoPlay from '@/components/course/videoplay.vue'
+import VideoPlay from '@/components/course/view/videoplay.vue'
 
 // import { start } from 'repl'
 
@@ -52,78 +62,106 @@ export default new Router({
           path: '',
           component: Navi
         },
-        {
-          // 默认的username是___default
-          path: 'myinfo/:username',
-          name: 'myinfo',
-          component: MyInfo
 
-        },
-        {
-          path: 'admin/userlist',
-          component: ViewUser
-        },
-        {
-          path: 'admin/judge',
-          component: Judge
-        },
-        {
-          path: 'admin/upload',
-          component: Upload
-        },
-        {
-          path: 'admin/school',
-          component: School
-        },
-        {
-          path: 'admin/apply',
-          component: SchoolApply
-        },
-        {
-          path: 'admin/theme',
-          component: CreateTheme
-        },
-
-        {
-          path: 'admin/video',
-          component: VideoUpload
-        },
-        {
-          path: 'hangout',
-          component: Hangout
-        },
+        // 概览
         {
           path: 'overview',
           component: Overview
         },
+
+        // 随便逛逛
         {
-          path: 'star/program',
-          component: StarProgram
+          path: 'hangout',
+          component: Hangout
+        },
+
+        // 个人中心
+        {
+          // 个人信息
+          // 默认的username是___default
+          // FIXME: 这里是否还需要改？
+          path: 'personal/myinfo/:username',
+          name: 'myinfo',
+          component: MyInfo
         },
         {
-          path: 'star/program',
-          component: StarProgram
+          // 我的程序
+          path: 'personal/myprogram',
+          component: MyProgram
+        },
+
+        // 主题列表（包含提交程序和程序管理）
+        {
+          path: 'theme',
+          component: ThemeList
+        },
+        // 管理中心
+        {
+          // 程序审核
+          path: 'admin/program/judge/:themeid',
+          name: 'judge',
+          component: ProgramJudge
         },
         {
-          path: 'star/queue',
-          component: StarQueue
+          // 程序上传
+          path: 'admin/program/upload/:themeid',
+          name: 'upload',
+          component: ProgramUpload
         },
         {
-          path: 'star/mine',
-          component: StarMine
+          // 用户列表
+          path: 'admin/userlist',
+          component: UserList
         },
         {
-          path: 'star/submit',
-          component: StarSubmit
+          // 管理学校
+          path: 'admin/schoollist',
+          component: SchoolList
         },
+        {
+          // 加入申请
+          path: 'admin/applylist',
+          component: ApplyList
+        },
+
+        // 提交程序
+        {
+          path: 'submit/:themeid',
+          name: 'submit',
+          component: Submit
+        },
+
+        // 星上程序
+        {
+          // 星上程序
+          path: 'star/onstar',
+          component: Onstar
+        },
+        {
+          // 上传队列
+          path: 'star/inqueue',
+          component: Inqueue
+        },
+
+        // 线上教程
+        {
+          // 查看教程
+          path: 'course/view',
+          component: CourseView
+        },
+        {
+          // 发布教程
+          path: 'course/upload',
+          component: CourseUpload
+        },
+
+        // 消息系统
         {
           path: 'chat',
           component: Chat
         },
-        {
-          path: 'course',
-          component: Course
-        },
+
+        // 播放视频
         {
           path: 'videoplay',
           name: 'videoplay',

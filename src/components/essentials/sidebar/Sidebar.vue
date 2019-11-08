@@ -19,42 +19,56 @@
         <i class="el-icon-view"></i>
         <span slot="title">隨便逛逛</span>
       </el-menu-item>
+
+      <el-submenu index="/personal">
+        <template slot="title">
+          <i class="el-icon-user"></i>
+          <span slot="title">个人中心</span>
+        </template>
+        <el-menu-item index="/personal/myinfo/___default">个人信息</el-menu-item>
+        <el-menu-item index="/personal/myprogram">我的程序</el-menu-item>
+        <el-menu-item>我的学校</el-menu-item>
+      </el-submenu>
+
+      <el-submenu index="/admin" v-if="getPermission_Public>=2 || getPermission_Private>=2">
+        <template slot="title">
+          <i class="el-icon-s-platform"></i>
+          <span slot="title">管理中心</span>
+        </template>
+        <el-menu-item index="/theme">程序管理</el-menu-item> <!-- 程序管理和提交程序共用一个路由是有原因的....-->
+        <el-menu-item index="/admin/userlist">用户列表</el-menu-item>
+        <el-menu-item index="/admin/schoollist" v-if="getPermission_Public>=8">学校列表</el-menu-item>
+        <el-menu-item index="/admin/applylist" v-if="getPermission_Private>=2">加入申请</el-menu-item>
+      </el-submenu>
+
+      <el-menu-item index="/theme">
+        <i class="el-icon-upload"></i>
+        <span slot="title">提交程序</span>
+      </el-menu-item>
+
       <el-submenu index="/star">
         <template slot="title">
           <i class="el-icon-star-on"></i>
           <span slot="title">星上程序</span>
         </template>
-        <el-menu-item index="/star/program">星上程序</el-menu-item>
-        <el-menu-item index="/star/queue">上传队列</el-menu-item>
-        <el-menu-item index="/star/mine">我的程序</el-menu-item>
-        <el-menu-item index="/star/submit" >提交程序</el-menu-item>
+        <el-menu-item index="/star/onstar">星上程序</el-menu-item>
+        <el-menu-item index="/star/inqueue">上传队列</el-menu-item>
       </el-submenu>
 
-      <el-submenu v-if="Permission_Public >= 2 || Permission_Private >= 2">
+      <el-submenu index="/course">
         <template slot="title">
-          <i class="el-icon-s-home"></i>
-          <span slot="title">管理中心</span>
+          <i class="el-icon-video-play"></i>
+          <span slot="title">线上教程</span>
         </template>
-        <el-menu-item index="/admin/userlist">用户列表</el-menu-item>
-        <el-menu-item index="/admin/judge">待审程序</el-menu-item>
-        <el-menu-item index="/admin/upload" v-if="permission_public >= 4 || permission_private >= 4">待传程序</el-menu-item>
-        <el-menu-item index="/admin/apply">加入申请</el-menu-item>
-        <el-menu-item index="/admin/school" v-if="permission_public >= 8 || permission_private >= 8">管理学校</el-menu-item>
-        <el-menu-item index="/admin/theme">管理主题</el-menu-item>
-        <el-menu-item index="/admin/video">上传教程</el-menu-item>
+        <el-menu-item index="/course/view">查看教程</el-menu-item>
+        <el-menu-item index="/course/upload" v-if="getPermission_Public>=2 || getPermission_Private>=2">发布教程</el-menu-item>
       </el-submenu>
-      <el-menu-item index="/myinfo/___default">
-        <i class="el-icon-service"></i>
-        <span slot="title">个人信息</span>
-      </el-menu-item>
+
       <el-menu-item index="/chat">
         <i class="el-icon-message"></i>
         <span slot="title">消息系统</span>
       </el-menu-item>
-      <el-menu-item index="/course">
-        <i class="el-icon-s-opportunity"></i>
-        <span slot="title">线上教程</span>
-      </el-menu-item>
+
     </el-menu>
   </div>
 </template>
@@ -65,18 +79,10 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'Sidebar',
   props: {
-    permission_public: {
-      type: Number,
-      default: -1
-    },
-    permission_private: {
-      type: Number,
-      default: -1
-    }
+
   },
   created () {
-    this.permission_public = Number(localStorage.getItem('permission_public'))
-    this.permission_private = Number(localStorage.getItem('permission_private'))
+
   },
 
   data () {
@@ -85,7 +91,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['sidebar']),
+    ...mapGetters([
+      'sidebar',
+      'getPermission_Public',
+      'getPermission_Private',
+      'getSchool_Id'
+    ]),
     isCollapse () {
       return !this.sidebar.opened
     },
@@ -99,12 +110,6 @@ export default {
     isLogged () {
       // 检查是否已经登陆，如果已经登陆，那么user就会被设置好了，根据user返回是否显示登陆注册按钮
       return this.$store.getters.getUser === null
-    },
-    Permission_Public () {
-      return this.$store.getters.getPermission_Public
-    },
-    Permission_Private () {
-      return this.$store.getters.getPermission_Private
     }
   },
   methods: {}

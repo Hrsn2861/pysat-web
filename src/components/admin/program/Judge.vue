@@ -1,14 +1,8 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tabs v-model="moduleName" @tab-click="GetQueueList()">
-        <el-tab-pane label="在野" name="public" v-if="permission_public>=1">
-          <QueueTable v-bind:displayData="tableData"></QueueTable>
-        </el-tab-pane>
-        <el-tab-pane label="校内" name="private" v-if="permission_private>=1">
-          <QueueTable v-bind:displayData="tableData"></QueueTable>
-        </el-tab-pane>
-      </el-tabs>
+      <el-tag type="info">{{themeInfo.title}}</el-tag>
+      <JudgeTable v-bind:displayData="tableData"></JudgeTable>
     </el-card>
   </div>
 </template>
@@ -16,59 +10,51 @@
 <script>
 // import { myGet } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import QueueTable from '@/components/star/QueueTable.vue'
+import JudgeTable from '@/components/admin/program/JudgeTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
+import getThemeInfoMixin from '@/utils/functionUtils/getThemeInfoMixin'
 
 export default {
+  mixins: [getThemeInfoMixin],
+
   components: {
-    QueueTable
+    JudgeTable
   },
   beforeCreate () {
     checkSession(this, '', '/')
   },
-  created () {
-    this.permission_public = localStorage.getItem('permission_public')
-    this.permission_private = localStorage.getItem('permission_private')
-  },
+
   mounted: function () {
-    this.GetQueueList()
+    this.currentThemeId = this.$route.params.themeid
+    this.GetThemeInfo()
+    this.GetJudgeList()
   },
   data () {
     return {
       tableData: [
         {
-          submit_time: '2016-05-02',
-          name: '面向陈旭程序设计基础',
-          author: '陈旭老师',
-          id: 'woshishuji'
-        },
-        {
-          submit_time: '6102-05-02',
-          name: '编译原理PA1-B',
-          author: '大牛顾掀宇',
-          id: 'woshidaniu'
+          submit_time: '9999-12-31',
+          author: 'bug',
+          name: 'bug',
+          status: 0,
+          id: -1
         }
       ],
-      moduleName: 'public',
-      permission_public: -1,
-      permission_private: -1
+      currentThemeId: -1
     }
   },
   methods: {
-    GetQueueList () {
+    // 啊这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
+    // 好的，收到
+    GetJudgeList () {
       let tmpData = {
         token: this.$store.getters.getUserToken,
         mine: false,
-        school_id: -1,
-        status_low: 3,
-        status_up: 5
+        theme_id: this.currentThemeId,
+        status_low: -1,
+        status_up: 3
       }
-      if (this.moduleName === 'public') {
-        tmpData.school_id = 0
-      } else {
-        tmpData.school_id = localStorage.getItem('school_id')
-      }
-      console.log(tmpData)
+
       myGet(
         '/api/program/list/get',
         tmpData,
@@ -85,6 +71,7 @@ export default {
         }
       )
     }
+
   }
 }
 </script>
@@ -114,7 +101,7 @@ export default {
   align-content: center;
   justify-content: center;
   padding: 0%;
-  background: url("../../assets/background16-9-2.jpg");
+  background: url("~@/assets/background16-9-2.jpg");
   background-size: cover;
   background-repeat: none;
   height: 100%;

@@ -16,7 +16,7 @@
 <script>
 // import { myGet } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import CourseTable from '@/components/course/CourseTable.vue'
+import CourseTable from '@/components/course/view/CourseTable.vue'
 import GetCourseListMixin from '@/utils/functionUtils/getCourseListMixin'
 export default {
   components: {
@@ -106,7 +106,7 @@ export default {
   align-content: center;
   justify-content: center;
   padding: 0%;
-  background: url("../../assets/background16-9-2.jpg");
+  background: url("~@/assets/background16-9-2.jpg");
   background-size: cover;
   background-repeat: none;
   height: 100%;

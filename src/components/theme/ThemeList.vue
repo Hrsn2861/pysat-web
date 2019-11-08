@@ -6,28 +6,18 @@
         <el-select v-model="currentSchoolId" placeholder="学校" @change="GetThemeList()">
           <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
-        <el-button @click="NewThemeDialog()">点击创建</el-button>
-        <el-button @click="GetThemeList">刷新一下</el-button>
+        <el-button @click="NewThemeDialog()" v-if="isRightAdmin(2)">点击创建</el-button>
+        <el-button @click="GetThemeList()">刷新一下</el-button>
       </el-row>
-      <el-table :data="themeList" style="width: 100%" height="800">
-        <el-table-column prop="id" label="主题ID" width="80"></el-table-column>
-        <el-table-column prop="title" label="主题名称" width="150"></el-table-column>
-        <el-table-column prop="description" label="描述" :resizable="true"></el-table-column>
-        <el-table-column prop="create_time" label="发布时间" width="150"></el-table-column>
-        <el-table-column prop="deadline" label="截止日期" width="150"></el-table-column>
-        <el-table-column prop="count" label="相关数目" width="120"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="200">
-          <template slot-scope="scope">
-            <el-button
-              v-if="isHeadmasterOrGreater"
-              type="text"
-              size="small"
-              @click="DeleteTheme(scope.$index, scope.row)"
-            >删除</el-button>
-            <el-button type="text" size="small" @click="ModifyTheme(scope.$index, scope.row)">修改</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+
+      <ThemeTable
+      :displayData="themeList"
+      :currentSchoolId="currentSchoolId"
+      @ModifyTheme="ModifyTheme"
+      @DeleteTheme="DeleteTheme"
+      >
+      </ThemeTable>
+
       <el-dialog :title="themeStatus" :visible.sync="themeDialogVisible" width="30%">
         <el-input v-model="formCreateTheme.theme_name" placeholder="请输入主题名称"></el-input>
         <el-input v-model="formCreateTheme.theme_description" placeholder="请输入主题描述"></el-input>
@@ -48,26 +38,72 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import { myPost } from '@/utils/requestFunc.js'
 import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
+import ThemeTable from '@/components/theme/ThemeTable'
 import permissionComputer from '@/utils/functionUtils/permissionComputer'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
+
 export default {
+  components: {
+    ThemeTable
+  },
   mixins: [getSchoolAndThemeMixin, permissionComputer],
   beforeCreate () {
     checkSession(this, '', '/')
   },
+
   mounted: function () {
-    this.GetSchoolList()
+    // 并不需要，因为getthemelist的初始参数一定是school_id=0
     // NOTE: GetThemeList在GetSchooollist里面被调用，原因在于同时调用两个函数并不是同步执行的
     // GetSchoolList也可以返回一个Promise什么的
     // 但是这不算事一个好的做法
+    if (localStorage.getItem('permission_public') >= 8) {
+      this.GetSchoolList()
+    }
+    this.GetThemeList()
   },
+
+  computed: {
+    ...mapGetters([
+      'getPermission_Public',
+      'getPermission_Private',
+      'getSchool_Id'
+    ]),
+    isRightAdmin () {
+      return function (level) {
+        if (this.getPermission_Public >= 8) {
+          return true
+        }
+        if (this.currentSchoolId === 0) {
+          return this.getPermission_Public >= level
+        } else {
+          return this.getPermission_Private >= level
+        }
+      }
+    }
+
+  },
+
   data () {
     return {
       themeStatus: '',
-      currentSchoolId: -1,
+      currentSchoolId: 0,
       themeDialogVisible: false,
+
+      schoolList: [
+        {
+          id: 0,
+          name: '在野'
+        },
+        {
+          id: localStorage.getItem('school_id'),
+          name: '校内',
+          disabled: localStorage.getItem('school_id') === 0
+        }
+      ],
+
       themeList: [
         {
           id: 0,
@@ -78,8 +114,7 @@ export default {
           count: 199
         }
       ],
-      schoolList: [
-      ],
+
       formCreateTheme: {
         token: this.$store.getters.getUsereToken,
         school_id: '',
@@ -92,27 +127,13 @@ export default {
   },
   methods: {
     GetSchoolList () {
-      if (this.isGreatAdmin) {
-        let tmpData = {
-          token: this.$store.getters.getUserToken
-        }
-        // FIXME ： 这里如果在函数调用下一行使用consolelog，打印的不是正常值
-        this.GetSchoolListFromMixin(tmpData).then(
-          res => {
-            console.log(this.schoolList)
-            this.schoolList.splice(0, 0,
-              {
-                id: 0,
-                name: '公共区域'
-              }
-            )
-            this.currentSchoolId = this.schoolList[0].id
-            this.GetThemeList()
-          }
-        )
-      } else {
-        if (this.isPublicAdmin) {
-          this.schoolList.push(
+      let tmpData = {
+        token: this.$store.getters.getUserToken
+      }
+      this.GetSchoolListFromMixin(tmpData).then(
+        res => { // FIXME:这里应当判断res是否为true？
+          console.log(res)
+          this.schoolList.unshift(
             {
               id: 0,
               name: '公共区域'
@@ -120,18 +141,7 @@ export default {
           )
           this.currentSchoolId = 0
         }
-        if (this.isPrivateAdmin) {
-          this.schoolList.push(
-            {
-              id: localStorage['school_id'],
-              name: localStorage['school_name']
-            }
-          )
-          this.currentSchoolId = localStorage['school_id']
-        }
-        console.log(this.schoolList)
-        this.GetThemeList()
-      }
+      )
     },
     GetThemeList () {
       let tmpdata = {
@@ -233,7 +243,7 @@ export default {
   align-content: center;
   justify-content: center;
   padding: 0%;
-  background: url("../../assets/background16-9-2.jpg");
+  background: url("~@/assets/background16-9-2.jpg");
   background-size: cover;
   background-repeat: none;
   height: 100%;

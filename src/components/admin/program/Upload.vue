@@ -1,56 +1,83 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <MineTable :displayData="tableData" ref="MineTable"></MineTable>
+      <el-tag type="info">{{themeInfo.title}}</el-tag>
+      <UploadTable v-bind:displayData="tableData"></UploadTable>
     </el-card>
   </div>
 </template>
 
 <script>
+// import { myGet } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import MineTable from '@/components/star/MineTable.vue'
+import UploadTable from '@/components/admin/program/UploadTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
+import getThemeInfoMixin from '@/utils/functionUtils/getThemeInfoMixin'
 
 export default {
+  mixins: [getThemeInfoMixin],
+
   components: {
-    MineTable
+    UploadTable
   },
   beforeCreate () {
     checkSession(this, '', '/')
   },
+
   mounted: function () {
-    this.GetMineList()
+    this.currentThemeId = this.$route.params.themeid
+    this.GetThemeInfo()
+    this.GetUploadList()
   },
   data () {
     return {
       tableData: [
         {
           submit_time: '2016-05-02',
+          author: '陈旭',
           name: '面向陈旭程序设计基础',
-          status: -1,
+          status: 0,
           id: 'imchenxulaoshi'
         },
         {
           submit_time: '6102-05-02',
+          author: '顾掀宇',
           name: '编译原理PA1-B',
           status: 1,
           id: 'imxianyu'
+        },
+        {
+          submit_time: '6102-05-02',
+          author: '陈浩展',
+          name: '大学生恋爱',
+          status: 2,
+          id: 'imxianyu'
         }
 
-      ]
+      ],
+      currentCode: ''
     }
   },
   methods: {
-    GetMineList () {
-      let tmpdata = {
+    GetUploadList () {
+      let tmpData = {
         token: this.$store.getters.getUserToken,
-        mine: true
+        mine: false,
+        school_id: -1,
+        status_low: 2,
+        status_up: 5
+      }
+      if (this.moduleName === 'public') {
+        tmpData.school_id = 0
+      } else {
+        tmpData.school_id = localStorage.getItem('school_id')
       }
       myGet(
         '/api/program/list/get',
-        tmpdata,
+        tmpData,
         res => {
           if (res.data.status === 1) {
+            console.log(res.data.data)
             this.tableData = res.data.data.code_list
           } else {
             this.$message.error(`${res.data.msg}`)
@@ -61,6 +88,7 @@ export default {
         }
       )
     }
+
   }
 }
 </script>
@@ -90,7 +118,7 @@ export default {
   align-content: center;
   justify-content: center;
   padding: 0%;
-  background: url("../../assets/background16-9-2.jpg");
+  background: url("~@/assets/background16-9-2.jpg");
   background-size: cover;
   background-repeat: none;
   height: 100%;
