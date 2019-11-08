@@ -9,7 +9,7 @@
         <el-main class="my-main-view">
           <!-- <Breadcrumb></Breadcrumb> -->
           <transition :name="transitionName">
-            <router-view></router-view>
+            <router-view  :key="$route.fullPath"></router-view>
           </transition>
         </el-main>
         <el-footer>

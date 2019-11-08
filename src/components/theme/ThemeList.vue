@@ -6,7 +6,7 @@
         <el-select v-model="currentSchoolId" placeholder="学校" @change="GetThemeList()">
           <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
-        <el-button @click="NewThemeDialog()" v-if="isRightAdmin(2)">点击创建</el-button>
+        <el-button @click="NewThemeDialog()" v-if="isRightAdmin(2) && $route.path===urlAdmin">点击创建</el-button>
         <el-button @click="GetThemeList()">刷新一下</el-button>
       </el-row>
 
@@ -59,6 +59,12 @@ export default {
     // NOTE: GetThemeList在GetSchooollist里面被调用，原因在于同时调用两个函数并不是同步执行的
     // GetSchoolList也可以返回一个Promise什么的
     // 但是这不算事一个好的做法
+    console.log('ROUTE:!!!')
+    if (this.$route.path === '/theme/submit') {
+      console.log(true)
+    } else {
+      console.log(false)
+    }
     if (localStorage.getItem('permission_public') >= 8) {
       this.GetSchoolList()
     }
@@ -88,6 +94,8 @@ export default {
 
   data () {
     return {
+      urlSubmit: '/theme/submit',
+      urlAdmin: '/admin/program',
       themeStatus: '',
       currentSchoolId: 0,
       themeDialogVisible: false,
