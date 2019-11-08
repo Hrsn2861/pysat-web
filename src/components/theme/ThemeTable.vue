@@ -18,9 +18,11 @@
       </el-table>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import permissionComputer from '@/utils/functionUtils/permissionComputer'
 
 export default {
+  mixins: [permissionComputer],
+
   props: {
     displayData: {
       type: Array,
@@ -45,23 +47,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters([
-      'getPermission_Public',
-      'getPermission_Private',
-      'getSchool_Id'
-    ]),
-    isRightAdmin () {
-      return function (level) {
-        if (this.getPermission_Public >= 8) {
-          return true
-        }
-        if (this.currentSchoolId === 0) {
-          return this.getPermission_Public >= level
-        } else {
-          return this.getPermission_Private >= level
-        }
-      }
-    }
+
   },
 
   methods: {

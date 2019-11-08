@@ -32,18 +32,22 @@
   </div>
 </template>
 <script>
-import { myPost } from '@/utils/requestFunc.js'
+import { myPost, myGet } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 import permissionComputer from '@/utils/functionUtils/permissionComputer'
+
 export default {
-  mixins: [getSchoolAndThemeMixin, permissionComputer],
+  mixins: [permissionComputer],
   data () {
     return {
-      applyList: [
-      ],
-      currentSchoolId: 3,
+      applyList: [],
+      currentSchoolId: 0,
       schoolList: [
+        {
+          id: localStorage.getItem('school_id'),
+          name: localStorage.getItem('school_name'),
+          disabled: Number(localStorage.getItem('school_id')) === 0
+        }
       ]
     }
   },
@@ -51,63 +55,46 @@ export default {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.GetSchoolList()
+    // 能进入该页面的一定是校内权限>=2（有学校或者是网站管理员）
+
+    if (localStorage.getItem('permission_public') >= 8) {
+      this.GetSchoolListNoPublic()
+    } else {
+      this.currentSchoolId = this.schoolList[0].id
+    }
   },
   computed: {
-    // 如果是private和public的admin，那么getSchoolList就可以成功调用，否则默认显示localStorage的
-    isPrivateAdmin () {
-      return (
-        localStorage['permission_private'] >= 2
-      )
-    },
-    isPublicAdmin () {
-      return (
-        localStorage['permission_public'] >= 2
-      )
-    },
-    isGreatAdmin () {
-      return localStorage['permission_public'] >= 8
-    }
 
   },
   methods: {
+    GetSchoolListNoPublic () {
+      let tmpData = {
+        token: this.$store.getters.getUserToken
+      }
+      console.log(tmpData)
+      myGet(
+        '/api/school/school/get_list',
+        tmpData,
+        res => {
+          if (res.data.status === 1) {
+            this.$message.success(`${res.data.msg}`)
+            this.schoolList = res.data.data.school_list
+            this.currentSchoolId = this.schoolList[0].id
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
+    },
+
     ViewCurrentUser (index, row) {
       console.log('View user index: ', index)
       this.$router.push({ name: 'myinfo', params: { username: row.username } })
     },
-    GetSchoolList () {
-      if (this.isGreatAdmin) {
-        let tmpData = {
-          token: this.$store.getters.getUserToken
-        }
-        this.GetSchoolListFromMixin(tmpData).then(
-          res => {
-            this.currentSchoolId = this.schoolList[0].id
-            this.GetApplyList()
-          }
-        )
-      } else {
-        if (this.isPublicAdmin) {
-          this.schoolList.push(
-            {
-              id: 0,
-              name: '公共区域'
-            }
-          )
-          this.currentSchoolId = 0
-        }
-        if (this.isPrivateAdmin) {
-          this.schoolList.push(
-            {
-              id: localStorage['school_id'],
-              name: localStorage['school_name']
-            }
-          )
-          this.currentSchoolId = localStorage['school_id']
-        }
-        this.GetApplyList()
-      }
-    },
+
     GetApplyList () {
       console.log(this.schoolList)
       console.log(this.currentSchoolId)
