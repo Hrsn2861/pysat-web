@@ -4,7 +4,7 @@
       <el-row style="margin-bottom:2%;">
         <!-- change为选中值发生变化时触发 -->
         <el-select v-model="currentSchoolId" placeholder="学校" @change="GetThemeList()">
-          <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
         </el-select>
         <el-button @click="NewThemeDialog()" v-if="isRightAdmin(2) && $route.path===urlAdmin">点击创建</el-button>
         <el-button @click="GetThemeList()">刷新一下</el-button>
@@ -65,6 +65,7 @@ export default {
     } else {
       console.log(false)
     }
+    console.log(this.schoolList)
     if (localStorage.getItem('permission_public') >= 8) {
       this.GetSchoolList()
     }
@@ -103,12 +104,13 @@ export default {
       schoolList: [
         {
           id: 0,
-          name: '在野'
+          name: '在野',
+          disabled: false
         },
         {
           id: localStorage.getItem('school_id'),
           name: '校内',
-          disabled: localStorage.getItem('school_id') === 0
+          disabled: Number(localStorage.getItem('school_id')) === 0
         }
       ],
 

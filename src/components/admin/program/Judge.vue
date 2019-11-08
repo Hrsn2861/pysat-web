@@ -1,7 +1,9 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tag type="info">{{themeInfo.title}}</el-tag>
+      <center>
+        <el-tag>{{themeInfo.title}}</el-tag>
+      </center>
       <JudgeTable v-bind:displayData="tableData"></JudgeTable>
     </el-card>
   </div>
@@ -54,7 +56,7 @@ export default {
         status_low: -1,
         status_up: 3
       }
-
+      console.log(tmpData)
       myGet(
         '/api/program/list/get',
         tmpData,
