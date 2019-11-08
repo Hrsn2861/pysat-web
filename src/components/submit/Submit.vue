@@ -117,13 +117,7 @@ export default {
         code_name: this.codename,
         code_content: this.$refs.AceContainer.code,
         code_readme: this.readme,
-        school_id: -1,
         theme_id: this.currentThemeId
-      }
-      if (this.moduleId === 0) {
-        tmpData.school_id = 0
-      } else {
-        tmpData.school_id = localStorage.getItem('school_id')
       }
       console.log(tmpData)
       myPost(
