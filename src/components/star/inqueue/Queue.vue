@@ -1,14 +1,10 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tabs v-model="moduleName" @tab-click="GetQueueList()">
-        <el-tab-pane label="在野" name="public" v-if="permission_public>=1">
-          <QueueTable v-bind:displayData="tableData"></QueueTable>
-        </el-tab-pane>
-        <el-tab-pane label="校内" name="private" v-if="permission_private>=1">
-          <QueueTable v-bind:displayData="tableData"></QueueTable>
-        </el-tab-pane>
-      </el-tabs>
+      <el-select v-model="currentSchoolId" placeholder="学校" @change="GetProgramList()">
+        <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
+      </el-select>
+      <QueueTable v-bind:displayData="tableData"></QueueTable>
     </el-card>
   </div>
 </template>
@@ -18,8 +14,11 @@
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 import QueueTable from '@/components/star/inqueue/QueueTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 
 export default {
+  mixins: [getSchoolAndThemeMixin],
+
   components: {
     QueueTable
   },
@@ -27,31 +26,24 @@ export default {
     checkSession(this, '', '/')
   },
   created () {
-    this.permission_public = localStorage.getItem('permission_public')
-    this.permission_private = localStorage.getItem('permission_private')
+
   },
   mounted: function () {
+    if (localStorage['permission_public'] >= 8) {
+      this.GetSchoolList()
+    }
     this.GetQueueList()
   },
   data () {
     return {
       tableData: [
         {
-          submit_time: '2016-05-02',
-          name: '面向陈旭程序设计基础',
-          author: '陈旭老师',
-          id: 'woshishuji'
-        },
-        {
-          submit_time: '6102-05-02',
-          name: '编译原理PA1-B',
-          author: '大牛顾掀宇',
-          id: 'woshidaniu'
+          submit_time: '9999-12-31',
+          author: '？？？',
+          name: '？？？？？',
+          id: -1
         }
-      ],
-      moduleName: 'public',
-      permission_public: -1,
-      permission_private: -1
+      ]
     }
   },
   methods: {
@@ -59,14 +51,9 @@ export default {
       let tmpData = {
         token: this.$store.getters.getUserToken,
         mine: false,
-        school_id: -1,
+        school_id: this.currentSchoolId,
         status_low: 3,
         status_up: 5
-      }
-      if (this.moduleName === 'public') {
-        tmpData.school_id = 0
-      } else {
-        tmpData.school_id = localStorage.getItem('school_id')
       }
       console.log(tmpData)
       myGet(

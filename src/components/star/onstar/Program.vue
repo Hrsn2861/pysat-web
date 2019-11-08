@@ -1,38 +1,9 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-form>
-        <el-form-item label="学校" v-if="permission_public>=8">
-          <el-select v-model="currentSchoolId" placeholder="学校" @change="GetThemeList()">
-            <el-option
-              v-for="item in schoolList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="版块" v-if="permission_private<8">
-          <el-select v-model="currentModuleId" placeholder="版块" @change="GetThemeList()">
-            <el-option
-              v-for="item in moduleList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="主题">
-          <el-select v-model="currentThemeId" placeholder="主题" @change="GetProgramList()">
-            <el-option
-              v-for="item in themeList"
-              :key="item.id"
-              :label="item.title"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
+        <el-select v-model="currentSchoolId" placeholder="学校" @change="GetProgramList()">
+          <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
+        </el-select>
       <el-tabs v-model="activeTabName" @tab-click="GetProgramList()">
         <el-tab-pane label="最新程序" name="tabNew" >
           <ProgramTable ref = "tableNew" v-bind:displayData="tableData"></ProgramTable>
@@ -61,66 +32,14 @@ export default {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.permission_public = Number(localStorage.getItem('permission_public'))
-    this.permission_private = Number(localStorage.getItem('permission_private'))
-    if (this.permission_public >= 8) {
+    if (localStorage['permission_public'] >= 8) {
       this.GetSchoolList()
     }
-    this.GetThemeList()
     this.GetProgramList()
   },
   data () {
     return {
-      permission_public: -1,
-      permission_private: -1,
-
-      avtiveTabName: 'tabNew',
-      currentSchoolId: 0,
-      schoolList: [
-        {
-          id: 0,
-          name: '野鸡大学'
-        },
-        {
-          id: 1,
-          name: '清华大学'
-        },
-        {
-          id: 2,
-          name: '北京大学'
-        },
-        {
-          id: 3,
-          name: '陈旭幼儿园'
-        }
-      ],
-
-      currentModuleId: 0,
-      moduleList: [
-        {
-          value: 0,
-          label: '在野',
-          disabled: this.permission_public < 1
-        },
-        {
-          value: 1,
-          label: '校内',
-          disabled: this.permission_private < 1
-        }
-      ],
-
-      currentThemeId: -1,
-      themeList: [
-        {
-          id: 0,
-          title: '共产主义'
-        },
-        {
-          id: 1,
-          title: '大家随意提交的题目'
-        }
-      ],
-
+      activeTabName: 'tabNew',
       tableData: [
         {
           upload_time: '9999-12-31',
@@ -136,81 +55,16 @@ export default {
     }
   },
   methods: {
-    GetSchoolList () {
-      let tmpData = {
-        token: this.$store.getters.getUserToken
-      }
-      this.GetSchoolListFromMixin(tmpData).then(res => {
-        this.schoolList.unshift(
-          {
-            id: 0,
-            name: '公开区域'
-          }
-        )
-        this.currentSchoolId = 0
-      }
-      )
-    },
-    GetThemeList () {
-      // 先判断ProgramTable里面是否显示author_school
-      if (this.currentModuleId === 0) {
-        this.$refs.tableHot.isPublic = true
-        this.$refs.tableNew.isPublic = true
-      } else {
-        this.$refs.tableHot.isPublic = false
-        this.$refs.tableNew.isPublic = false
-      }
-      let tmpData = {
-        token: this.$store.getters.getUserToken,
-        school_id: -1
-      }
-      if (this.permission_public >= 8) {
-        tmpData.school_id = this.currentSchoolId
-        console.log('嗯？')
-      } else if (this.currentModuleId === 0) {
-        tmpData.school_id = 0
-      } else {
-        tmpData.school_id = localStorage.getItem('school_id')
-      }
-      console.log(tmpData)
-      this.GetThemeListFromMixin(tmpData).then(res => {
-        if (this.themeList.length === 0) { // 无主题
-          this.themeList.push(
-            {
-              id: -1,
-              title: '无主题',
-              disabled: true
-            }
-          )
-        }
-        this.currentThemeId = this.themeList[0].id
-      })
-    },
-
-    // 啊这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
-    // 呵呵
+    // 这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
     GetProgramList () {
-      // 如果主题为-1（说明该版块现在没有任何主题），则直接return
-      if (this.currentThemeId < 0) {
-        return
-      }
-      console.log(this.moduleName)
       console.log(this.activeTabName)
       let tmpData = {
         token: this.$store.getters.getUserToken,
         mine: false,
         sort_type: -1,
-        school_id: -1,
-        theme_id: this.currentThemeId,
+        school_id: this.currentSchoolId,
         status_low: 4,
         status_up: 6
-      }
-      if (this.permission_public >= 8) {
-        tmpData.school_id = this.currentSchoolId
-      } else if (this.currentModuleId === 0) {
-        tmpData.school_id = 0
-      } else {
-        tmpData.school_id = localStorage.getItem('school_id')
       }
       if (this.activeTabName === 'tabNew') {
         tmpData.sort_type = 0
