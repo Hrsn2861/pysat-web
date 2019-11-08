@@ -52,6 +52,7 @@ export default {
         res => {
           if (res.data.status === 1) {
             this.tableData = res.data.data.code_list
+            console.log(res.data.data.code_list)
           } else {
             this.$message.error(`${res.data.msg}`)
           }

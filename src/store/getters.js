@@ -24,7 +24,7 @@ export const getters = {
   getPermission_Public: (state) => {
     if (!state.permission_public) {
       if (localStorage.getItem('permission_public') != null) {
-        state.permission_public = localStorage['permission_public']
+        state.permission_public = Number(localStorage['permission_public'])
       }
     }
     return state.permission_public
@@ -32,7 +32,7 @@ export const getters = {
   getPermission_Private: (state) => {
     if (!state.permission_private) {
       if (localStorage.getItem('permission_private') != null) {
-        state.permission_private = localStorage['permission_private']
+        state.permission_private = Number(localStorage['permission_private'])
       }
     }
     return state.permission_private
@@ -50,7 +50,7 @@ export const getters = {
   getSchool_Id: (state) => {
     if (!state.school_id) {
       if (localStorage.getItem('school_id') != null) {
-        state.school_id = localStorage['school_id']
+        state.school_id = Number(localStorage['school_id'])
       }
     }
     return state.school_id

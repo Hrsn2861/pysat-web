@@ -16,10 +16,10 @@ export default {
     GetThemeInfo () {
       let tmpData = {
         token: this.$store.getters.getUserToken,
-        theme_id: this.theme_id
+        theme_id: this.currentThemeId
       }
       myGet(
-        '/api/theme/info',
+        '/api/school/theme/info',
         tmpData,
         res => {
           if (res.data.status === 1) {

@@ -1,7 +1,9 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tag type="info">{{themeInfo.title}}</el-tag>
+      <center>
+        {{themeInfo.title}}
+      </center>
       <AceContainer ref="AceContainer"></AceContainer>
       <el-col :span="4">
         <el-input

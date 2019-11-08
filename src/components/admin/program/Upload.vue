@@ -1,7 +1,9 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tag type="info">{{themeInfo.title}}</el-tag>
+      <center>
+        <el-tag>{{themeInfo.title}}</el-tag>
+      </center>
       <UploadTable v-bind:displayData="tableData"></UploadTable>
     </el-card>
   </div>
