@@ -8,11 +8,11 @@
         <el-table-column prop="count" label="相关数目" width="120"></el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="SubmitProgram(scope.$index, scope.row)">提交</el-button>
-            <el-button type="text" size="small" @click="JudgeProgram(scope.$index, scope.row)" v-if="isRightAdmin(2)">审核</el-button>
-            <el-button type="text" size="small" @click="UploadProgram(scope.$index, scope.row)" v-if="isRightAdmin(4)">上传</el-button>
-            <el-button type="text" size="small" @click="ModifyTheme(scope.$index, scope.row)" v-if="isRightAdmin(2)">修改</el-button>
-            <el-button type="text" size="small" @click="DeleteTheme(scope.$index, scope.row)" v-if="isRightAdmin(4)">删除</el-button>
+            <el-button type="text" size="small" @click="SubmitProgram(scope.$index, scope.row)" v-if="$route.path===urlSubmit">提交</el-button>
+            <el-button type="text" size="small" @click="JudgeProgram(scope.$index, scope.row)" v-if="isRightAdmin(2) && $route.path===urlAdmin">审核</el-button>
+            <el-button type="text" size="small" @click="UploadProgram(scope.$index, scope.row)" v-if="isRightAdmin(4) && $route.path===urlAdmin">上传</el-button>
+            <el-button type="text" size="small" @click="ModifyTheme(scope.$index, scope.row)" v-if="isRightAdmin(2) && $route.path===urlAdmin">修改</el-button>
+            <el-button type="text" size="small" @click="DeleteTheme(scope.$index, scope.row)" v-if="isRightAdmin(4) && $route.path===urlAdmin">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -39,7 +39,8 @@ export default {
   },
   data () {
     return {
-
+      urlSubmit: '/theme/submit',
+      urlAdmin: '/admin/program'
     }
   },
 

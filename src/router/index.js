@@ -90,12 +90,12 @@ export default new Router({
           component: MyProgram
         },
 
-        // 主题列表（包含提交程序和程序管理）
+        // 管理中心
         {
-          path: 'theme',
+          // 程序管理
+          path: 'admin/program',
           component: ThemeList
         },
-        // 管理中心
         {
           // 程序审核
           path: 'admin/program/judge/:themeid',
@@ -126,6 +126,12 @@ export default new Router({
 
         // 提交程序
         {
+          // 提交之前的主题列表页面
+          path: 'theme/submit',
+          component: ThemeList
+        },
+        {
+          // 提交页面
           path: 'submit/:themeid',
           name: 'submit',
           component: Submit
