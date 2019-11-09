@@ -25,9 +25,15 @@
           <el-table-column fixed="right" label="身份" width="150">
             <template slot-scope="scope">
               <el-tag
+                v-if="scope.row.username!==myName"
                 :type="scope.row.permission === 4 ? 'warning' : scope.row.permission===2? 'success': 'primary'"
                 disable-transitions
               >{{statusDict[scope.row.permission]}}</el-tag>
+              <el-tag
+                v-else-if="scope.row.username===myName"
+                type='danger'
+                disable-transitions
+              >{{statusDict[scope.row.permission]}}，自己</el-tag>
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="200">
@@ -46,7 +52,7 @@
   </div>
 </template>
 <script>
-import { myGet, myPost } from '@/utils/requestFunc.js'
+import { myGet } from '@/utils/requestFunc.js'
 import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 import permissionComputer from '@/utils/functionUtils/permissionComputer'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
@@ -68,6 +74,7 @@ export default {
         headmaster: '邱勇',
         population: 999
       },
+      myName: localStorage['identity'],
       userList: [],
       statusDict: {
         4: '校长',
