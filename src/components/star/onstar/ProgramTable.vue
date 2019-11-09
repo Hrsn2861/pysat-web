@@ -1,23 +1,24 @@
 <template>
   <el-table
-    :data="displayData"
+    :data="displayData.filter(data => !search || ((data.theme_name !== null)  && data.theme_name.toLowerCase().includes(search.toLowerCase())))"
     style="width: 100%"
-    :default-sort="{prop: 'date', order: 'descending'}"
     height="800"
   >
     <el-table-column prop="upload_time" label="上传时间" width="250"></el-table-column>
     <el-table-column prop="name" label="程序名" width="200"></el-table-column>
     <el-table-column prop="author" label="作者" width="180"></el-table-column>
     <el-table-column v-if="isPublic" prop="author_school_name" label="学校" width="180"></el-table-column>
+    <el-table-column prop="theme_name" label="主题" width="180"></el-table-column>
     <el-table-column prop="likes" label="点赞数" width="80"></el-table-column>
     <el-table-column prop="downloads" label="下载数" width="80"></el-table-column>
-    <el-table-column label="点赞" width="100" fixed="right">
+    <el-table-column>
+      <template slot="header" slot-scope="scope">
+        <el-input
+          v-model="search"
+          placeholder="输入关键字搜索主题"/>
+      </template>
       <template slot-scope="scope">
         <el-button  icon="el-icon-star-off" circle @click="Like(scope.row)" :disabled="scope.row.liked"></el-button>
-      </template>
-    </el-table-column>
-    <el-table-column label="下载" width="100" fixed="right">
-      <template slot-scope="scope">
         <el-button   icon="el-icon-download" circle @click="Download(scope.row)"></el-button>
       </template>
     </el-table-column>
@@ -29,14 +30,15 @@ import { saveAs } from 'file-saver'
 
 export default {
   props: [
-    'displayData'
+    'displayData',
+    'isPublic'
   ],
   data () {
     return {
       tableStatus: {
         likeIconOn: false
       },
-      isPublic: false
+      search: ''
     }
   },
   methods: {

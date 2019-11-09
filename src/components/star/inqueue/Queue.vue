@@ -1,10 +1,10 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-select v-model="currentSchoolId" placeholder="学校" @change="GetProgramList()">
+      <el-select v-model="currentSchoolId" placeholder="学校" @change="GetQueueList()">
         <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
       </el-select>
-      <QueueTable v-bind:displayData="tableData"></QueueTable>
+      <QueueTable :displayData="tableData" :isPublic="isPublic"></QueueTable>
     </el-card>
   </div>
 </template>
@@ -46,6 +46,13 @@ export default {
       ]
     }
   },
+
+  computed: {
+    isPublic () {
+      return Number(this.currentSchoolId) === 0
+    }
+  },
+
   methods: {
     GetQueueList () {
       let tmpData = {
