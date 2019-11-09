@@ -1,7 +1,7 @@
 <template>
   <div
     class="header"
-    v-loading.fullscreen.lock="isMobile"
+
     element-loading-text="请调至合适的分辨率，你就可以开始PYSAT之旅啦"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.8)"
