@@ -36,11 +36,12 @@
   </div>
 </template>
 <script>
-import { myPost, myGet } from '@/utils/requestFunc.js'
+import { myPost } from '@/utils/requestFunc.js'
 import permissionComputer from '@/utils/functionUtils/permissionComputer'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 export default {
-  mixins: [permissionComputer],
+  mixins: [getSchoolAndThemeMixin, permissionComputer],
   computed: {
     // 只有网站管理员可以创建学校！
   },
@@ -70,28 +71,6 @@ export default {
     }
   },
   methods: {
-    GetSchoolListNoPublic () {
-      let tmpData = {
-        token: this.$store.getters.getUserToken
-      }
-      console.log(tmpData)
-      myGet(
-        '/api/school/school/get_list',
-        tmpData,
-        res => {
-          if (res.data.status === 1) {
-            this.$message.success(`${res.data.msg}`)
-            this.schoolList = res.data.data.school_list
-            this.currentSchoolId = this.schoolList[0].id
-          } else {
-            this.$message.error(`${res.data.msg}`)
-          }
-        },
-        err => {
-          this.$message.error(`${err.message}`, 'ERROR!')
-        }
-      )
-    },
     NewSchoolDialog () {
       this.schoolDialogVisible = true
       this.formCreateSchool.school_name = ''

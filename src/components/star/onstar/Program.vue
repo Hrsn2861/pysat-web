@@ -6,10 +6,10 @@
         </el-select>
       <el-tabs v-model="activeTabName" @tab-click="GetProgramList()">
         <el-tab-pane label="最新程序" name="tabNew" >
-          <ProgramTable ref = "tableNew" v-bind:displayData="tableData"></ProgramTable>
+          <ProgramTable ref = "tableNew" :displayData="tableData" :isPublic="isPublic"></ProgramTable>
         </el-tab-pane>
         <el-tab-pane label="最热程序" name="tabHot">
-          <ProgramTable ref = "tableHot" v-bind:displayData="tableData"></ProgramTable>
+          <ProgramTable ref = "tableHot" :displayData="tableData" :isPublic="isPublic"></ProgramTable>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -45,6 +45,7 @@ export default {
           upload_time: '9999-12-31',
           author: '？？？',
           name: '？？？？？',
+          theme_name: '？？？？？',
           likes: 0,
           downloads: 0,
           liked: false,
@@ -54,6 +55,13 @@ export default {
       ]
     }
   },
+
+  computed: {
+    isPublic () {
+      return Number(this.currentSchoolId) === 0
+    }
+  },
+
   methods: {
     // 这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
     GetProgramList () {
@@ -77,8 +85,8 @@ export default {
         tmpData,
         res => {
           if (res.data.status === 1) {
-            console.log(res.data.data)
             this.tableData = res.data.data.code_list
+            console.log(this.tableData)
           } else {
             this.$message.error(`${res.data.msg}`)
           }

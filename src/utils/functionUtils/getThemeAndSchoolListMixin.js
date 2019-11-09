@@ -30,44 +30,54 @@ export default {
     }
   },
   methods: {
+    GetSchoolListNoPublic () {
+      let tmpData = {
+        token: this.$store.getters.getUserToken
+      }
+      console.log(tmpData)
+      myGet(
+        '/api/school/school/get_list',
+        tmpData,
+        res => {
+          if (res.data.status === 1) {
+            this.$message.success(`${res.data.msg}`)
+            this.schoolList = res.data.data.school_list
+            this.currentSchoolId = this.schoolList[0].id
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
+    },
     GetSchoolList () {
       let tmpData = {
         token: this.$store.getters.getUserToken
       }
       console.log(tmpData)
-      var promise = new Promise(resolve => {
-        myGet(
-          '/api/school/school/get_list',
-          tmpData,
-          res => {
-            if (res.data.status === 1) {
-              this.$message.success(`${res.data.msg}`)
-              this.schoolList = res.data.data.school_list
-              resolve(true)
-            } else {
-              this.$message.error(`${res.data.msg}`)
-              resolve(false)
-            }
-          },
-          err => {
-            this.$message.error(`${err.message}`, 'ERROR!')
-            resolve(false)
+      myGet(
+        '/api/school/school/get_list',
+        tmpData,
+        res => {
+          if (res.data.status === 1) {
+            this.$message.success(`${res.data.msg}`)
+            this.schoolList = res.data.data.school_list
+            this.schoolList.unshift(
+              {
+                id: 0,
+                name: '公共区域'
+              }
+            )
+            this.currentSchoolId = 0
+            console.log(this.schoolList)
+          } else {
+            this.$message.error(`${res.data.msg}`)
           }
-        )
-      }
-      )
-
-      promise.then(
-        res => { // FIXME:这里应当判断res是否为true？
-          console.log(res)
-          this.schoolList.unshift(
-            {
-              id: 0,
-              name: '公共区域'
-            }
-          )
-          this.currentSchoolId = 0
-          console.log(this.schoolList)
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
         }
       )
     },
@@ -78,30 +88,22 @@ export default {
         school_id: this.currentSchoolId
       }
       console.log(tmpData)
-      var promise = new Promise(resolve => {
-        myGet(
-          '/api/school/theme/list',
-          tmpData,
-          res => {
-            if (res.data.status === 1) {
-              this.$message.success(`${res.data.msg}`)
-              this.themeList = res.data.data.theme_list
-              resolve(true)
-            } else {
-              this.$message.error(`${res.data.msg}`)
-              resolve(false)
-            }
-          },
-          err => {
-            this.$message.error(`${err.message}`, 'ERROR!')
-            resolve(false)
+      myGet(
+        '/api/school/theme/list',
+        tmpData,
+        res => {
+          if (res.data.status === 1) {
+            this.$message.success(`${res.data.msg}`)
+            this.themeList = res.data.data.theme_list
+            console.log(this.themeList)
+          } else {
+            this.$message.error(`${res.data.msg}`)
           }
-        )
-      })
-      promise.then(res => {
-        console.log(res)
-        console.log(this.themeList)
-      })
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
     }
   }
 }

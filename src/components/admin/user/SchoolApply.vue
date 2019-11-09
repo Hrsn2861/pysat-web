@@ -32,12 +32,13 @@
   </div>
 </template>
 <script>
-import { myPost, myGet } from '@/utils/requestFunc.js'
+import { myPost } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 import permissionComputer from '@/utils/functionUtils/permissionComputer'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 
 export default {
-  mixins: [permissionComputer],
+  mixins: [getSchoolAndThemeMixin, permissionComputer],
   data () {
     return {
       applyList: [],
@@ -62,34 +63,12 @@ export default {
     } else {
       this.currentSchoolId = this.schoolList[0].id
     }
+    this.GetApplyList()
   },
   computed: {
 
   },
   methods: {
-    GetSchoolListNoPublic () {
-      let tmpData = {
-        token: this.$store.getters.getUserToken
-      }
-      console.log(tmpData)
-      myGet(
-        '/api/school/school/get_list',
-        tmpData,
-        res => {
-          if (res.data.status === 1) {
-            this.$message.success(`${res.data.msg}`)
-            this.schoolList = res.data.data.school_list
-            this.currentSchoolId = this.schoolList[0].id
-          } else {
-            this.$message.error(`${res.data.msg}`)
-          }
-        },
-        err => {
-          this.$message.error(`${err.message}`, 'ERROR!')
-        }
-      )
-    },
-
     ViewCurrentUser (index, row) {
       console.log('View user index: ', index)
       this.$router.push({ name: 'myinfo', params: { username: row.username } })

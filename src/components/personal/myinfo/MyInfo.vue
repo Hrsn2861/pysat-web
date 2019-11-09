@@ -139,7 +139,7 @@
         >{{changePermissionButtonText}}</el-button>
         <el-button
           type="warning"
-          @click="GetSchoolList()"
+          @click="MyGetSchoolList()"
           v-if="!hasSelectedSchool && isSelf && !isGreatAdmin"
         >{{changeSchoolButtonText}}</el-button>
 
@@ -263,7 +263,6 @@ export default {
         permission_private: 0,
         permission_public: 0
       },
-      schoolList: [],
 
       myPermissionPrivate: -1,
       myPermissionPublic: -1,
@@ -605,14 +604,10 @@ export default {
         }
       )
     },
-    GetSchoolList () {
+    MyGetSchoolList () {
       this.changeSchoolVisible = true
       this.changeSchoolButtonText = '选择学校'
-      // TODO: getSchoolApi
-      let tmpData = {
-        token: this.$store.getters.getUserToken
-      }
-      this.GetSchoolListFromMixin(tmpData)
+      this.GetSchoolListNoPublic()
     },
 
     ChangePermission () {
