@@ -59,11 +59,13 @@ export default {
     // 能进入该页面的一定是校内权限>=2（有学校或者是网站管理员）
 
     if (localStorage.getItem('permission_public') >= 8) {
-      this.GetSchoolListNoPublic()
+      this.GetSchoolListNoPublic().then(res => {
+        this.GetApplyList()
+      })
     } else {
       this.currentSchoolId = this.schoolList[0].id
+      this.GetApplyList()
     }
-    this.GetApplyList()
   },
   computed: {
 

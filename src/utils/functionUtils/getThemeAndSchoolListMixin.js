@@ -31,79 +31,96 @@ export default {
   },
   methods: {
     GetSchoolListNoPublic () {
-      let tmpData = {
-        token: this.$store.getters.getUserToken
-      }
-      console.log(tmpData)
-      myGet(
-        '/api/school/school/get_list',
-        tmpData,
-        res => {
-          if (res.data.status === 1) {
-            this.$message.success(`${res.data.msg}`)
-            this.schoolList = res.data.data.school_list
-            this.currentSchoolId = this.schoolList[0].id
-          } else {
-            this.$message.error(`${res.data.msg}`)
-          }
-        },
-        err => {
-          this.$message.error(`${err.message}`, 'ERROR!')
+      // 真香
+      return new Promise(resolve => {
+        let tmpData = {
+          token: this.$store.getters.getUserToken
         }
+        console.log(tmpData)
+        myGet(
+          '/api/school/school/get_list',
+          tmpData,
+          res => {
+            if (res.data.status === 1) {
+            // this.$message.success(`${res.data.msg}`)
+              this.schoolList = res.data.data.school_list
+              this.currentSchoolId = this.schoolList[0].id
+              resolve(true)
+            } else {
+              this.$message.error(`${res.data.msg}`)
+              resolve(false)
+            }
+          },
+          err => {
+            this.$message.error(`${err.message}`, 'ERROR!')
+            resolve(false)
+          }
+        )
+      }
       )
     },
     GetSchoolList () {
-      let tmpData = {
-        token: this.$store.getters.getUserToken
-      }
-      console.log(tmpData)
-      myGet(
-        '/api/school/school/get_list',
-        tmpData,
-        res => {
-          if (res.data.status === 1) {
-            this.$message.success(`${res.data.msg}`)
-            this.schoolList = res.data.data.school_list
-            this.schoolList.unshift(
-              {
-                id: 0,
-                name: '公共区域'
-              }
-            )
-            this.currentSchoolId = 0
-            console.log(this.schoolList)
-          } else {
-            this.$message.error(`${res.data.msg}`)
-          }
-        },
-        err => {
-          this.$message.error(`${err.message}`, 'ERROR!')
+      return new Promise(resolve => {
+        let tmpData = {
+          token: this.$store.getters.getUserToken
         }
-      )
+        console.log(tmpData)
+        myGet(
+          '/api/school/school/get_list',
+          tmpData,
+          res => {
+            if (res.data.status === 1) {
+            // this.$message.success(`${res.data.msg}`)
+              this.schoolList = res.data.data.school_list
+              this.schoolList.unshift(
+                {
+                  id: 0,
+                  name: '公共区域'
+                }
+              )
+              this.currentSchoolId = 0
+              console.log(this.schoolList)
+              resolve(true)
+            } else {
+              this.$message.error(`${res.data.msg}`)
+              resolve(false)
+            }
+          },
+          err => {
+            this.$message.error(`${err.message}`, 'ERROR!')
+            resolve(false)
+          }
+        )
+      })
     },
 
     GetThemeList () {
-      let tmpData = {
-        token: this.$store.getters.getUserToken,
-        school_id: this.currentSchoolId
-      }
-      console.log(tmpData)
-      myGet(
-        '/api/school/theme/list',
-        tmpData,
-        res => {
-          if (res.data.status === 1) {
-            this.$message.success(`${res.data.msg}`)
-            this.themeList = res.data.data.theme_list
-            console.log(this.themeList)
-          } else {
-            this.$message.error(`${res.data.msg}`)
-          }
-        },
-        err => {
-          this.$message.error(`${err.message}`, 'ERROR!')
+      return new Promise(resolve => {
+        let tmpData = {
+          token: this.$store.getters.getUserToken,
+          school_id: this.currentSchoolId
         }
-      )
+        console.log(tmpData)
+        myGet(
+          '/api/school/theme/list',
+          tmpData,
+          res => {
+            if (res.data.status === 1) {
+              // this.$message.success(`${res.data.msg}`)
+              this.themeList = res.data.data.theme_list
+              console.log(this.themeList)
+              resolve(true)
+            } else {
+              this.$message.error(`${res.data.msg}`)
+              resolve(false)
+            }
+          },
+          err => {
+            this.$message.error(`${err.message}`, 'ERROR!')
+            resolve(false)
+          }
+        )
+      })
     }
   }
 }
