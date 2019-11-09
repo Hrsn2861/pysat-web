@@ -1,14 +1,10 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tabs v-model="moduleName" @tab-click="GetCourseList()">
-        <el-tab-pane label="在野" name="public" v-if="permission_public>=1">
-          <CourseTable v-bind:displayData="videoList"></CourseTable>
-        </el-tab-pane>
-        <el-tab-pane label="校内" name="private" v-if="permission_private>=1">
-          <CourseTable v-bind:displayData="videoList"></CourseTable>
-        </el-tab-pane>
-      </el-tabs>
+      <el-select v-model="currentSchoolId" placeholder="学校" @change="GetCourseList()">
+        <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
+      </el-select>
+      <CourseTable v-bind:displayData="videoList"></CourseTable>
     </el-card>
   </div>
 </template>
@@ -18,24 +14,21 @@
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 import CourseTable from '@/components/course/view/CourseTable.vue'
 import GetCourseListMixin from '@/utils/functionUtils/getCourseListMixin'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
+
 export default {
   components: {
     CourseTable
   },
-  mixins: [GetCourseListMixin],
+  mixins: [GetCourseListMixin, getSchoolAndThemeMixin],
   beforeCreate () {
     checkSession(this, '', '/')
   },
-  created () {
-    this.permission_public = localStorage.getItem('permission_public')
-    this.permission_private = localStorage.getItem('permission_private')
-    if (this.permission_public >= 1) {
-      this.moduleName = 'public'
-    } else if (this.permission_private >= 1) {
-      this.moduleName = 'private'
-    }
-  },
+
   mounted: function () {
+    if (localStorage['permission_public'] >= 8) {
+      this.GetSchoolList()
+    }
     this.GetCourseList()
   },
   data () {
@@ -55,24 +48,15 @@ export default {
           size: '1KB',
           description: 'xb, zbzy'
         }
-      ],
-      moduleName: 'public',
-      permission_public: -1,
-      permission_private: -1
+      ]
     }
   },
   methods: {
     GetCourseList () {
       let tmpData = {
         token: this.$store.getters.getUserToken,
-        school_id: -1,
+        school_id: this.currentSchoolId,
         category_id: 0
-      }
-      console.log(tmpData)
-      if (this.moduleName === 'public') {
-        tmpData.school_id = 0
-      } else {
-        tmpData.school_id = localStorage.getItem('school_id')
       }
       console.log(tmpData)
       this.GetCourseListFromMixin(tmpData)
