@@ -297,7 +297,6 @@ export default {
 
       },
       imageURL: '',
-      myURL: 'https://pysat-web-ctrl.app.secoder.net/api/file/avatar/get' + '?token=' + localStorage.getItem('token') + '&username=' + localStorage.getItem('identity'),
 
       formChangepwd: {
         oldpwd: '',
@@ -377,6 +376,14 @@ export default {
     }
   },
   computed: {
+    myURL () {
+      if (this.$route.params.username === '___default') {
+        return '/api/file/avatar/get' + '?token=' + this.$store.getters.getUserToken + '&username=' + this.$store.getters.getUser
+      } else {
+        return '/api/file/avatar/get' + '?token=' + this.$store.getters.getUserToken + '&username=' + this.$route.params.username
+      }
+    },
+
     // 如果是同一个学校的校长，可以修改信息与权限（不可以大于自己）
     // 这里的formInfo是实际的、当前随时变化的值，（有着意想不到的效果，比如如果修改了一个大于自己的权限，按钮就消失了）
     // 当然，更改了list的disabled的属性之后，就不可能有这种情况发生了。

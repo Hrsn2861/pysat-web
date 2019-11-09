@@ -36,7 +36,7 @@
 
       <div style="margin-top:5px;">
         <el-badge :value="this.$store.state.chatSystem.msgCount" :max="99" class="item" :hidden="this.$store.state.chatSystem.msgCount === 0">
-          <img class="avatar" src="@/assets/cx.png" style="height:30px;width:30px;"/>
+          <img class="avatar" :src="imageURL" style="height:30px;width:30px;"/>
          </el-badge>
       </div>
       <!-- <el-dropdown trigger="click">
@@ -59,6 +59,7 @@ import { mapGetters } from 'vuex'
 export default {
   mixins: [checkMobileMixin],
   name: 'Header',
+
   data () {
     return {
       menuBtn: 'el-icon-newfont-caidan'
@@ -66,6 +67,9 @@ export default {
   },
 
   computed: {
+    imageURL () {
+      return '/api/file/avatar/get' + '?token=' + this.$store.getters.getUserToken + '&username=' + this.$store.getters.getUser
+    },
     // 如果左侧菜单打开，则旋转btn180度
     isActive () {
       return !this.$store.getters.sidebar.opened

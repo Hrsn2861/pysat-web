@@ -36,7 +36,7 @@ export const mutations = {
       state.school_name = data.user.school.name
       localStorage.setItem('school_name', data.user.school.name)
 
-      state.school_id = data.user.school_id
+      state.school_id = data.user.school.id
       localStorage.setItem('school_id', Number(data.user.school.id))
     }
   },
