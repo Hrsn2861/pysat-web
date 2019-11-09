@@ -24,7 +24,7 @@
             <el-upload
               class="avatar-uploader"
               ref="uploader"
-              action="/api/file/avatar/upload"
+              action="/api/file/avatar/set"
               :data="avatarData"
               :show-file-list="false"
               :on-change="handleAvatarSelect"
@@ -297,7 +297,7 @@ export default {
 
       },
       imageURL: '',
-      myURL: 'https://pysat-web-ctrl.app.secoder.net/api/file/avatar/download' + '?token=' + localStorage.getItem('token') + '&username=' + localStorage.getItem('identity'),
+      myURL: 'https://pysat-web-ctrl.app.secoder.net/api/file/avatar/get' + '?token=' + localStorage.getItem('token') + '&username=' + localStorage.getItem('identity'),
 
       formChangepwd: {
         oldpwd: '',
