@@ -10,13 +10,13 @@ export default {
           disabled: false
         },
         {
-          id: localStorage.getItem('school_id'),
+          id: Number(localStorage.getItem('school_id')) === 0 ? -1 : Number(localStorage.getItem('school_id')),
           name: '校内',
           disabled: Number(localStorage.getItem('school_id')) === 0
         }
       ],
 
-      currentThemeId: -1,
+      // currentThemeId: -1, // 暂时没用了
       themeList: [
         {
           id: 0,

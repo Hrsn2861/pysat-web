@@ -35,29 +35,14 @@ export default {
     return {
       tableData: [
         {
-          submit_time: '2016-05-02',
-          author: '陈旭',
-          name: '面向陈旭程序设计基础',
+          submit_time: '9999-12-31',
+          author: 'bug',
+          name: 'bug',
           status: 0,
-          id: 'imchenxulaoshi'
-        },
-        {
-          submit_time: '6102-05-02',
-          author: '顾掀宇',
-          name: '编译原理PA1-B',
-          status: 1,
-          id: 'imxianyu'
-        },
-        {
-          submit_time: '6102-05-02',
-          author: '陈浩展',
-          name: '大学生恋爱',
-          status: 2,
-          id: 'imxianyu'
+          id: -1
         }
-
       ],
-      currentCode: ''
+      currentThemeId: -1
     }
   },
   methods: {
@@ -65,15 +50,11 @@ export default {
       let tmpData = {
         token: this.$store.getters.getUserToken,
         mine: false,
-        school_id: -1,
+        theme_id: this.currentThemeId,
         status_low: 2,
         status_up: 5
       }
-      if (this.moduleName === 'public') {
-        tmpData.school_id = 0
-      } else {
-        tmpData.school_id = localStorage.getItem('school_id')
-      }
+      console.log(tmpData)
       myGet(
         '/api/program/list/get',
         tmpData,

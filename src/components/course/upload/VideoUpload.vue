@@ -7,6 +7,7 @@
               :key="item.id"
               :label="item.name"
               :value="item.id"
+              :disabled="item.disabled"
             ></el-option>
           </el-select>
         <div class="file-panel">
@@ -32,14 +33,12 @@
                 ref="uploader"
                 uploadButton="#filePicker"
                 multiple
-                @fileChange="fileChange"
-                @progress="onProgress"
-                @success="onSuccess"
-                @uploadError="onUploadError"
-                @error="onError"
+                :fileList="fileList"
+                :school_id="currentSchoolId"
                 :description="videoDescription"
                 :title="videoTitle"
-                :school_id="currentSchoolId"
+                @uploadProgress="uploadProgress"
+                @ClearText="ClearText"
         ></vue-upload>
         <el-col :span="3">
           <el-input
@@ -69,31 +68,33 @@ import vueUpload from '@/components/course/upload/uploader'
 import WebUploader from 'webuploader'
 import $ from 'jquery'
 import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
+import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 
 export default {
   mixins: [getSchoolAndThemeMixin],
+  beforeCreate () {
+    checkSession(this, '', '/')
+  },
   data () {
     return {
       fileList: [],
+      keys: [],
       videoDescription: '',
-      videoTitle: '',
-      schoolList: [
-        {
-          id: 0,
-          name: '在野'
-        },
-        {
-          id: localStorage.getItem('school_id'),
-          name: '校内',
-          disabled: localStorage.getItem('school_id') === 0
-        }
-      ],
-      currentSchoolId: 0
+      videoTitle: ''
     }
   },
   mounted () {
     if (localStorage.getItem('permission_public') >= 8) {
       this.GetSchoolList()
+    } else {
+      if (localStorage.getItem('permission_public') < 2) {
+        console.log('呃？？？')
+        this.schoolList[0].disabled = true
+        this.currentSchoolId = this.schoolList[1].id // 在野权限不够，版块切换至校内
+      }
+      if (localStorage.getItem('permission_private') < 2) {
+        this.schoolList[1].disabled = true
+      }
     }
   },
   computed: {
@@ -102,45 +103,14 @@ export default {
     }
   },
   methods: {
-    GetSchoolList () {
-      let tmpData = {
-        token: this.$store.getters.getUserToken
-      }
-      this.GetSchoolListFromMixin(tmpData).then(
-        res => {
-          console.log(res)
-          this.schoolList.push(
-            {
-              id: 0,
-              name: '在野'
-            }
-          )
-        }
-      )
-    },
-    fileChange (file) {
-      if (!file.size) return
-
-      this.fileList.push(file)
-
-      console.log(file)
+    ClearText () {
+      this.videoTitle = ''
+      this.videoDescription = ''
     },
 
-    onProgress (file, percent) {
+    uploadProgress (file, percent) {
       $(`.file-${file.id} .progress`).css('width', percent * 100 + '%')
       $(`.file-${file.id} .file-status`).html((percent * 100).toFixed(2) + '%')
-    },
-
-    onSuccess (file, response) {
-      console.log('上传成功', response)
-      this.$message.success(`${file.name}: ${response}`)
-    },
-
-    onUploadError (file, reason) {
-      this.$message.error(`${file.name}: ${reason}`)
-    },
-    onError (msg) {
-      this.$message.error(`${msg}`)
     },
 
     resume (file) {
@@ -181,7 +151,6 @@ export default {
 
       return type
     }
-
   },
   watch: {},
   components: {
