@@ -44,12 +44,13 @@ export default {
       }
       console.log(tmpData)
       myPost(
-        '/api/file/admin/delete',
+        '/api/file/video/delete',
         tmpData,
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
             this.$message.success('删除成功！')
+            this.displayData.splice(index, 1)
           } else {
             this.$message.error(`${res.data.msg}`)
           }

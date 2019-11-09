@@ -3,7 +3,7 @@ export default {
   methods: {
     GetCourseListFromMixin (tmpData) {
       myGet(
-        '/api/file/list/info',
+        '/api/file/video/list',
         tmpData,
         res => {
           if (res.data.status === 1) {

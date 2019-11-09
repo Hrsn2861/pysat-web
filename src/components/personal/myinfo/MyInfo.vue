@@ -13,7 +13,7 @@
           type="flex"
           justify="center"
           style="height:auto !important; user-select: none;"
-        >現在不可以修改頭像！呵呵</el-row>
+        >点击可以修改頭像了！呵呵</el-row>
         <transition name="fade">
           <el-row
             type="flex"
@@ -23,12 +23,20 @@
           >
             <el-upload
               class="avatar-uploader"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              ref="uploader"
+              action="/api/file/avatar/set"
+              :data="avatarData"
               :show-file-list="false"
+              :on-change="handleAvatarSelect"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
+              :on-error="handleAvatarError"
+              :on-exceed="handleExceed"
+              :limit="1"
+              :auto-upload="false"
             >
-            <el-button class="upload-btn" type="primitive">点击上传！</el-button>
+            <el-button slot="trigger" class="upload-btn" type="primitive">选取图片</el-button>
+            <el-button style="margin-left: 10px;" size="medium" type="primary" @click="RealSubmit">点击上传</el-button>
             </el-upload>
           </el-row>
         </transition>
@@ -228,6 +236,7 @@ export default {
   // 混入对象的钩子将在组件自身钩子之前调用。
   mounted: function () {
     // 感觉通过url中的username是否为空来进行后续判断有点蛋疼...把username存到localStorage应该会好一点...
+    this.imageURL = this.myURL
     console.log('params.username: ', this.$route.params.username)
     if (
       this.$route.params.username === '___default' ||
@@ -242,6 +251,8 @@ export default {
   },
   data () {
     return {
+      avatarData: {},
+
       currentInfo: {
         username: 'None',
         phone: 'None',
@@ -285,7 +296,8 @@ export default {
         school_id: -1
 
       },
-      imageURL: require('@/assets/cx.png'),
+      imageURL: '',
+      myURL: 'https://pysat-web-ctrl.app.secoder.net/api/file/avatar/get' + '?token=' + localStorage.getItem('token') + '&username=' + localStorage.getItem('identity'),
 
       formChangepwd: {
         oldpwd: '',
@@ -395,7 +407,6 @@ export default {
       await logout(this)
       this.$router.go(0) // 刷新页面
     },
-    ChangeAvatar () {},
     SetFormInfo () {
       this.formInfo.username = this.currentInfo.username
       this.formInfo.phone = this.currentInfo.phone
@@ -472,11 +483,18 @@ export default {
         .catch(_ => {})
     },
 
-    handleAvatarSuccess (res, file) {
+    handleAvatarSelect (file, fileList) {
+      console.log('select!')
       this.imageURL = URL.createObjectURL(file.raw)
+    },
+    handleAvatarSuccess (res, file) {
+      console.log('Success!')
+      this.$message.success('上传成功！')
       this.changeAvatarVisible = false
+      this.imageURL = this.myURL // 这里应该是读取到了新上传的图片？
     },
     beforeAvatarUpload (file) {
+      console.log('BeforeUpload')
       const isJPGPNG =
         (file.type === 'image/jpeg') | (file.type === 'image/png')
       const isLt2M = file.size / 1024 / 1024 < 2
@@ -487,9 +505,25 @@ export default {
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      return isJPGPNG && isLt2M
+      if (!(isJPGPNG && isLt2M)) {
+        return false
+      }
+      // 在这里绑定data，即上传时除了图片以外的额外参数
+      this.avatarData.token = this.$store.getters.getUserToken
+      console.log(this.avatarData)
+    },
+    // eslint-disable-next-line handle-callback-err
+    handleAvatarError (err, file, fileList) {
+      this.$message.error(`err`)
+      this.imageURL = this.myURL // 上传出错则恢复原本的url
+    },
+    handleExceed (files, fileList) {
+      this.$message.error('一次只能选一个头像！')
     },
 
+    RealSubmit () {
+      this.$refs.uploader.submit()
+    },
     ChangePwd () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,

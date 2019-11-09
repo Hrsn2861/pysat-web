@@ -17,7 +17,7 @@ export default {
   mounted () {
     console.log(this.$route.params)
     var suffix = '?token=' + this.$route.params.token + '&video_id=' + this.$route.params.video_id
-    var url = 'https://pysat-web-ctrl.app.secoder.net/api/file/download/video' + suffix
+    var url = 'https://pysat-web-ctrl.app.secoder.net/api/file/video/get' + suffix
     console.log('这些全都没用！！！！！！')
     console.log(url)
     console.log(this.$refs.videoPlayer.src)
@@ -38,7 +38,7 @@ export default {
         fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
         sources: [{
           type: 'video/mp4', // 这里的种类支持很多种：基本视频格式、直播、流媒体等，具体可以参看git网址项目
-          src: 'https://pysat-web-ctrl.app.secoder.net/api/file/download/video' + '?token=' + localStorage.getItem('token') + '&video_id=' + localStorage.getItem('video_id')
+          src: 'https://pysat-web-ctrl.app.secoder.net/api/file/video/get' + '?token=' + localStorage.getItem('token') + '&video_id=' + localStorage.getItem('video_id')
         }],
         poster: cx, // 你的封面地址
         // width: document.documentElement.clientWidth, //播放器宽度
