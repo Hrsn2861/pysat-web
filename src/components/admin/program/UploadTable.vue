@@ -4,7 +4,7 @@
     style="width: 100%"
     height="500"
   >
-    <el-table-column prop="submit_time" label="提交时间" width="300"></el-table-column>
+    <el-table-column prop="judge_time" label="审核时间" width="300"></el-table-column>
     <el-table-column prop="author" label="作者" width="180"></el-table-column>
     <el-table-column prop="name" label="程序名" width="200"></el-table-column>
     <el-table-column prop="status" label="审核状态"  width="200" :formatter="statusFormatter"></el-table-column>
