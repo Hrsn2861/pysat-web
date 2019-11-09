@@ -33,7 +33,7 @@ export default {
     // 上传地址
     url: {
       type: String,
-      default: '/api/file/upload/chunk' // hard-code...
+      default: '/api/file/video/chunk' // hard-code...
     },
     // 上传最大数量 默认为100
     fileNumLimit: {
@@ -119,7 +119,7 @@ export default {
           key: this.FindKey(file)
         }
         myPost(
-          '/api/file/upload/start',
+          '/api/file/video/start',
           tmpData,
           res => {
             if (res.data.status === 1) {
@@ -154,7 +154,7 @@ export default {
           key: this.FindKey(file)
         }
         myPost(
-          '/api/file/upload/done',
+          '/api/file/video/done',
           tmpData,
           res => {
             if (res.data.status === 1) {
