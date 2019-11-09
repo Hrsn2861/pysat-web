@@ -13,7 +13,7 @@
           type="flex"
           justify="center"
           style="height:auto !important; user-select: none;"
-        >現在还差一点就可以修改頭像了！呵呵</el-row>
+        >点击可以修改頭像了！呵呵</el-row>
         <transition name="fade">
           <el-row
             type="flex"
@@ -24,7 +24,7 @@
             <el-upload
               class="avatar-uploader"
               ref="uploader"
-              action="/api/file/upload/test"
+              action="/api/file/avatar/upload"
               :data="avatarData"
               :show-file-list="false"
               :on-change="handleAvatarSelect"
@@ -236,6 +236,7 @@ export default {
   // 混入对象的钩子将在组件自身钩子之前调用。
   mounted: function () {
     // 感觉通过url中的username是否为空来进行后续判断有点蛋疼...把username存到localStorage应该会好一点...
+    this.imageURL = this.myURL
     console.log('params.username: ', this.$route.params.username)
     if (
       this.$route.params.username === '___default' ||
@@ -295,7 +296,8 @@ export default {
         school_id: -1
 
       },
-      imageURL: require('@/assets/cx.png'),
+      imageURL: '',
+      myURL: 'https://pysat-web-ctrl.app.secoder.net/api/file/avatar/download' + '?token=' + localStorage.getItem('token') + '&username=' + localStorage.getItem('identity'),
 
       formChangepwd: {
         oldpwd: '',
@@ -489,6 +491,7 @@ export default {
       console.log('Success!')
       this.$message.success('上传成功！')
       this.changeAvatarVisible = false
+      this.imageURL = this.myURL // 这里应该是读取到了新上传的图片？
     },
     beforeAvatarUpload (file) {
       console.log('BeforeUpload')
@@ -505,13 +508,14 @@ export default {
       if (!(isJPGPNG && isLt2M)) {
         return false
       }
-      // TODO: 在这里绑定data参数
+      // 在这里绑定data，即上传时除了图片以外的额外参数
       this.avatarData.token = this.$store.getters.getUserToken
       console.log(this.avatarData)
     },
     // eslint-disable-next-line handle-callback-err
     handleAvatarError (err, file, fileList) {
       this.$message.error(`err`)
+      this.imageURL = this.myURL // 上传出错则恢复原本的url
     },
     handleExceed (files, fileList) {
       this.$message.error('一次只能选一个头像！')
