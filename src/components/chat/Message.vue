@@ -32,6 +32,9 @@ export default {
       img: '@/assets/logo.png'
     }
   },
+  computed: {
+
+  },
   methods: {
     // Velocity这个动画我已经在最外面的index.html引入了
     customAppear: function (el, done) {
