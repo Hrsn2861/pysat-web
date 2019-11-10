@@ -222,6 +222,7 @@ import { myGet, myPost } from '@/utils/requestFunc.js'
 import { Encrypt } from '@/utils/crypt.js'
 import { checkSession, logout } from '@/utils/sessionUtils/sessionFunc'
 import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
+import { mapGetters } from 'vuex'
 
 export default {
   mixins: [getSchoolAndThemeMixin],
@@ -251,22 +252,24 @@ export default {
         username: 'None',
         phone: 'None',
         email: '填了也没用',
-        school: 'None',
+        school_name: 'None',
         realname: 'None',
         motto: 'None',
         permission_public: 0,
-        permission_private: 0
+        permission_private: 0,
+        download: -1
       },
 
       formInfo: {
         username: 'None',
         phone: 'None',
         email: '填了也没用',
-        school: 'None',
+        school_name: 'None',
         realname: 'None',
         motto: 'None',
         permission_private: 0,
-        permission_public: 0
+        permission_public: 0,
+        download: -1
       },
 
       myPermissionPrivate: -1,
@@ -369,6 +372,14 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'getUser',
+      'getUserToken',
+      'getSchool_Name',
+      'getPermission_Public',
+      'getPermission_Private',
+      'getSchool_Id'
+    ]),
     isSelf () {
       if (
         this.$route.params.username === '___default' ||
@@ -391,7 +402,7 @@ export default {
     // 这里的formInfo是实际的、当前随时变化的值，（有着意想不到的效果，比如如果修改了一个大于自己的权限，按钮就消失了）
     // 当然，更改了list的disabled的属性之后，就不可能有这种情况发生了。
     isPrivateAndGreater () {
-      return (this.formInfo.school === localStorage['school_name'] && localStorage['permission_private'] > this.formInfo.permission_private)
+      return (this.formInfo.school_name === localStorage['school_name'] && localStorage['permission_private'] > this.formInfo.permission_private)
     },
     isPublicAndGreater () {
       return localStorage['permission_public'] > this.formInfo.permission_public
@@ -422,27 +433,6 @@ export default {
       await logout(this)
       this.$router.go(0) // 刷新页面
     },
-    SetFormInfo () {
-      this.formInfo.username = this.currentInfo.username
-      this.formInfo.phone = this.currentInfo.phone
-      this.formInfo.email = this.currentInfo.email
-      this.formInfo.school = this.currentInfo.school
-      this.formInfo.realname = this.currentInfo.realname
-      this.formInfo.motto = this.currentInfo.motto
-      this.formInfo.permission_private = this.currentInfo.permission_private
-      this.formInfo.permission_public = this.currentInfo.permission_public
-    },
-
-    SetCurrentInfo () {
-      this.currentInfo.username = this.formInfo.username
-      this.currentInfo.phone = this.formInfo.phone
-      this.currentInfo.email = this.formInfo.email
-      this.currentInfo.school = this.formInfo.school
-      this.currentInfo.realname = this.formInfo.realname
-      this.currentInfo.motto = this.formInfo.motto
-      this.currentInfo.permission_private = this.formInfo.permission_private
-      this.currentInfo.permission_public = this.formInfo.permission_public
-    },
     ResetChangepwd () {
       this.formChangepwd.oldpwd = ''
       this.formChangepwd.newpwd = ''
@@ -466,14 +456,8 @@ export default {
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data.user)
-            this.currentInfo.username = res.data.data.user.username
-            this.currentInfo.phone = res.data.data.user.phone
-            this.currentInfo.school = res.data.data.user.school_name
-            this.currentInfo.realname = res.data.data.user.realname
-            this.currentInfo.motto = res.data.data.user.motto
-            this.currentInfo.permission_private = res.data.data.user.permission_private
-            this.currentInfo.permission_public = res.data.data.user.permission_public
-            this.SetFormInfo()
+            this.currentInfo = res.data.data.user
+            Object.assign(this.formInfo, this.currentInfo)
             this.myPermissionPrivate = localStorage.getItem('permission_private')
             this.myPermissionPublic = localStorage.getItem('permission_public')
 
@@ -613,15 +597,15 @@ export default {
               this.$message.success(`${res.data.msg}`)
               this.changeInfoVisible = true
               this.updateButtonText = '修改信息'
-              this.SetCurrentInfo()
+              Object.assign(this.currentInfo, this.formInfo)
             } else {
               this.$message.error(`${res.data.msg}`)
-              this.SetFormInfo()
+              Object.assign(this.formInfo, this.currentInfo)
             }
           },
           err => {
             this.$message.error(`${err.message}`, 'ERROR!')
-            this.SetFormInfo()
+            Object.assign(this.formInfo, this.currentInfo)
           }
         )
       }
@@ -699,7 +683,7 @@ export default {
         if (cnt === 0) {
           this.changePermissionButtonText = '修改权限'
           this.changePermissionEnable = false
-          this.SetFormInfo()
+          Object.assign(this.formInfo, this.currentInfo)
           return
         }
         console.log(tmpData)
@@ -711,17 +695,17 @@ export default {
               this.$message.success(`${res.data.msg}`)
               this.changePermissionEnable = false
               this.changePermissionButtonText = '修改权限'
-              this.SetCurrentInfo()
+              Object.assign(this.currentInfo, this.formInfo)
             } else {
               this.$message.error(`${res.data.msg}`)
               this.changePermissionEnable = false
               this.changePermissionButtonText = '修改权限'
-              this.SetFormInfo()
+              Object.assign(this.formInfo, this.currentInfo)
             }
           },
           err => {
             this.$message.error(`${err.message}`, 'ERROR!')
-            this.SetFormInfo()
+            Object.assign(this.formInfo, this.currentInfo)
           }
         )
       }
