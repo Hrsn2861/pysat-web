@@ -10,6 +10,12 @@ export default {
     },
     currentSession () {
       return this.$store.state.chatSystem.currentSession.msgList
+    },
+    myAvatarUrl () {
+      return '/api/file/avatar/get' + '?token=' + this.$store.getters.getUserToken + '&username=' + this.$store.getters.getUser
+    },
+    chatUserUrl () {
+      return '/api/file/avatar/get' + '?token=' + this.$store.getters.getUserToken + '&username=' + this.$store.getters.getUserNameFromSessionId
     }
   },
   methods: {

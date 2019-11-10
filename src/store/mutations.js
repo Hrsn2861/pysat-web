@@ -107,7 +107,7 @@ export const mutations = {
         id: 0,
         user: '官方小助手',
         unread: 0,
-        avatar: ''
+        avatar: '/api/file/avatar/get' + '?token=' + localStorage['token']
       }
     )
 
@@ -121,7 +121,7 @@ export const mutations = {
           unread: chat.unread,
           // 这里chat的user有一些杂七杂八的信息
           // 需要用chat.user过滤
-          avatar: ''
+          avatar: '/api/file/avatar/get' + '?token=' + localStorage['token'] + '&username=' + chat.user.username
         }
       )
       index += 1
