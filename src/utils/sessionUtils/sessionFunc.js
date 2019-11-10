@@ -21,7 +21,7 @@ export async function checkSession (context, loggedUrl, unloggedUrl) {
           context.$store.dispatch('checkSession', {user: res.data.data.user}) // 不管登陆还是没有登陆都要将改变user，（没有登陆，vuex的user的状态空）
         } else {
           // 未登录
-          context.$message.success('未登录！')
+          // context.$message.success('未登录！')
           context.$store.dispatch('userLogOut')
         }
         // console.log('index: ' + res.data.data.user)
