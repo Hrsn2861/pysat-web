@@ -12,7 +12,9 @@
             <span>{{entry.date}}</span>
           </p></center>
           <div class="main" :class="{self:entry.self}">
-            <img class="avatar" src="@/assets/cx.png" alt />
+            <img v-if="!entry.self" class="avatar" :src="chatUserUrl"/>
+            <img v-else="entry.self" class="avatar" :src="myAvatarUrl"/>
+            <!-- <img class="avatar" src="@/assets/cx.png"/> -->
             <p class="text">{{entry.content}}</p>
           </div>
         </li>
