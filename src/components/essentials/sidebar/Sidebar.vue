@@ -27,7 +27,8 @@
         </template>
         <el-menu-item index="/personal/myinfo/___default">个人信息</el-menu-item>
         <el-menu-item index="/personal/myprogram">我的程序</el-menu-item>
-        <el-menu-item>我的学校</el-menu-item>
+        <!-- 就让所有人都能看见学校好了 -->
+        <el-menu-item index="/personal/myschool" v-if="getSchool_Id !== 0">我的学校</el-menu-item>
       </el-submenu>
 
       <el-submenu index="/admin" v-if="getPermission_Public>=2 || getPermission_Private>=2">

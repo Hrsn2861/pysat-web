@@ -12,6 +12,7 @@ import Hangout from '@/components/browse/Hangout.vue'
 
 import MyInfo from '@/components/personal/myinfo/MyInfo.vue'
 import MyProgram from '@/components/personal/myprogram/Mine.vue'
+import MySchool from '@/components/personal/myschool/MySchool.vue'
 
 import ThemeList from '@/components/theme/ThemeList.vue'
 
@@ -88,6 +89,11 @@ export default new Router({
           // 我的程序
           path: 'personal/myprogram',
           component: MyProgram
+        },
+        {
+          // 我的学校
+          path: 'personal/myschool',
+          component: MySchool
         },
 
         // 管理中心
