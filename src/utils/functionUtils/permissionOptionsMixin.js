@@ -12,23 +12,19 @@ export default {
         },
         {
           value: 2,
-          label: '在野审核员',
-          disabled: localStorage['permission_public'] <= 2
+          label: '在野审核员'
         },
         {
           value: 4,
-          label: '在野头目',
-          disabled: localStorage['permission_public'] <= 4
+          label: '在野头目'
         },
         {
           value: 8,
-          label: '网站管理员',
-          disabled: localStorage['permission_public'] <= 8
+          label: '网站管理员'
         },
         {
           value: 16,
-          label: '新世界的神',
-          disabled: localStorage['permission_public'] <= 16
+          label: '新世界的神'
         }
 
       ],
@@ -48,8 +44,7 @@ export default {
         },
         {
           value: 2,
-          label: '老师',
-          disabled: Number(localStorage['permission_private']) <= 2
+          label: '老师'
         },
         {
           value: 4,
@@ -58,13 +53,11 @@ export default {
         },
         {
           value: 8,
-          label: '网站管理员',
-          disabled: Number(localStorage['permission_private']) <= 8
+          label: '网站管理员'
         },
         {
           value: 16,
-          label: '新世界的神',
-          disabled: Number(localStorage['permission_private']) <= 16
+          label: '新世界的神'
         }
       ]
     }
