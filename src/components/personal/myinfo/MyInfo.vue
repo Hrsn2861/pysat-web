@@ -319,25 +319,14 @@ export default {
       'getSchool_Id'
     ]),
     isSelf () {
-      if (
-        this.$route.params.username === '___default' ||
-        this.$route.params.username === this.$store.getters.getUser
-      ) {
-        return true
-      } else {
-        return false
-      }
+      return this.$route.params.username === this.$store.getters.getUser
     },
     hasSelectedSchool () {
       return this.getPermission_Private > -1
     },
 
     myURL () {
-      if (this.$route.params.username === '___default') {
-        return '/api/file/avatar/get' + '?token=' + this.$store.getters.getUserToken + '&username=' + this.$store.getters.getUser
-      } else {
-        return '/api/file/avatar/get' + '?token=' + this.$store.getters.getUserToken + '&username=' + this.$route.params.username
-      }
+      return '/api/file/avatar/get' + '?token=' + this.$store.getters.getUserToken + '&username=' + this.$route.params.username
     },
     disablePermissionPrivate () {
       return function (level) {

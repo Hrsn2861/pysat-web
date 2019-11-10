@@ -75,7 +75,7 @@ export async function checkSession (context, loggedUrl, unloggedUrl) {
     if (loggedUrl !== '') {
       console.log('sessionFunc.js Jumpto: ', loggedUrl)
       if (loggedUrl === 'myinfo') {
-        context.$router.push({name: loggedUrl, params: {username: '___default'}})
+        context.$router.push({name: loggedUrl, params: this.$store.getters.getUser}) // TODO: 这里改了一下，看看有没有问题
       } else {
         context.$router.push(loggedUrl)
       }
