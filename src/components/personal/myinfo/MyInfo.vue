@@ -222,10 +222,11 @@ import { myGet, myPost } from '@/utils/requestFunc.js'
 import { Encrypt } from '@/utils/crypt.js'
 import { checkSession, logout } from '@/utils/sessionUtils/sessionFunc'
 import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
+import permissionOptionsMixin from '@/utils/functionUtils/permissionOptionsMixin'
 import { mapGetters } from 'vuex'
 
 export default {
-  mixins: [getSchoolAndThemeMixin],
+  mixins: [getSchoolAndThemeMixin, permissionOptionsMixin],
   props: ['username'], // 呃， props没有用？？？？
   name: 'MyInfo',
   beforeCreate () {
@@ -260,20 +261,7 @@ export default {
         download: -1
       },
 
-      formInfo: {
-        username: 'None',
-        phone: 'None',
-        email: '填了也没用',
-        school_name: 'None',
-        realname: 'None',
-        motto: 'None',
-        permission_private: 0,
-        permission_public: 0,
-        download: -1
-      },
-
-      myPermissionPrivate: -1,
-      myPermissionPublic: -1,
+      formInfo: { },
 
       changeAvatarVisible: false,
       changePwdVisible: false,
@@ -301,74 +289,8 @@ export default {
       formChangephone: {
         CAPTCHA: '',
         phone: ''
-      },
-      permissionPublicOptions: [
-        {
-          value: 0,
-          label: '在野封禁'
-        },
-        {
-          value: 1,
-          label: '在野用户'
-        },
-        {
-          value: 2,
-          label: '在野审核员',
-          disabled: localStorage['permission_public'] <= 2
-        },
-        {
-          value: 4,
-          label: '在野头目',
-          disabled: localStorage['permission_public'] <= 4
-        },
-        {
-          value: 8,
-          label: '网站管理员',
-          disabled: localStorage['permission_public'] <= 8
-        },
-        {
-          value: 16,
-          label: '新世界的神',
-          disabled: localStorage['permission_public'] <= 16
-        }
+      }
 
-      ],
-      permissionPrivateOptions: [
-        {
-          value: -1,
-          label: '无学校',
-          disabled: true
-        },
-        {
-          value: 0,
-          label: '校内封禁'
-        },
-        {
-          value: 1,
-          label: '学生'
-        },
-        {
-          value: 2,
-          label: '老师',
-          disabled: Number(localStorage['permission_private']) <= 2
-        },
-        {
-          value: 4,
-          label: '校长',
-          disabled: true
-        },
-        {
-          value: 8,
-          label: '网站管理员',
-          disabled: Number(localStorage['permission_private']) <= 8
-        },
-        {
-          value: 16,
-          label: '新世界的神',
-          disabled: Number(localStorage['permission_private']) <= 16
-        }
-
-      ]
     }
   },
   computed: {
@@ -458,11 +380,9 @@ export default {
             console.log(res.data.data.user)
             this.currentInfo = res.data.data.user
             Object.assign(this.formInfo, this.currentInfo)
-            this.myPermissionPrivate = localStorage.getItem('permission_private')
-            this.myPermissionPublic = localStorage.getItem('permission_public')
 
-            console.log('myPERMISSION-PRIVATE: ' + this.myPermissionPrivate)
-            console.log('myPERMISSION-PUBLIC: ' + this.myPermissionPublic)
+            console.log('myPERMISSION-PRIVATE: ' + this.getPermission_Private)
+            console.log('myPERMISSION-PUBLIC: ' + this.getPermission_Public)
           }
         },
         err => {
@@ -664,7 +584,7 @@ export default {
         }
         var cnt = 0
         if (this.isPrivateAndGreater || this.isGreatAdmin) {
-          if (this.formInfo.permission_private >= this.myPermissionPrivate) {
+          if (this.formInfo.permission_private >= this.getPermission_Private) {
             // 这里其实在对应的参数列表里就设定好了
             this.$message.error('您只能赋予别人低于自己的校内权限！')
           } else {
@@ -672,7 +592,7 @@ export default {
           }
         }
         if (this.isPublicAndGreater) {
-          if (this.formInfo.permission_public >= this.myPermissionPublic) {
+          if (this.formInfo.permission_public >= this.getPermission_Public) {
             // 这里其实在对应的参数列表里就设定好了
             this.$message.error('您只能赋予别人低于自己的在野权限！')
           } else {
