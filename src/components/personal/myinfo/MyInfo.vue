@@ -5,7 +5,7 @@
         <el-row type="flex" justify="center" style="height:100px !important">
           <img
             :src="imageURL"
-            @click="changeAvatarVisible = !changeAvatarVisible"
+            @click="HandleAvatarClick"
             class="avatar-change"
           />
         </el-row>
@@ -237,15 +237,9 @@ export default {
   mounted: function () {
     // 感觉通过url中的username是否为空来进行后续判断有点蛋疼...把username存到localStorage应该会好一点...
     this.imageURL = this.myURL
-    console.log('params.username: ', this.$route.params.username)
-    if (
-      this.$route.params.username === '___default' ||
-      this.$route.params.username === localStorage['identity']
-    ) {
-      this.isSelf = true
+    if (this.isSelf) {
       this.GetMyInfo('')
     } else {
-      this.isSelf = false
       this.GetMyInfo(this.$route.params.username)
     }
   },
@@ -277,7 +271,6 @@ export default {
 
       myPermissionPrivate: -1,
       myPermissionPublic: -1,
-      isSelf: false, // 判断是不是自己的信息
 
       changeAvatarVisible: false,
       changePwdVisible: false,
@@ -376,6 +369,16 @@ export default {
     }
   },
   computed: {
+    isSelf () {
+      if (
+        this.$route.params.username === '___default' ||
+        this.$route.params.username === this.$store.getters.getUser
+      ) {
+        return true
+      } else {
+        return false
+      }
+    },
     myURL () {
       if (this.$route.params.username === '___default') {
         return '/api/file/avatar/get' + '?token=' + this.$store.getters.getUserToken + '&username=' + this.$store.getters.getUser
@@ -409,6 +412,11 @@ export default {
 
   },
   methods: {
+    HandleAvatarClick () {
+      if (this.isSelf) {
+        this.changeAvatarVisible = !this.changeAvatarVisible
+      }
+    },
     async logOut () {
       localStorage.removeItem('identity')
       await logout(this)
