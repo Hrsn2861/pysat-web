@@ -79,8 +79,6 @@ export default new Router({
         // 个人中心
         {
           // 个人信息
-          // 默认的username是___default
-          // FIXME: 这里是否还需要改？
           path: 'personal/myinfo/:username',
           name: 'myinfo',
           component: MyInfo
