@@ -13,8 +13,8 @@
           </p></center>
           <div class="main" :class="{self:entry.self}">
             <img v-if="!entry.self" class="avatar" :src="chatUserUrl"/>
+            <!-- eslint-disable-next-line vue/valid-v-else -->
             <img v-else="entry.self" class="avatar" :src="myAvatarUrl"/>
-            <!-- <img class="avatar" src="@/assets/cx.png"/> -->
             <p class="text">{{entry.content}}</p>
           </div>
         </li>
