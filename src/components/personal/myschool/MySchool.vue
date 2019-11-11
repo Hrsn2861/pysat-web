@@ -48,18 +48,19 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination layout="prev, pager, next" :total="1000"></el-pagination>
+          <el-pagination :background="false" layout="prev, pager, next" :page-count="userPageCnt" :current-page.sync="userPageIndex" @current-change="GetUserList(userPageIndex)" @prev-click="userPageIndex --" @next-click="userPageIndex++"></el-pagination>
+
         </el-card>
       </div>
       <div v-else class="change-school">
         <h2>申请加入学校，就是现在！</h2>
-         <el-table :data="schoolList" style="width: 100%" height="720">
-            <el-table-column prop="id" label="学校ID" width="150"></el-table-column>
+         <el-table :data="schoolList" style="width: 100%" height="700">
+            <el-table-column v-if="false" prop="id" label="学校ID" width="100"></el-table-column>
             <el-table-column prop="name" label="学校名称" width="150"></el-table-column>
-            <el-table-column prop="headmaster" label="校长" width="150"></el-table-column>
+            <el-table-column prop="headmaster" label="校长" width="100"></el-table-column>
             <el-table-column prop="description" label="学校描述" :resizable="true"></el-table-column>
-            <el-table-column prop="population" label="当前人数" width="150"></el-table-column>
-            <el-table-column fixed="right" label="操作" width="150">
+            <el-table-column prop="population" label="当前人数" width="100"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="100">
               <template slot-scope="scope">
                 <el-button
                   @click="applyDialogVisible = true;formApplySchool.school_name = scope.row.name;formApplySchool.school_id = scope.row.id"
@@ -69,6 +70,7 @@
               </template>
             </el-table-column>
           </el-table>
+          <el-pagination :background="false" layout="prev, pager, next" :page-count="schoolPageCnt" :current-page.sync="schoolPageIndex" @current-change="GetSchoolListNoPublic(schoolPageIndex)" @prev-click="schoolPageIndex --" @next-click="schoolPageIndex++"></el-pagination>
       </div>
     </el-card>
     <el-dialog :title="'加入: ' + formApplySchool.school_name + '（一个同学只有一次选择的权利）'" :visible.sync="applyDialogVisible" width="30%">
@@ -78,24 +80,28 @@
           <el-button @click="applyDialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="ApplySchool">确 定</el-button>
         </span>
-      </el-dialog>
+    </el-dialog>
   </div>
 </template>
 <script>
 import { myGet, myPost } from '@/utils/requestFunc.js'
 import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
+import getUserListMixin from '@/utils/functionUtils/getUserListMixin'
 import permissionComputer from '@/utils/functionUtils/permissionComputer'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 
 export default {
-  mixins: [getSchoolAndThemeMixin, permissionComputer],
+  mixins: [getSchoolAndThemeMixin, permissionComputer, getUserListMixin],
   beforeCreate () {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.GetUserList()
-    this.GetMySchoolInfo()
-    this.GetSchoolListNoPublic()
+    if (this.hasSelectedSchool) {
+      this.GetMySchoolInfo()
+      this.GetUserList(this.userPageIndex, localStorage['school_id'])
+    } else {
+      this.GetSchoolListNoPublic(this.schoolPageIndex) // 默认为1
+    }
     console.log(this.$store.getters.getSchoolId)
   },
   data () {
@@ -113,7 +119,8 @@ export default {
         population: 999
       },
       myName: localStorage['identity'],
-      userList: [],
+      // userList: [], defined in mixin
+      // schoolList: [], defined in mixin
       statusDict: {
         4: '校长',
         2: '老师',
@@ -201,32 +208,6 @@ export default {
           })
         }
       )
-    },
-    GetUserList () {
-      myGet(
-        '/api/user/list/get',
-        {
-          token: this.$store.getters.getUserToken,
-          show_invalid: 'true',
-          manager_first: 'true',
-          school_id: localStorage['school_id']
-        },
-        res => {
-          if (res.data.status === 1) {
-            console.log(res.data.data)
-            this.userList = res.data.data.user_list
-          } else {
-            this.$message.error(`${res.data.msg}`)
-          }
-        },
-        err => {
-          this.$message({
-            type: 'error',
-            message: err,
-            duration: 1000
-          })
-        }
-      )
     }
   }
 }
@@ -273,5 +254,9 @@ h1 {
 }
 .el-table {
   margin: 0%;
+}
+.el-pagination{
+  width: 100%;
+  padding: 0%;
 }
 </style>

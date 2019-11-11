@@ -15,6 +15,8 @@ export default {
           disabled: Number(localStorage.getItem('school_id')) === 0
         }
       ],
+      schoolPageCnt: 100,
+      schoolPageIndex: 1,
 
       // currentThemeId: -1, // 暂时没用了
       themeList: [
@@ -26,15 +28,20 @@ export default {
           description: 'There is a bug',
           count: 9999
         }
-      ]
+      ],
+      themePageCnt: 100,
+      themePageIndex: 1
     }
   },
   methods: {
-    GetSchoolListNoPublic () {
+    GetSchoolListNoPublic (index) {
       // 真香
       return new Promise(resolve => {
         let tmpData = {
           token: this.$store.getters.getUserToken
+        }
+        if (index) { // 这样对应了后端默认获取第一页的语义
+          tmpData['page'] = index
         }
         console.log(tmpData)
         myGet(
@@ -43,6 +50,7 @@ export default {
           res => {
             if (res.data.status === 1) {
             // this.$message.success(`${res.data.msg}`)
+              this.schoolPageCnt = Math.ceil(res.data.data.tot_count / 20)
               this.schoolList = res.data.data.school_list
               this.currentSchoolId = this.schoolList[0].id
               resolve(true)
@@ -59,10 +67,13 @@ export default {
       }
       )
     },
-    GetSchoolList () {
+    GetSchoolList (index) {
       return new Promise(resolve => {
         let tmpData = {
           token: this.$store.getters.getUserToken
+        }
+        if (index) { // 这样对应了后端默认获取第一页的语义
+          tmpData['page'] = index
         }
         console.log(tmpData)
         myGet(
@@ -71,6 +82,7 @@ export default {
           res => {
             if (res.data.status === 1) {
             // this.$message.success(`${res.data.msg}`)
+              this.schoolPageCnt = Math.ceil(res.data.data.tot_count / 20)
               this.schoolList = res.data.data.school_list
               this.schoolList.unshift(
                 {
@@ -94,11 +106,14 @@ export default {
       })
     },
 
-    GetThemeList () {
+    GetThemeList (index) {
       return new Promise(resolve => {
         let tmpData = {
           token: this.$store.getters.getUserToken,
           school_id: this.currentSchoolId
+        }
+        if (index) { // 这样对应了后端默认获取第一页的语义
+          tmpData['page'] = index
         }
         console.log(tmpData)
         myGet(
@@ -108,6 +123,7 @@ export default {
             if (res.data.status === 1) {
               // this.$message.success(`${res.data.msg}`)
               this.themeList = res.data.data.theme_list
+              this.themePageCnt = Math.ceil(res.data.data.tot_count / 20)
               console.log(this.themeList)
               resolve(true)
             } else {
