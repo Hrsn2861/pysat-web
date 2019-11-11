@@ -45,6 +45,18 @@ import permissionComputer from '@/utils/functionUtils/permissionComputer'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 
 export default {
+  inject: ['reload'],
+  beforeRouteLeave (to, from, next) {
+    if ((from.path.startsWith('/admin/program') && to.path.startsWith('/theme/submit')) ||
+    (to.path.startsWith('/admin/program') && from.path.startsWith('/theme/submit'))) {
+      console.log('beforeRouteLeave')
+      next()
+      this.reload()
+    } else {
+      next()
+    }
+  },
+
   components: {
     ThemeTable
   },
@@ -54,6 +66,7 @@ export default {
   },
 
   mounted: function () {
+    console.log('mounted')
     if (this.$route.path === this.urlAdmin) {
       this.currentlevel = 2
     } else {

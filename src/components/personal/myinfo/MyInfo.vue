@@ -227,6 +227,18 @@ import permissionComputer from '@/utils/functionUtils/permissionComputer'
 import { mapGetters } from 'vuex'
 
 export default {
+  inject: ['reload'],
+  beforeRouteUpdate (to, from, next) {
+    if (from.path.startsWith('/personal/myinfo') &&
+   to.path.startsWith('/personal/myinfo')) {
+      console.log('beforeRouteUpdate')
+      next()
+      this.reload()
+    } else {
+      next()
+    }
+  },
+
   mixins: [getSchoolAndThemeMixin, permissionOptionsMixin, permissionComputer],
   props: ['username'], // 呃， props没有用？？？？
   name: 'MyInfo',
