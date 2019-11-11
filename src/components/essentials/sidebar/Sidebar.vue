@@ -126,16 +126,20 @@ export default {
   height: 100%;
   min-height: 100vh;
   background-color: #343A40;
+
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 100vh;
   height: 100%;
+  border-right: #343A40 solid 2px;
+  /* fix side bar white boarder */
 }
 
 .el-menu-vertical-demo {
   min-height: 100vh;
   height: 100%;
+  border-right: #343A40 solid 2px;
 }
 
 .el-menu-item.is-active,

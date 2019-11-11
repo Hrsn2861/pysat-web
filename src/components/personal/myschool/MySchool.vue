@@ -4,10 +4,10 @@
       <div v-if="hasSelectedSchool">
         <el-card>
           <el-row type="flex" align="bottom">
-            <el-col :lg="{span:4}" :xs="{span:24}" :md="{span:12}">
+            <el-col :lg="{span:8}" :xs="{span:24}" :md="{span:12}">
               <h1>{{school.name}}</h1>
             </el-col>
-            <el-col :lg="{span:4}" :xs="{span:0}" :md="{span:5}">
+            <el-col :lg="{span:8}" :xs="{span:0}" :md="{span:5}">
               <i>
                 <h2 style="margin:0%;">校长 : {{school.headmaster}}</h2>
               </i>
