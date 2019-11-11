@@ -27,15 +27,12 @@
         active-text-color="#ffd04b"
       >
         <el-menu-item index="1" @click="goIndex()">首页</el-menu-item>
-        <el-menu-item index="2" @click="goSignup()" v-if="isLogged">注册</el-menu-item>
-        <el-menu-item index="3" @click="goLogin()" v-if="isLogged">登陆</el-menu-item>
-        <el-menu-item index="4" v-if="!isMobile">
-          <a href="https://www.ele.me" target="_blank">摸我</a>
-        </el-menu-item>
-        <el-menu-item index="5" @click="logOut()">这不重要</el-menu-item>
+        <el-menu-item index="2" @click="goSignup()" v-if="!isLogged">注册</el-menu-item>
+        <el-menu-item index="3" @click="goLogin()" v-if="!isLogged">登陆</el-menu-item>
+        <el-menu-item index="4" @click="logOut()" v-if="isLogged">退出登陆</el-menu-item>
       </el-menu>
 
-      <div style="margin-top:5px;">
+      <div style="margin-top:5px;" v-if="isLogged">
         <el-badge :value="this.$store.state.chatSystem.msgCount" :max="99" class="item" :hidden="this.$store.state.chatSystem.msgCount === 0">
           <img class="avatar" :src="imageURL" style="height:30px;width:30px;"/>
          </el-badge>
@@ -77,7 +74,7 @@ export default {
     },
     isLogged () {
       // 检查是否已经登陆，如果已经登陆，那么user就会被设置好了，根据user返回是否显示登陆注册按钮
-      return this.$store.getters.getUser === null
+      return this.$store.getters.getUser !== null
     }
   },
   watch: {
