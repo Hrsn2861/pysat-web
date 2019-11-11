@@ -44,7 +44,7 @@
                   size="small"
                   @click="ViewCurrentUser(scope.$index, scope.row)"
                 >查看</el-button>
-                <el-button type="text" size="small" @click="SayHello(scope.$index, scope.row)">打个招呼</el-button>
+                <el-button type="text" size="small" @click="SendHello(scope.$index, scope.row)">打个招呼</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -94,6 +94,7 @@ export default {
   },
   mounted: function () {
     this.GetUserList()
+    this.GetMySchoolInfo()
     this.GetSchoolListNoPublic()
     console.log(this.$store.getters.getSchoolId)
   },
@@ -152,7 +153,55 @@ export default {
       console.log('View user index: ', index)
       this.$router.push({ name: 'myinfo', params: { username: row.username } })
     },
-    SayHello (index, row) {},
+    SendHello (index, row) {
+      let queryJson = {
+        token: this.$store.getters.getUserToken,
+        username: row.username,
+        content: '你好'
+      }
+      myPost(
+        '/api/message/message/send',
+        queryJson,
+        res => {
+          if (res.data.status === 1) {
+            this.$message.success('发送成功！')
+            this.$router.push('/chat')
+          } else {
+            this.$message.error('发送失败了～')
+          }
+        },
+        err => {
+          this.$message({
+            type: 'error',
+            message: err,
+            duration: 1000
+          })
+        }
+      )
+    },
+    GetMySchoolInfo () {
+      myGet(
+        '/school/school/get_specific',
+        {
+          token: this.$store.getters.getUserToken,
+          school_id: localStorage['school_id']
+        },
+        res => {
+          if (res.data.status === 1) {
+            this.school = res.data.data.school
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message({
+            type: 'error',
+            message: err,
+            duration: 1000
+          })
+        }
+      )
+    },
     GetUserList () {
       myGet(
         '/api/user/list/get',
