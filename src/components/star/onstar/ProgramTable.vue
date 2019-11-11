@@ -56,6 +56,7 @@ export default {
             console.log(res.data.data)
             this.$message.success('点赞成功！')
             row.liked = true
+            row.likes += 1
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -81,6 +82,9 @@ export default {
             saveAs(codeContent)
             var codeReadme = new File([res.data.data.code.content], 'readme.py', {type: 'text/plain;charset=utf-8'})
             saveAs(codeReadme)
+            if (!row.downloaded) {
+              row.downloads += 1
+            }
           } else {
             this.$message.error(`${res.data.msg}`)
           }
