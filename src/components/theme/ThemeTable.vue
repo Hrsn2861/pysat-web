@@ -1,10 +1,11 @@
 <template>
-    <el-table :data="displayData" style="width: 100%" height="800">
+    <div>
+    <el-table :data="displayData" style="width: 100%" height="600">
         <el-table-column prop="id" label="主题ID" width="80"></el-table-column>
         <el-table-column prop="title" label="主题名称" width="150"></el-table-column>
         <el-table-column prop="description" label="描述" :resizable="true"></el-table-column>
-        <el-table-column prop="create_time" label="发布时间" width="150"></el-table-column>
-        <el-table-column prop="deadline" label="截止日期" width="150"></el-table-column>
+        <el-table-column prop="create_time" label="发布时间" width="160"></el-table-column>
+        <el-table-column prop="deadline" label="截止日期" width="160"></el-table-column>
         <el-table-column prop="count" label="相关数目" width="120"></el-table-column>
         <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
@@ -16,6 +17,7 @@
           </template>
         </el-table-column>
       </el-table>
+    </div>
 </template>
 <script>
 import permissionComputer from '@/utils/functionUtils/permissionComputer'
@@ -99,13 +101,13 @@ export default {
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
 }
-.el-table {
-  height: 82vh !important;
-}
 .box-card:hover {
   box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);
 }
 .create-theme {
   margin-top: 0.5%;
+}
+.el-pagination{
+  padding: 0%;
 }
 </style>

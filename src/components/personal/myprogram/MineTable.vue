@@ -3,13 +3,20 @@
     :data="displayData"
     style="width: 100%"
     :default-sort="{prop: 'date', order: 'descending'}"
-    height="500"
+    height="800"
   >
     <el-table-column prop="submit_time" label="提交时间" width="300"></el-table-column>
     <el-table-column prop="name" label="程序名" ></el-table-column>
     <el-table-column prop="school_name" label="学校" width="180"></el-table-column>
     <el-table-column prop="theme_name" label="主题" width="180"></el-table-column>
-    <el-table-column prop="status" label="审核状态" width="180" fixed="right" :formatter="statusFormatter"></el-table-column>
+    <el-table-column prop="status" label="审核状态" width="180">
+      <template slot-scope="scope">
+        <el-tag
+          :type="calculateTagType(scope.row.status)"
+          disable-transitions
+        >{{statusDict[scope.row.status]}}</el-tag>
+      </template>
+    </el-table-column>
     <el-table-column label="下载" width="150" fixed="right">
       <template slot-scope="scope">
         <el-button  v-bind:class="{active : tableStatus.likeIconOn}" icon="el-icon-download" circle @click="Download(scope.row)"></el-button>
@@ -43,10 +50,25 @@ export default {
       }
     }
   },
+  computed: {
+    calculateTagType () {
+      return function (status) {
+        if (status === 5) {
+          return 'success'
+        } else if (status >= 2 && status <= 4) {
+          return 'warning'
+        } else if (status >= 0 && status <= 1) {
+          return 'info'
+        } else if (status < 0) {
+          return 'danger'
+        }
+      }
+    }
+  },
   methods: {
-    statusFormatter (row, column) {
-      return this.statusDict[row.status.toString()]
-    },
+    // statusFormatter (row, column) {
+    //   return this.statusDict[row.status.toString()]
+    // },
     Download (row) {
       // console.log(this.displayData)
       let tmpData = {
@@ -80,7 +102,4 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-.active{
-    height: 50vh;
-}
 </style>

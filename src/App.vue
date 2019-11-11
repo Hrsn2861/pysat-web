@@ -15,5 +15,9 @@ export default {
   margin: 0%;
   height: 100%;
   width: 100%;
+
+}
+*{
+   font-family: 'Avenir','Helvetica', 'Arial', 'sans-serif' !important;
 }
 </style>

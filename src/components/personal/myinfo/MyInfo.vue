@@ -18,8 +18,9 @@
           <el-row
             type="flex"
             justify="center"
+            align="middle"
             style="height:100px !important"
-            v-if="state === types.changeavatar"
+            v-if="state === types.change_avatar"
           >
             <el-upload
               class="avatar-uploader"
@@ -44,7 +45,7 @@
       <el-row
         type="flex"
         justify="center"
-        v-if="state === types.maininfo"
+        v-if="state === types.main_info"
       >
         <el-col class="my-info">
           <center>
@@ -122,17 +123,17 @@
       <el-row
         type="flex"
         justify="center"
-        v-if="state === types.maininfo"
+        v-if="state === types.main_info"
       >
         <el-button type="danger" @click="logOut()" v-if="isSelf">登出</el-button>
         <el-button
           type="primary"
-          @click="state = types.changepwd"
+          @click="state = types.change_pwd"
           v-if="isSelf || isGreatAdmin"
         >修改密码</el-button>
         <el-button
           type="primary"
-          @click="state = types.changephone"
+          @click="state = types.change_phone"
           v-if="isSelf || isGreatAdmin"
         >修改手机号码</el-button>
         <el-button
@@ -145,16 +146,11 @@
           @click="ChangePermission()"
           v-if="!isSelf"
         >{{changePermissionButtonText}}</el-button>
-        <el-button
-          type="warning"
-          @click="MyGetSchoolList()"
-          v-if="!hasSelectedSchool && isSelf && !isGreatAdmin"
-        >{{changeSchoolButtonText}}</el-button>
 
       </el-row>
 
       <transition name="fade">
-        <div v-if="state === types.changepwd" class="change">
+        <div v-if="state === types.change_pwd" class="change">
           <el-input
             class="change-input"
             v-model="formChangepwd.oldpwd"
@@ -167,52 +163,20 @@
             placeholder="新密码"
             type="password"
           ></el-input>
-          <el-button @click="state = types.maininfo" class="change-button">取消</el-button>
+          <el-button @click="state = types.main_info" class="change-button">取消</el-button>
           <el-button type="primary" @click="ChangePwd" class="change-button">更新</el-button>
         </div>
       </transition>
 
       <transition name="fade">
-        <div v-if="state === types.changephone" class="change">
+        <div v-if="state === types.change_phone" class="change">
           <el-input class="change-input" v-model="formChangephone.CAPTCHA" placeholder="验证码"></el-input>
           <el-input class="change-input" v-model="formChangephone.phone" placeholder="新号码"></el-input>
           <el-button id="update-btn" type="primary" @click="SendCAPTCHA" class="change-button">发送验证码</el-button>&nbsp;
           <el-button id="update-btn" type="primary" @click="ChangePhone" class="change-button">更新</el-button>
-          <el-button @click="state = types.maininfo" class="change-button">取消</el-button>
+          <el-button @click="state = types.main_info" class="change-button">取消</el-button>
         </div>
       </transition>
-
-      <transition name="fade">
-        <!-- 这里名字叫做changeSchool，只是为了名字呼应，但是实际上只可以修改一次 -->
-        <div v-if="state === types.changeschool" class="change-school">
-          <el-table :data="schoolList" style="width: 100%">
-            <el-table-column prop="id" label="学校ID" width="150"></el-table-column>
-            <el-table-column prop="name" label="学校名称" width="150"></el-table-column>
-            <el-table-column prop="headmaster" label="校长" width="150"></el-table-column>
-            <el-table-column prop="description" label="学校描述" width="300"></el-table-column>
-            <el-table-column prop="population" label="当前人数" width="150"></el-table-column>
-            <el-table-column fixed="right" label="操作" width="150">
-              <template slot-scope="scope">
-                <el-button
-                  @click="applyDialogVisible = true;formApplySchool.school_name = scope.row.name;formApplySchool.school_id = scope.row.id"
-                  type="text"
-                  size="small"
-                >申请加入</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-          <el-button @click="state = types.maininfo" class="change-school-button">取消</el-button>
-        </div>
-      </transition>
-
-      <el-dialog :title="'加入: ' + formApplySchool.school_name + '（一个同学只有一次选择的权利）'" :visible.sync="applyDialogVisible" width="30%">
-        <el-input placeholder="请输入你的验证信息" v-model="formApplySchool.reason" clearable></el-input>
-
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="applyDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="ApplySchool">确 定</el-button>
-        </span>
-      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -263,11 +227,10 @@ export default {
     return {
       state: 0,
       types: {
-        maininfo: 0,
-        changepwd: 1,
-        changephone: 2,
-        changeschool: 3,
-        changeavatar: 4
+        main_info: 0,
+        change_pwd: 1,
+        change_phone: 2,
+        change_avatar: 3
       },
       avatarData: {},
 
@@ -325,16 +288,16 @@ export default {
     ...mapGetters([
       'getUser',
       'getUserToken',
-      'getSchool_Name',
-      'getPermission_Public',
-      'getPermission_Private',
-      'getSchool_Id'
+      'getSchoolName',
+      'getPermissionPublic',
+      'getPermissionPrivate',
+      'getSchoolId'
     ]),
     isSelf () {
       return this.$route.params.username === this.$store.getters.getUser
     },
     hasSelectedSchool () {
-      return this.getPermission_Private > -1
+      return this.getPermissionPrivate > -1
     },
 
     myURL () {
@@ -351,8 +314,8 @@ export default {
         if (Number(level) === 4 || Number(level) === -1) { // 如果要改的权限是变成校长或者无学校
           return true
         }
-        if (this.getPermission_Private >= 8 || this.getSchool_Name === this.formInfo.school_name) { // 如果是超级管理员或者学校相同
-          if (this.getPermission_Private > this.formInfo.permission_private && this.getPermission_Private > Number(level)) {
+        if (this.getPermissionPrivate >= 8 || this.getSchoolName === this.formInfo.school_name) { // 如果是超级管理员或者学校相同
+          if (this.getPermissionPrivate > this.formInfo.permission_private && this.getPermissionPrivate > Number(level)) {
             return false
           } else {
             return true
@@ -366,7 +329,7 @@ export default {
         if (this.isSelf) { // 如果是自己
           return true
         }
-        if (this.getPermission_Public > this.formInfo.permission_public && this.getPermission_Public > Number(level)) {
+        if (this.getPermissionPublic > this.formInfo.permission_public && this.getPermissionPublic > Number(level)) {
           return false
         }
         return true
@@ -420,10 +383,10 @@ export default {
     },
     HandleAvatarClick () {
       if (this.isSelf) {
-        if (this.state === this.types.maininfo) {
-          this.state = this.types.changeavatar
+        if (this.state === this.types.main_info) {
+          this.state = this.types.change_avatar
         } else {
-          this.state = this.types.maininfo
+          this.state = this.types.main_info
         }
       }
     },
@@ -434,7 +397,7 @@ export default {
     handleAvatarSuccess (res, file) {
       console.log('Success!')
       this.$message.success('上传成功！')
-      this.state = this.types.maininfo
+      this.state = this.types.main_info
       this.imageURL = this.myURL // 这里应该是读取到了新上传的图片？
     },
     beforeAvatarUpload (file) {
@@ -481,7 +444,7 @@ export default {
         res => {
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
-            this.state = this.types.maininfo
+            this.state = this.types.main_info
             this.ResetChangepwd()
           } else {
             this.$message.error(`${res.data.msg}`)
@@ -508,7 +471,7 @@ export default {
             this.currentInfo.phone = this.formChangephone.phone
             this.formInfo.phone = this.currentInfo.phone
             this.$message.success(`${res.data.msg}`)
-            this.state = this.types.maininfo
+            this.state = this.types.main_info
             this.ResetChangephone()
           } else {
             this.$message.error(`${res.data.msg}`)
@@ -555,39 +518,6 @@ export default {
         )
       }
     },
-
-    ApplySchool () {
-      this.applyDialogVisible = false
-      let tmpdata = {
-        token: this.$store.getters.getUserToken,
-        apply_reason: this.formApplySchool.reason,
-        apply_school_id: this.formApplySchool.school_id
-      }
-      myPost(
-        '/api/school/user/apply',
-        tmpdata,
-        res => {
-          if (res.data.status === 1) {
-            this.$message({
-              type: 'success',
-              message: '你的申请已经成功递交',
-              duration: 2000
-            })
-          } else {
-            this.$message.error(`${res.data.msg}`)
-          }
-        },
-        err => {
-          this.$message.error(`${err.message}`, 'ERROR!')
-        }
-      )
-    },
-    MyGetSchoolList () {
-      this.state = this.types.changeschool
-      this.changeSchoolButtonText = '选择学校'
-      this.GetSchoolListNoPublic()
-    },
-
     ChangePermission () {
       if (!this.changePermissionEnable) {
         this.changePermissionEnable = true
@@ -721,12 +651,6 @@ export default {
 }
 .change-button {
   margin: 0%;
-}
-.change-school{
-  margin-top: 3%;
-}
-.change-school-button{
-  width: 100%;
 }
 .upload-btn{
   align-self: center

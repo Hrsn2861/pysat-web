@@ -85,13 +85,6 @@ export default {
       console.log(tmpData)
       this.GetCourseListFromMixin(tmpData)
     },
-    GetThemeList () {
-      let tmpData = {
-        token: this.$store.getters.getUserToken,
-        school_id: 0
-      }
-      this.GetThemeListFromMixin(tmpData)
-    },
     PlayVideo (index, row) {
       this.$router.push({
         name: 'videoplay',
@@ -104,14 +97,7 @@ export default {
   },
   data () {
     return {
-      videoList: [],
-      themeList: [
-        {
-          id: 0,
-          theme: '',
-          title: ''
-        }
-      ]
+      videoList: []
     }
   }
 }

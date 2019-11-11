@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar">
+  <div class="sidebar" @mouseover="$store.state.sidebar.opened = true" @mouseleave="$store.state.sidebar.opened = false">
     <el-menu
       v-if="!isLogged"
       :default-active="activeIndex"
@@ -28,18 +28,18 @@
         <el-menu-item :index="myinfoindex">个人信息</el-menu-item>
         <el-menu-item index="/personal/myprogram">我的程序</el-menu-item>
         <!-- 就让所有人都能看见学校好了 -->
-        <el-menu-item index="/personal/myschool" v-if="getSchool_Id !== 0">我的学校</el-menu-item>
+        <el-menu-item index="/personal/myschool" v-if="getSchoolId !== 0">我的学校</el-menu-item>
       </el-submenu>
 
-      <el-submenu index="/admin" v-if="getPermission_Public>=2 || getPermission_Private>=2">
+      <el-submenu index="/admin" v-if="getPermissionPublic>=2 || getPermissionPrivate>=2">
         <template slot="title">
           <i class="el-icon-s-platform"></i>
           <span slot="title">管理中心</span>
         </template>
         <el-menu-item index="/admin/program">程序管理</el-menu-item> <!-- 程序管理和提交程序共用一个路由是有原因的....-->
         <el-menu-item index="/admin/userlist">用户列表</el-menu-item>
-        <el-menu-item index="/admin/schoollist" v-if="getPermission_Public>=8">学校列表</el-menu-item>
-        <el-menu-item index="/admin/applylist" v-if="getPermission_Private>=2">加入申请</el-menu-item>
+        <el-menu-item index="/admin/schoollist" v-if="getPermissionPublic>=8">学校列表</el-menu-item>
+        <el-menu-item index="/admin/applylist" v-if="getPermissionPrivate>=2">加入申请</el-menu-item>
       </el-submenu>
 
       <el-menu-item index="/theme/submit">
@@ -62,7 +62,7 @@
           <span slot="title">线上教程</span>
         </template>
         <el-menu-item index="/course/view">查看教程</el-menu-item>
-        <el-menu-item index="/course/upload" v-if="getPermission_Public>=2 || getPermission_Private>=2">发布教程</el-menu-item>
+        <el-menu-item index="/course/upload" v-if="getPermissionPublic>=2 || getPermissionPrivate>=2">发布教程</el-menu-item>
       </el-submenu>
 
       <el-menu-item index="/chat">
@@ -94,9 +94,9 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'getPermission_Public',
-      'getPermission_Private',
-      'getSchool_Id',
+      'getPermissionPublic',
+      'getPermissionPrivate',
+      'getSchoolId',
       'getUser'
     ]),
     myinfoindex () {
@@ -125,17 +125,21 @@ export default {
 .sidebar {
   height: 100%;
   min-height: 100vh;
-  background-color: rgb(84, 92, 100);
+  background-color: #343A40;
+
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 100vh;
   height: 100%;
+  border-right: #343A40 solid 2px;
+  /* fix side bar white boarder */
 }
 
 .el-menu-vertical-demo {
   min-height: 100vh;
   height: 100%;
+  border-right: #343A40 solid 2px;
 }
 
 .el-menu-item.is-active,

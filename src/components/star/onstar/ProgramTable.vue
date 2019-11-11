@@ -2,7 +2,7 @@
   <el-table
     :data="displayData.filter(data => !search || ((data.theme_name !== null)  && data.theme_name.toLowerCase().includes(search.toLowerCase())))"
     style="width: 100%"
-    height="800"
+    height="700"
   >
     <el-table-column prop="upload_time" label="上传时间" width="250"></el-table-column>
     <el-table-column prop="name" label="程序名" width="200"></el-table-column>
@@ -96,8 +96,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-.active{
-    height: 70vh;
+.el-input{
+  margin: 0%;
+  height: 100% !important;
 }
 </style>

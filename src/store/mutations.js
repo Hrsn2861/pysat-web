@@ -102,16 +102,16 @@ export const mutations = {
     console.log('From Mutations INIT_DATA', data.chat_list)
     // console.log(state.user)
     state.chatSystem.msgCount = data.msg_count
-    state.chatSystem.sessions.push(
-      {
-        id: 0,
-        user: '官方小助手',
-        unread: 0,
-        avatar: '/api/file/avatar/get' + '?token=' + localStorage['token']
-      }
-    )
+    // state.chatSystem.sessions.push(
+    //   {
+    //     id: 0,
+    //     user: '官方小助手',
+    //     unread: 0,
+    //     avatar: '/api/file/avatar/get' + '?token=' + localStorage['token']
+    //   }
+    // )
 
-    var index = 1
+    var index = 0
     for (var i = 0; i < data.chat_list.length; ++i) {
       var chat = data.chat_list[i]
       state.chatSystem.sessions.push(

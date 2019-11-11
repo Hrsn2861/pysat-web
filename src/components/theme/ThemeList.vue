@@ -17,7 +17,7 @@
       @DeleteTheme="DeleteTheme"
       >
       </ThemeTable>
-
+      <el-pagination :background="false" layout="prev, pager, next" :page-count="themePageCnt" :current-page.sync="themePageIndex" @current-change="GetThemeList(themePageIndex)"  @prev-click="themePageIndex --" @next-click="themePageIndex++"></el-pagination>
       <el-dialog :title="themeStatus" :visible.sync="themeDialogVisible" width="30%">
         <el-input v-model="formCreateTheme.theme_name" placeholder="请输入主题名称"></el-input>
         <el-input v-model="formCreateTheme.theme_description" placeholder="请输入主题描述"></el-input>
@@ -214,18 +214,18 @@ export default {
   height: 100%;
   width: 80%;
   border: 0px dashed rgb(40, 40, 40);
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.97);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
-}
-.el-table {
-  height: 82vh !important;
 }
 .box-card:hover {
   box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);
 }
 .create-theme {
   margin-top: 0.5%;
+}
+.el-pagination{
+  padding: 0%;
 }
 </style>
