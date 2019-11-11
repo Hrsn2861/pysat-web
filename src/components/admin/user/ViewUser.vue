@@ -9,7 +9,7 @@
           <el-select
               v-model="currentSchoolId"
               placeholder="发布区域"
-              @change="GetUserList"
+              @change="userPageIndex= 1;GetUserList(userPageIndex, currentSchoolId)"
               class="school-select"
             >
               <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
@@ -31,21 +31,21 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination :background="false" layout="prev, pager, next" :page-count="pageCnt" :current-page.sync="pageIndex" @current-change="GetUserList" @prev-click="pageIndex --" @next-click="pageIndex++"></el-pagination>
-      <el-button type="text" @click="GetUserList()">刷新名单</el-button>
+      <el-pagination :background="false" layout="prev, pager, next" :page-count="userPageCnt" :current-page.sync="userPageIndex" @current-change="GetUserList(userPageIndex, currentSchoolId)" @prev-click="userPageIndex --" @next-click="userPageIndex++"></el-pagination>
+      <el-button type="text" @click="GetUserList(userPageIndex, currentSchoolId)">刷新名单</el-button>
 
     </el-card>
   </div>
 </template>
 
 <script>
-import { myGet } from '@/utils/requestFunc.js'
 import {checkSession} from '@/utils/sessionUtils/sessionFunc'
 import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
+import getUserMixin from '@/utils/functionUtils/getUserListMixin'
 import permissionComputer from '@/utils/functionUtils/permissionComputer'
 
 export default {
-  mixins: [getSchoolAndThemeMixin, permissionComputer],
+  mixins: [getSchoolAndThemeMixin, permissionComputer, getUserMixin],
   beforeCreate () {
     checkSession(this, '', '/')
   },
@@ -63,40 +63,12 @@ export default {
         this.schoolList[1].disabled = true
       }
     }
-    this.GetUserList()
+    this.GetUserList(this.userPageIndex, this.currentSchoolId)
   },
   methods: {
     viewCurrentUser (index, row) {
       console.log('View user index: ', index)
       this.$router.push({name: 'myinfo', params: {username: row.username}})
-    },
-
-    GetUserList () {
-      myGet(
-        '/api/user/list/get',
-        {
-          token: this.$store.getters.getUserToken,
-          show_invalid: 'true',
-          manager_first: 'true',
-          school_id: this.currentSchoolId,
-          page: this.pageIndex
-        },
-        res => {
-          if (res.data.status === 1) {
-            this.pageCnt = Math.ceil(res.data.data.tot_count / 20)
-            this.userList = res.data.data.user_list
-          } else {
-            this.$message.error(`${res.data.msg}`)
-          }
-        },
-        err => {
-          this.$message({
-            type: 'error',
-            message: err,
-            duration: 1000
-          })
-        }
-      )
     },
     handleClick (row) {
       console.log('click from Hangout.vue')
@@ -105,9 +77,8 @@ export default {
 
   data () {
     return {
-      pageIndex: 1, // 表示序号
-      pageCnt: 100,
-      userList: []
+      // moved to getUserListMixin
+      // userList: []
     }
   }
 }
@@ -120,7 +91,7 @@ export default {
   height: 97%;
   width: 100%;
   border: 0px dashed rgb(40, 40, 40);
-  background-color: rgba(255, 255, 255, 0.97);
+  background-color: rgba(255, 255, 255, 0.98);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
