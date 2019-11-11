@@ -2,19 +2,19 @@ import { mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters([
-      'getPermission_Public',
-      'getPermission_Private',
-      'getSchool_Id'
+      'getPermissionPublic',
+      'getPermissionPrivate',
+      'getSchoolId'
     ]),
     isRightAdmin () {
       return function (level) {
-        if (this.getPermission_Public >= 8) {
+        if (this.getPermissionPublic >= 8) {
           return true
         }
         if (this.currentSchoolId === 0) {
-          return this.getPermission_Public >= level
+          return this.getPermissionPublic >= level
         } else {
-          return this.getPermission_Private >= level
+          return this.getPermissionPrivate >= level
         }
       }
     },

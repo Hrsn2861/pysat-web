@@ -64,7 +64,7 @@ export default {
   },
   mounted: function () {
     this.GetUserList()
-    console.log(this.$store.getters.getSchool_Id)
+    console.log(this.$store.getters.getSchoolId)
   },
   data () {
     return {
