@@ -4,7 +4,7 @@
       <Header></Header>
     </el-header>
     <el-container>
-      <Siderbar></Siderbar>
+        <Siderbar></Siderbar>
       <el-container>
         <el-main class="my-main-view">
           <!-- <Breadcrumb></Breadcrumb> -->
@@ -75,8 +75,5 @@ export default {
 
   body > .el-container {
     margin-bottom: 40px;
-  }
-  .sidebar{
-    height: 100% !important;
   }
 </style>

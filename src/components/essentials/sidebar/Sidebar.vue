@@ -7,8 +7,8 @@
       class="el-menu-vertical-demo"
       :collapse="isCollapse"
       background-color="#272727"
-      text-color="#fff"
-      active-text-color="#ffd04b"
+      text-color="#A2A3A6"
+      active-text-color="#fff"
     >
       <el-menu-item index="/overview">
         <i class="el-icon-s-grid"></i>
@@ -123,28 +123,30 @@ export default {
 
 <style scoped>
 .sidebar {
-  height: 100%;
+  height: auto;
   min-height: 100vh;
   background-color: #343A40;
 
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
+  height: 1200px;
   min-height: 100vh;
-  height: 100%;
-  border-right: #343A40 solid 2px;
+
+  border-right: #343A41 solid 2px;
   /* fix side bar white boarder */
 }
 
 .el-menu-vertical-demo {
+  height: 1200px;
   min-height: 100vh;
-  height: 100%;
+
   border-right: #343A40 solid 2px;
 }
 
 .el-menu-item.is-active,
 .el-submenu.is-active >>> .el-submenu__title {
-  background: #484e5c !important;
+  background: #343A41 !important;
 }
 
 .el-submenu .el-menu-item {
@@ -152,14 +154,15 @@ export default {
   min-width: auto;
 }
 .el-submenu.is-active .el-menu-item {
-  background: #484e5c !important;
+  background: #343A41 !important;
 }
 .el-submenu.is-active .el-menu-item.is-active {
-  background: #3a4046 !important;
+  background: #91939A !important;
+  /* 代表被选中的 */
 }
 .el-submenu .el-menu-item:hover {
   padding-left: 60px !important;
-  background: rgb(67, 74, 80) !important;
+  background: rgb(42, 42, 42) !important;
 }
 .el-menu-item i {
   padding-bottom: 4px;
