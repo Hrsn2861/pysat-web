@@ -6,6 +6,7 @@
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.8)"
   >
+  <!-- v-loading.fullscreen.lock="isMobile" -->
     <div class="logo" :class="{'is-active':isActive}">
       <img src="@/assets/icon_white.png" height="30px" @click="handleMenu" />
       PYSAT
@@ -21,8 +22,8 @@
       <el-menu
         class="menu"
         mode="horizontal"
-        background-color="#272727"
-        text-color="#fff"
+        background-color="#343A40"
+        text-color="#A1A3A6"
         active-text-color="#ffd04b"
       >
         <el-menu-item index="1" @click="goIndex()">首页</el-menu-item>
@@ -111,8 +112,8 @@ export default {
   width: 100%;
   height: 50px;
   display: flex;
-  background: #272727;
-
+  background: #343A40;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.15);
   .my-search {
     margin-left: 50% !important;
     height: 90% !important;
@@ -122,12 +123,12 @@ export default {
   .logo {
     width: 200px;
     height: 50px;
-    background: #272727;
+    background: #343A40;
     color: #fff;
     text-indent: 15px;
     font-size: 18px;
     line-height: 50px;
-    font-weight: 600;
+
     transition: 0.4s ease;
     overflow: hidden;
 
@@ -146,12 +147,14 @@ export default {
   }
 
   .el-menu {
+
     height: 49px;
     margin-left: auto;
     margin-right: 20px;
     border: 0px solid red;
 
     .el-menu-item {
+      background: #343A40;
       height: 49px;
       display: flex;
       align-items: center;

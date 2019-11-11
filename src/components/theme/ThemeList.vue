@@ -201,7 +201,7 @@ export default {
   height: 100%;
   width: 80%;
   border: 0px dashed rgb(40, 40, 40);
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(255, 255, 255, 0.97);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
@@ -211,5 +211,8 @@ export default {
 }
 .create-theme {
   margin-top: 0.5%;
+}
+.el-pagination{
+  padding: 0%;
 }
 </style>

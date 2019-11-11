@@ -188,14 +188,17 @@ export default {
     },
     GetMySchoolInfo () {
       myGet(
-        '/school/school/get_specific',
+        '/api/school/school/get_specific',
         {
           token: this.$store.getters.getUserToken,
           school_id: localStorage['school_id']
         },
         res => {
           if (res.data.status === 1) {
-            this.school = res.data.data.school
+            console.log(res.data.data)
+            if (res.data.data.school) {
+              this.school = res.data.data.school
+            }
           } else {
             this.$message.error(`${res.data.msg}`)
           }

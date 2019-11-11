@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar">
+  <div class="sidebar" @mouseover="$store.state.sidebar.opened = true" @mouseleave="$store.state.sidebar.opened = false">
     <el-menu
       v-if="!isLogged"
       :default-active="activeIndex"
@@ -125,7 +125,7 @@ export default {
 .sidebar {
   height: 100%;
   min-height: 100vh;
-  background-color: rgb(84, 92, 100);
+  background-color: #343A40;
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
