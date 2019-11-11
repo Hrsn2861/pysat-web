@@ -227,6 +227,20 @@ import permissionComputer from '@/utils/functionUtils/permissionComputer'
 import { mapGetters } from 'vuex'
 
 export default {
+  beforeRouteUpdate (to, from, next) {
+    if (from.path.startsWith('/personal/myinfo') &&
+   to.path.startsWith('/personal/myinfo')) {
+      console.log('beforeRouteUpdate')
+      next()
+      this.imageURL = this.myURL
+      if (this.isSelf) {
+        this.GetMyInfo('')
+      } else {
+        this.GetMyInfo(this.$route.params.username)
+      }
+    }
+  },
+
   mixins: [getSchoolAndThemeMixin, permissionOptionsMixin, permissionComputer],
   props: ['username'], // 呃， props没有用？？？？
   name: 'MyInfo',
