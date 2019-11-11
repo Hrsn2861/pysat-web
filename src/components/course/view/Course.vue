@@ -1,10 +1,12 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-select v-model="currentSchoolId" placeholder="学校" @change="GetCourseList()">
+      <el-select v-model="currentSchoolId" placeholder="学校" @change="GetCourseList(1)">
         <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
       </el-select>
       <CourseTable v-bind:displayData="videoList"></CourseTable>
+      <el-pagination :background="false" layout="prev, pager, next" :page-count="videoPageCnt" :current-page.sync="videoPageIndex" @current-change="GetVideoList(videoPageIndex)" @prev-click="videoPageIndex --" @next-click="videoPageIndex++"></el-pagination>
+
     </el-card>
   </div>
 </template>
@@ -33,6 +35,8 @@ export default {
   },
   data () {
     return {
+      videoPageCnt: 100,
+      videoPageIndex: 1,
       videoList: [
         {
           upload_time: '2016-05-02',
@@ -52,11 +56,14 @@ export default {
     }
   },
   methods: {
-    GetCourseList () {
+    GetCourseList (index) {
       let tmpData = {
         token: this.$store.getters.getUserToken,
         school_id: this.currentSchoolId,
         category_id: 0
+      }
+      if (index) {
+        tmpData['page'] = index
       }
       console.log(tmpData)
       this.GetCourseListFromMixin(tmpData)
@@ -72,7 +79,7 @@ export default {
   height: 85vh;
   width: 95%;
   border: 0px dashed rgb(40, 40, 40);
-  background-color: rgba(255, 255, 255, 0.92);
+  background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
@@ -94,5 +101,9 @@ export default {
   background-size: cover;
   background-repeat: none;
   height: 100%;
+}
+.el-pagination{
+  width: 100%;
+  padding: 0%;
 }
 </style>

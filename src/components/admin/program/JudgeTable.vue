@@ -1,30 +1,37 @@
 <template>
-  <el-table
-    :data="displayData"
-    style="width: 100%"
-    height="500"
-  >
-    <el-table-column prop="submit_time" label="提交时间" width="300"></el-table-column>
-    <el-table-column prop="author" label="作者" width="180"></el-table-column>
-    <el-table-column prop="name" label="程序名" width="200"></el-table-column>
-    <el-table-column prop="status" label="审核状态"  width="200" :formatter="statusFormatter"></el-table-column>
+  <el-table :data="displayData" style="width: 100%" height="500">
+    <el-table-column prop="submit_time" label="提交时间" width="200"></el-table-column>
+    <el-table-column prop="author" label="作者" width="150"></el-table-column>
+    <el-table-column prop="name" label="程序名" :resizable="true"></el-table-column>
+    <el-table-column prop="status" label="审核状态" width="180">
+      <template slot-scope="scope">
+        <el-tag
+          :type="calculateTagType(scope.row.status)"
+          disable-transitions
+        >{{statusDict[scope.row.status]}}</el-tag>
+      </template>
+    </el-table-column>
 
-    <el-table-column label="下载" width="150" fixed="right">
+    <el-table-column label="下载" width="100" fixed="right">
       <template slot-scope="scope">
         <el-button @click="Download(scope.$index, scope.row)" circle icon="el-icon-download"></el-button>
       </template>
     </el-table-column>
-        <el-table-column label="通过" width="150" fixed="right">
+    <el-table-column label="通过" width="100" fixed="right">
       <template slot-scope="scope">
-        <el-button  @click="ApproveOrNot(scope.$index, scope.row, true)" circle icon="el-icon-check"></el-button>
+        <el-button @click="ApproveOrNot(scope.$index, scope.row, true)" circle icon="el-icon-check"></el-button>
       </template>
     </el-table-column>
-        <el-table-column label="不通过" width="150" fixed="right">
-    <template slot-scope="scope">
-        <el-button @click="ApproveOrNot(scope.$index, scope.row, false)" circle icon="el-icon-close"></el-button>
+    <el-table-column label="不通过" width="100" fixed="right">
+      <template slot-scope="scope">
+        <el-button
+          @click="ApproveOrNot(scope.$index, scope.row, false)"
+          circle
+          icon="el-icon-close"
+        ></el-button>
       </template>
     </el-table-column>
-    <el-table-column label="上传" width="150" fixed="right">
+    <el-table-column label="上传" width="100" fixed="right">
       <template slot-scope="scope">
         <el-button @click="Upload(scope.$index, scope.row)" circle icon="el-icon-upload"></el-button>
       </template>
@@ -36,11 +43,8 @@ import { myPost, myGet } from '@/utils/requestFunc.js'
 import { saveAs } from 'file-saver'
 
 export default {
-  components: {
-  },
-  props: [
-    'displayData'
-  ],
+  components: {},
+  props: ['displayData'],
   data () {
     return {
       tableStatus: {
@@ -58,10 +62,25 @@ export default {
       }
     }
   },
+  computed: {
+    calculateTagType () {
+      return function (status) {
+        if (status === 5) {
+          return 'success'
+        } else if (status >= 2 && status <= 4) {
+          return 'warning'
+        } else if (status >= 0 && status <= 1) {
+          return 'info'
+        } else if (status < 0) {
+          return 'danger'
+        }
+      }
+    }
+  },
   methods: {
-    statusFormatter (row, column) {
-      return this.statusDict[row.status.toString()]
-    },
+    // statusFormatter (row, column) {
+    //   return this.statusDict[row.status.toString()]
+    // },
     Download (index, row) {
       if (row.status === 2) {
         this.$message.error('您已经审核通过了！')
@@ -81,9 +100,17 @@ export default {
             // 需要更新row.status
             row.status = 1
             this.$message.success('开始审核！')
-            var codeContent = new File([res.data.data.code.content], 'code.py', {type: 'text/plain;charset=utf-8'})
+            var codeContent = new File(
+              [res.data.data.code.content],
+              'code.py',
+              { type: 'text/plain;charset=utf-8' }
+            )
             saveAs(codeContent)
-            var codeReadme = new File([res.data.data.code.readme], 'readme.py', {type: 'text/plain;charset=utf-8'})
+            var codeReadme = new File(
+              [res.data.data.code.readme],
+              'readme.py',
+              { type: 'text/plain;charset=utf-8' }
+            )
             saveAs(codeReadme)
           } else {
             this.$message.error(`${res.data.msg}`)
@@ -187,8 +214,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-.active{
-    height: 50vh;
+.active {
+  height: 50vh;
 }
 </style>

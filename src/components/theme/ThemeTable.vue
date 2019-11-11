@@ -1,6 +1,6 @@
 <template>
     <div>
-    <el-table :data="displayData" style="width: 100%" height="705">
+    <el-table :data="displayData" style="width: 100%" height="600">
         <el-table-column prop="id" label="主题ID" width="80"></el-table-column>
         <el-table-column prop="title" label="主题名称" width="150"></el-table-column>
         <el-table-column prop="description" label="描述" :resizable="true"></el-table-column>

@@ -22,7 +22,9 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-select v-model="currentSchoolId" placeholder="学校" @change="GetApplyList()">
+      <el-pagination :background="false" layout="prev, pager, next" :page-count="applyPageCnt" :current-page.sync="applyPageIndex" @current-change="GetApplyList(applyPageIndex)" @prev-click="applyPageIndex --" @next-click="applyPageIndex++"></el-pagination>
+
+      <el-select v-model="currentSchoolId" placeholder="学校" @change="GetApplyList(1)">
         <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
       <el-button type="text" @click="GetApplyList">刷新名单</el-button>
@@ -76,21 +78,25 @@ export default {
       this.$router.push({ name: 'myinfo', params: { username: row.username } })
     },
 
-    GetApplyList () {
+    GetApplyList (index) {
       console.log(this.schoolList)
       console.log(this.currentSchoolId)
-      let tmpdata = {
+      let tmpData = {
         token: this.$store.getters.getUserToken,
         school_id: this.currentSchoolId,
         type: 2
         // TODO : 这里默认返回未处理的
       }
+      if (index) {
+        tmpData['page'] = index
+      }
       myPost(
         '/api/school/admin/applylist',
-        tmpdata,
+        tmpData,
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
+            this.applyPageCnt = Math.ceil(res.data.data.tot_count / 20)
             this.applyList = res.data.data.apply_list
           } else {
             this.$message.error(`${res.data.msg}`)
@@ -104,14 +110,14 @@ export default {
     ApproveCurrentUserOrNot (index, row, approveOrNot) {
       console.log('Approve user: ', row.username)
 
-      let tmpdata = {
+      let tmpData = {
         token: this.$store.getters.getUserToken,
         apply_id: row.id,
         approve: approveOrNot
       }
       myPost(
         '/api/school/admin/approve',
-        tmpdata,
+        tmpData,
         res => {
           if (res.data.status === 1) {
             this.applyList.splice(index, 1)
@@ -161,5 +167,9 @@ export default {
   background-size: cover;
   background-repeat: none;
   height: 100%;
+}
+.el-pagination{
+  width: 100%;
+  padding: 0%;
 }
 </style>

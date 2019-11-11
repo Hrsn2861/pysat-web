@@ -1,15 +1,17 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-        <el-select v-model="currentSchoolId" placeholder="学校" @change="GetProgramList()">
+        <el-select v-model="currentSchoolId" placeholder="学校" @change="GetProgramList(1)">
           <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
         </el-select>
-      <el-tabs v-model="activeTabName" @tab-click="GetProgramList()">
+      <el-tabs v-model="activeTabName" @tab-click="GetProgramList(1)">
         <el-tab-pane label="最新程序" name="tabNew" >
-          <ProgramTable ref = "tableNew" :displayData="tableData" :isPublic="isPublic"></ProgramTable>
+          <ProgramTable ref = "tableNew" :displayData="programList" :isPublic="isPublic"></ProgramTable>
+          <el-pagination :background="false" layout="prev, pager, next" :page-count="programPageCnt" :current-page.sync="programPageIndex" @current-change="GetJudgeList(programPageIndex)" @prev-click="programPageIndex --" @next-click="programPageIndex++"></el-pagination>
         </el-tab-pane>
         <el-tab-pane label="最热程序" name="tabHot">
-          <ProgramTable ref = "tableHot" :displayData="tableData" :isPublic="isPublic"></ProgramTable>
+          <ProgramTable ref = "tableHot" :displayData="programList" :isPublic="isPublic"></ProgramTable>
+          <el-pagination :background="false" layout="prev, pager, next" :page-count="programPageCnt" :current-page.sync="programPageIndex" @current-change="GetProgramList(programPageIndex)" @prev-click="judgePageIndex --" @next-click="judgePageIndex++"></el-pagination>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -39,8 +41,10 @@ export default {
   },
   data () {
     return {
+      programPageCnt: 100,
+      programPageIndex: 1,
       activeTabName: 'tabNew',
-      tableData: [
+      programList: [
         {
           upload_time: '9999-12-31',
           author: '？？？',
@@ -64,7 +68,7 @@ export default {
 
   methods: {
     // 这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
-    GetProgramList () {
+    GetProgramList (index) {
       console.log(this.activeTabName)
       let tmpData = {
         token: this.$store.getters.getUserToken,
@@ -73,6 +77,9 @@ export default {
         school_id: this.currentSchoolId,
         status_low: 4,
         status_up: 6
+      }
+      if (index) {
+        tmpData['page'] = index
       }
       if (this.activeTabName === 'tabNew') {
         tmpData.sort_type = 0
@@ -85,8 +92,9 @@ export default {
         tmpData,
         res => {
           if (res.data.status === 1) {
-            this.tableData = res.data.data.code_list
-            console.log(this.tableData)
+            this.programList = res.data.data.code_list
+            this.programPageCnt = Math.ceil(res.data.data.tot_count / 20)
+            console.log(this.programList)
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -104,10 +112,10 @@ export default {
 <style scoped>
 .box-card {
   align-self: center;
-  height: 85vh;
+  height: 100%;
   width: 95%;
   border: 0px dashed rgb(40, 40, 40);
-  background-color: rgba(255, 255, 255, 0.92);
+  background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
@@ -129,5 +137,9 @@ export default {
   background-size: cover;
   background-repeat: none;
   height: 100%;
+}
+.el-pagination{
+  width: 100%;
+  padding: 0%;
 }
 </style>

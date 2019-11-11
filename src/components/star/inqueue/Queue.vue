@@ -1,10 +1,12 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-select v-model="currentSchoolId" placeholder="学校" @change="GetQueueList()">
+      <el-select v-model="currentSchoolId" placeholder="学校" @change="GetQueueList(1)">
         <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
       </el-select>
-      <QueueTable :displayData="tableData" :isPublic="isPublic"></QueueTable>
+      <QueueTable :displayData="queueList" :isPublic="isPublic"></QueueTable>
+      <el-pagination :background="false" layout="prev, pager, next" :page-count="queuePageCnt" :current-page.sync="queuePageIndex" @current-change="GetQueueList(queuePageIndex)" @prev-click="queuePageIndex --" @next-click="queuePageIndex++"></el-pagination>
+
     </el-card>
   </div>
 </template>
@@ -36,7 +38,9 @@ export default {
   },
   data () {
     return {
-      tableData: [
+      queuePageCnt: 100,
+      queuePageIndex: 1,
+      queueList: [
         {
           submit_time: '9999-12-31',
           author: '？？？',
@@ -54,13 +58,16 @@ export default {
   },
 
   methods: {
-    GetQueueList () {
+    GetQueueList (index) {
       let tmpData = {
         token: this.$store.getters.getUserToken,
         mine: false,
         school_id: this.currentSchoolId,
         status_low: 3,
         status_up: 5
+      }
+      if (index) {
+        tmpData['page'] = index
       }
       console.log(tmpData)
       myGet(
@@ -69,7 +76,8 @@ export default {
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
-            this.tableData = res.data.data.code_list
+            this.queueList = res.data.data.code_list
+            this.queuePageCnt = Math.ceil(res.data.data.tot_count / 20)
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -90,7 +98,7 @@ export default {
   height: 85vh;
   width: 95%;
   border: 0px dashed rgb(40, 40, 40);
-  background-color: rgba(255, 255, 255, 0.92);
+  background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
@@ -112,5 +120,9 @@ export default {
   background-size: cover;
   background-repeat: none;
   height: 100%;
+}
+.el-pagination{
+  width: 100%;
+  padding: 0%;
 }
 </style>

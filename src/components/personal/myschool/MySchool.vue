@@ -19,7 +19,7 @@
           <i>{{school.population}}</i> 人
         </el-card>
         <el-card>
-          <el-table :data="userList" style="width: 100%" stripe class="video-table" height="520">
+          <el-table :data="userList" style="width: 100%" stripe class="video-table" height="630">
             <el-table-column prop="username" label="用户名" width="180"></el-table-column>
             <el-table-column prop="motto" label="个性签名" :resizable="true"></el-table-column>
             <el-table-column v-if="false" prop="permission" label="权限"></el-table-column>
@@ -27,7 +27,7 @@
               <template slot-scope="scope">
                 <el-tag
                   v-if="scope.row.username!==myName"
-                  :type="scope.row.permission === 4 ? 'warning' : scope.row.permission===2? 'success': 'primary'"
+                  :type="calculateTagType(scope.row.permission)"
                   disable-transitions
                 >{{statusDict[scope.row.permission]}}</el-tag>
                 <el-tag
@@ -128,7 +128,13 @@ export default {
       }
     }
   },
-  computed: {},
+  computed: {
+    calculateTagType () {
+      return function (permission) {
+        return permission === 4 ? 'warning' : permission === 2 ? 'success' : 'primary'
+      }
+    }
+  },
   methods: {
     ApplySchool () {
       this.applyDialogVisible = false
