@@ -1,58 +1,88 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-card>
-        <el-row type="flex" align="bottom">
-          <el-col :lg="{span:4}" :xs="{span:24}" :md="{span:12}">
-            <h1>{{school.name}}</h1>
-          </el-col>
-          <el-col :lg="{span:4}" :xs="{span:0}" :md="{span:5}">
-            <i>
-              <h2 style="margin:0%;">校长 : {{school.headmaster}}</h2>
-            </i>
-          </el-col>
-        </el-row>
-      </el-card>
-      <el-card>
-        {{school.description}}, 现有
-        <i>{{school.population}}</i> 人
-      </el-card>
-      <el-card>
-        <el-table :data="userList" style="width: 100%" stripe class="video-table" height="565">
-          <el-table-column prop="username" label="用户名" width="180"></el-table-column>
-          <el-table-column prop="motto" label="个性签名" :resizable="true"></el-table-column>
-          <el-table-column v-if="false" prop="permission" label="权限"></el-table-column>
-          <el-table-column fixed="right" label="身份" width="150">
-            <template slot-scope="scope">
-              <el-tag
-                v-if="scope.row.username!==myName"
-                :type="scope.row.permission === 4 ? 'warning' : scope.row.permission===2? 'success': 'primary'"
-                disable-transitions
-              >{{statusDict[scope.row.permission]}}</el-tag>
-              <el-tag
-                v-else-if="scope.row.username===myName"
-                type='danger'
-                disable-transitions
-              >{{statusDict[scope.row.permission]}}，自己</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column fixed="right" label="操作" width="200">
-          <template slot-scope="scope">
-            <el-button type="text" size="small" @click="ViewCurrentUser(scope.$index, scope.row)">查看</el-button>
-            <el-button type="text" size="small" @click="SayHello(scope.$index, scope.row)">打个招呼</el-button>
-          </template>
-        </el-table-column>
-        </el-table>
-        <el-pagination
-    layout="prev, pager, next"
-    :total="1000">
-  </el-pagination>
-      </el-card>
+      <div v-if="hasSelectedSchool">
+        <el-card>
+          <el-row type="flex" align="bottom">
+            <el-col :lg="{span:4}" :xs="{span:24}" :md="{span:12}">
+              <h1>{{school.name}}</h1>
+            </el-col>
+            <el-col :lg="{span:4}" :xs="{span:0}" :md="{span:5}">
+              <i>
+                <h2 style="margin:0%;">校长 : {{school.headmaster}}</h2>
+              </i>
+            </el-col>
+          </el-row>
+        </el-card>
+        <el-card>
+          {{school.description}}, 现有
+          <i>{{school.population}}</i> 人
+        </el-card>
+        <el-card>
+          <el-table :data="userList" style="width: 100%" stripe class="video-table" height="520">
+            <el-table-column prop="username" label="用户名" width="180"></el-table-column>
+            <el-table-column prop="motto" label="个性签名" :resizable="true"></el-table-column>
+            <el-table-column v-if="false" prop="permission" label="权限"></el-table-column>
+            <el-table-column fixed="right" label="身份" width="150">
+              <template slot-scope="scope">
+                <el-tag
+                  v-if="scope.row.username!==myName"
+                  :type="scope.row.permission === 4 ? 'warning' : scope.row.permission===2? 'success': 'primary'"
+                  disable-transitions
+                >{{statusDict[scope.row.permission]}}</el-tag>
+                <el-tag
+                  v-else-if="scope.row.username===myName"
+                  type="danger"
+                  disable-transitions
+                >{{statusDict[scope.row.permission]}}，自己</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column fixed="right" label="操作" width="200">
+              <template slot-scope="scope">
+                <el-button
+                  type="text"
+                  size="small"
+                  @click="ViewCurrentUser(scope.$index, scope.row)"
+                >查看</el-button>
+                <el-button type="text" size="small" @click="SayHello(scope.$index, scope.row)">打个招呼</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination layout="prev, pager, next" :total="1000"></el-pagination>
+        </el-card>
+      </div>
+      <div v-else class="change-school">
+        <h2>申请加入学校，就是现在！</h2>
+         <el-table :data="schoolList" style="width: 100%" height="720">
+            <el-table-column prop="id" label="学校ID" width="150"></el-table-column>
+            <el-table-column prop="name" label="学校名称" width="150"></el-table-column>
+            <el-table-column prop="headmaster" label="校长" width="150"></el-table-column>
+            <el-table-column prop="description" label="学校描述" :resizable="true"></el-table-column>
+            <el-table-column prop="population" label="当前人数" width="150"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="150">
+              <template slot-scope="scope">
+                <el-button
+                  @click="applyDialogVisible = true;formApplySchool.school_name = scope.row.name;formApplySchool.school_id = scope.row.id"
+                  type="text"
+                  size="small"
+                >申请加入</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+      </div>
     </el-card>
+    <el-dialog :title="'加入: ' + formApplySchool.school_name + '（一个同学只有一次选择的权利）'" :visible.sync="applyDialogVisible" width="30%">
+        <el-input placeholder="请输入你的验证信息" v-model="formApplySchool.reason" clearable></el-input>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="applyDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="ApplySchool">确 定</el-button>
+        </span>
+      </el-dialog>
   </div>
 </template>
 <script>
-import { myGet } from '@/utils/requestFunc.js'
+import { myGet, myPost } from '@/utils/requestFunc.js'
 import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 import permissionComputer from '@/utils/functionUtils/permissionComputer'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
@@ -64,10 +94,17 @@ export default {
   },
   mounted: function () {
     this.GetUserList()
+    this.GetSchoolListNoPublic()
     console.log(this.$store.getters.getSchoolId)
   },
   data () {
     return {
+      applyDialogVisible: false,
+      formApplySchool: {
+        reason: '',
+        school_name: '',
+        school_id: -1
+      },
       school: {
         name: '清华大学',
         description: '坐落于美丽的燕园隔壁',
@@ -85,13 +122,37 @@ export default {
   },
   computed: {},
   methods: {
+    ApplySchool () {
+      this.applyDialogVisible = false
+      let tmpdata = {
+        token: this.$store.getters.getUserToken,
+        apply_reason: this.formApplySchool.reason,
+        apply_school_id: this.formApplySchool.school_id
+      }
+      myPost(
+        '/api/school/user/apply',
+        tmpdata,
+        res => {
+          if (res.data.status === 1) {
+            this.$message({
+              type: 'success',
+              message: '你的申请已经成功递交',
+              duration: 2000
+            })
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
+        },
+        err => {
+          this.$message.error(`${err.message}`, 'ERROR!')
+        }
+      )
+    },
     ViewCurrentUser (index, row) {
       console.log('View user index: ', index)
-      this.$router.push({name: 'myinfo', params: {username: row.username}})
+      this.$router.push({ name: 'myinfo', params: { username: row.username } })
     },
-    SayHello (index, row) {
-
-    },
+    SayHello (index, row) {},
     GetUserList () {
       myGet(
         '/api/user/list/get',

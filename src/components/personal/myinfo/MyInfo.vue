@@ -18,6 +18,7 @@
           <el-row
             type="flex"
             justify="center"
+            align="middle"
             style="height:100px !important"
             v-if="state === types.change_avatar"
           >
@@ -145,11 +146,6 @@
           @click="ChangePermission()"
           v-if="!isSelf"
         >{{changePermissionButtonText}}</el-button>
-        <el-button
-          type="warning"
-          @click="MyGetSchoolList()"
-          v-if="!hasSelectedSchool && isSelf && !isGreatAdmin"
-        >{{changeSchoolButtonText}}</el-button>
 
       </el-row>
 
@@ -181,38 +177,6 @@
           <el-button @click="state = types.main_info" class="change-button">取消</el-button>
         </div>
       </transition>
-
-      <transition name="fade">
-        <!-- 这里名字叫做changeSchool，只是为了名字呼应，但是实际上只可以修改一次 -->
-        <div v-if="state === types.change_school" class="change-school">
-          <el-table :data="schoolList" style="width: 100%">
-            <el-table-column prop="id" label="学校ID" width="150"></el-table-column>
-            <el-table-column prop="name" label="学校名称" width="150"></el-table-column>
-            <el-table-column prop="headmaster" label="校长" width="150"></el-table-column>
-            <el-table-column prop="description" label="学校描述" width="300"></el-table-column>
-            <el-table-column prop="population" label="当前人数" width="150"></el-table-column>
-            <el-table-column fixed="right" label="操作" width="150">
-              <template slot-scope="scope">
-                <el-button
-                  @click="applyDialogVisible = true;formApplySchool.school_name = scope.row.name;formApplySchool.school_id = scope.row.id"
-                  type="text"
-                  size="small"
-                >申请加入</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-          <el-button @click="state = types.main_info" class="change-school-button">取消</el-button>
-        </div>
-      </transition>
-
-      <el-dialog :title="'加入: ' + formApplySchool.school_name + '（一个同学只有一次选择的权利）'" :visible.sync="applyDialogVisible" width="30%">
-        <el-input placeholder="请输入你的验证信息" v-model="formApplySchool.reason" clearable></el-input>
-
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="applyDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="ApplySchool">确 定</el-button>
-        </span>
-      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -254,8 +218,7 @@ export default {
         main_info: 0,
         change_pwd: 1,
         change_phone: 2,
-        change_school: 3,
-        change_avatar: 4
+        change_avatar: 3
       },
       avatarData: {},
 
@@ -543,39 +506,6 @@ export default {
         )
       }
     },
-
-    ApplySchool () {
-      this.applyDialogVisible = false
-      let tmpdata = {
-        token: this.$store.getters.getUserToken,
-        apply_reason: this.formApplySchool.reason,
-        apply_school_id: this.formApplySchool.school_id
-      }
-      myPost(
-        '/api/school/user/apply',
-        tmpdata,
-        res => {
-          if (res.data.status === 1) {
-            this.$message({
-              type: 'success',
-              message: '你的申请已经成功递交',
-              duration: 2000
-            })
-          } else {
-            this.$message.error(`${res.data.msg}`)
-          }
-        },
-        err => {
-          this.$message.error(`${err.message}`, 'ERROR!')
-        }
-      )
-    },
-    MyGetSchoolList () {
-      this.state = this.types.change_school
-      this.changeSchoolButtonText = '选择学校'
-      this.GetSchoolListNoPublic()
-    },
-
     ChangePermission () {
       if (!this.changePermissionEnable) {
         this.changePermissionEnable = true
@@ -709,12 +639,6 @@ export default {
 }
 .change-button {
   margin: 0%;
-}
-.change-school{
-  margin-top: 3%;
-}
-.change-school-button{
-  width: 100%;
 }
 .upload-btn{
   align-self: center

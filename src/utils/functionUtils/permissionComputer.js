@@ -6,6 +6,9 @@ export default {
       'getPermissionPrivate',
       'getSchoolId'
     ]),
+    hasSelectedSchool () {
+      return this.getSchoolId !== 0
+    },
     isRightAdmin () {
       return function (level) {
         if (this.getPermissionPublic >= 8) {

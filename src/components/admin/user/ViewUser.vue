@@ -1,8 +1,23 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-table :data="userList" style="width:100%" height="500">
-        <el-table-column type="selection" width="55"></el-table-column>
+      <el-row >
+        <el-col :lg="{span:2}" :sm="{span:3}" :xs="{span:8}">
+          <h2>用户列表</h2>
+        </el-col>
+        <el-col :lg="{span:2}" :sm="{span:4}" :xs="{span:10}">
+          <el-select
+              v-model="currentSchoolId"
+              placeholder="发布区域"
+              @change="GetUserList"
+              class="school-select"
+            >
+              <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
+          </el-select>
+        </el-col>
+      </el-row>
+      <el-table :data="userList" style="width:100%" height="670">
+        <!-- <el-table-column type="selection" width="55"></el-table-column> -->
         <el-table-column prop="username" label="用戶" width="120"></el-table-column>
         <el-table-column prop="motto" label="座右铭" :resizable="true"></el-table-column>
         <el-table-column prop="permission" label="用户权限" width="120"></el-table-column>
@@ -16,15 +31,9 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination :background="false" layout="prev, pager, next" :page-count="pageCnt" :current-page.sync="pageIndex" @current-change="GetUserList" @prev-click="pageIndex --" @next-click="pageIndex++"></el-pagination>
       <el-button type="text" @click="GetUserList()">刷新名单</el-button>
-      <el-button type="text">...</el-button>
-      <el-select
-          v-model="currentSchoolId"
-          placeholder="发布区域"
-          @change="GetUserList"
-        >
-          <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
-      </el-select>
+
     </el-card>
   </div>
 </template>
@@ -39,6 +48,8 @@ export default {
   mixins: [getSchoolAndThemeMixin, permissionComputer],
   beforeCreate () {
     checkSession(this, '', '/')
+  },
+  computed: {
   },
   mounted: function () {
     if (localStorage.getItem('permission_public') >= 8) {
@@ -67,11 +78,12 @@ export default {
           token: this.$store.getters.getUserToken,
           show_invalid: 'true',
           manager_first: 'true',
-          school_id: this.currentSchoolId
+          school_id: this.currentSchoolId,
+          page: this.pageIndex
         },
         res => {
           if (res.data.status === 1) {
-            console.log(res.data.data)
+            this.pageCnt = Math.ceil(res.data.data.tot_count / 20)
             this.userList = res.data.data.user_list
           } else {
             this.$message.error(`${res.data.msg}`)
@@ -93,6 +105,8 @@ export default {
 
   data () {
     return {
+      pageIndex: 1, // 表示序号
+      pageCnt: 100,
       userList: []
     }
   }
@@ -100,22 +114,27 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="scss">
 .box-card {
   align-self: center;
-  height: auto;
-  width: 95%;
+  height: 97%;
+  width: 100%;
   border: 0px dashed rgb(40, 40, 40);
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.97);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
-  margin: 5%;
+  margin-left: 3%;
+  margin-right: 3%;
 }
 .box-card:hover {
   box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);
 }
-
+h2{
+  margin-top: 0%;
+  margin-bottom: 1%;
+  margin-right: 2%;
+}
 .main-div {
   height: 100%;
   width: 100%;
@@ -128,5 +147,12 @@ export default {
   background-size: cover;
   background-repeat: none;
   height: 100%;
+}
+.school-select{
+  margin-bottom: 5%;
+}
+.el-pagination{
+  width: 100%;
+  padding: 0%;
 }
 </style>
