@@ -74,7 +74,7 @@
             <el-form-item label="学校">
               <el-input
                 class="my-info-item"
-                v-model="formInfo.school"
+                v-model="formInfo.school_name"
                 placeholder
                 :disabled="true"
               ></el-input>
