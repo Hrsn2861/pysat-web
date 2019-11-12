@@ -84,6 +84,7 @@ export default {
             saveAs(codeReadme)
             if (!row.downloaded) {
               row.downloads += 1
+              row.downloaded = true
             }
           } else {
             this.$message.error(`${res.data.msg}`)
