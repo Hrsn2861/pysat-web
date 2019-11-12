@@ -22,8 +22,10 @@
               :append-to-body="true"
             >
               <span>确定要删除该主题吗？</span>
+               <span slot="footer" class="dialog-footer">
                 <el-button @click="deleteDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="DeleteTheme()">确 定</el-button>
+                <el-button type="primary" @click="DeleteTheme();deleteDialogVisible=false">确 定</el-button>
+               </span>
             </el-dialog>
           </template>
         </el-table-column>
@@ -92,7 +94,6 @@ export default {
       console.log(this.selectIndex)
       console.log(this.selectRow)
       this.$emit('DeleteTheme', this.selectIndex, this.selectRow)
-      this.deleteDialogVisible = false
     }
   }
 }
