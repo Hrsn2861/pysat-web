@@ -14,11 +14,24 @@
             <el-button type="text" size="small" @click="JudgeProgram(scope.$index, scope.row)" v-if="isRightAdmin(2) && $route.path===urlAdmin">审核</el-button>
             <el-button type="text" size="small" @click="UploadProgram(scope.$index, scope.row)" v-if="isRightAdmin(4) && $route.path===urlAdmin">上传</el-button>
             <el-button type="text" size="small" @click="ModifyTheme(scope.$index, scope.row)" v-if="isRightAdmin(2) && $route.path===urlAdmin">修改</el-button>
-            <el-button type="text" size="small" @click="DeleteTheme(scope.$index, scope.row)" v-if="isRightAdmin(4) && $route.path===urlAdmin">删除</el-button>
+            <el-button type="text" size="small" @click="MakeDeleteDialogVisible(scope.$index, scope.row)" v-if="isRightAdmin(4) && $route.path===urlAdmin">删除</el-button>
+            <el-dialog
+              title="提示"
+              :visible.sync="deleteDialogVisible"
+              width="30%"
+              :append-to-body="true"
+            >
+              <span>确定要删除该主题吗？</span>
+               <span slot="footer" class="dialog-footer">
+                <el-button @click="deleteDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="DeleteTheme();deleteDialogVisible=false">确 定</el-button>
+               </span>
+            </el-dialog>
           </template>
         </el-table-column>
       </el-table>
     </div>
+
 </template>
 <script>
 import permissionComputer from '@/utils/functionUtils/permissionComputer'
@@ -45,7 +58,10 @@ export default {
   data () {
     return {
       urlSubmit: '/theme/submit',
-      urlAdmin: '/admin/program'
+      urlAdmin: '/admin/program',
+      deleteDialogVisible: false,
+      selectRow: null,
+      selectIndex: -1
     }
   },
 
@@ -68,11 +84,18 @@ export default {
       this.$router.push({ name: 'upload', params: { themeid: row.id } })
     },
 
-    DeleteTheme (index, row) {
-      this.$emit('DeleteTheme', index, row)
-    },
     ModifyTheme (index, row) {
       this.$emit('ModifyTheme', index, row)
+    },
+    MakeDeleteDialogVisible (index, row) {
+      this.selectIndex = index
+      this.selectRow = row
+      this.deleteDialogVisible = true
+    },
+    DeleteTheme () {
+      console.log(this.selectIndex)
+      console.log(this.selectRow)
+      this.$emit('DeleteTheme', this.selectIndex, this.selectRow)
     }
   }
 }
