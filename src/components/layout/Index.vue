@@ -10,7 +10,7 @@
           <!-- <Breadcrumb></Breadcrumb> -->
           <transition :name="transitionName">
    <!--         <router-view  :key="$route.fullPath"></router-view>   -->
-            <router-view></router-view>
+            <router-view v-if="isReloadAlive"></router-view>
           </transition>
         </el-main>
         <el-footer>
@@ -32,9 +32,16 @@ import ResizeMixin from '@/utils/resolutionUtils/resizeHandler'
 export default {
   name: 'Index',
   mixins: [ResizeMixin],
+  provide () {
+    return {
+      reload: this.reload
+    }
+  },
+
   data () {
     return {
-      transitionName: 'slide-right'
+      transitionName: 'slide-right',
+      isReloadAlive: true
     }
   },
   components: {
@@ -48,6 +55,12 @@ export default {
   created () {
   },
   methods: {
+    reload () {
+      this.isReloadAlive = false
+      this.$nextTick(function () {
+        this.isReloadAlive = true
+      })
+    }
   }
 
 }

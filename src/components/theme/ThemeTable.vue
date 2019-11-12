@@ -6,10 +6,11 @@
         <el-table-column prop="description" label="描述" :resizable="true"></el-table-column>
         <el-table-column prop="create_time" label="发布时间" width="160"></el-table-column>
         <el-table-column prop="deadline" label="截止日期" width="160"></el-table-column>
-        <el-table-column prop="count" label="相关数目" width="120"></el-table-column>
-        <el-table-column label="操作" width="200">
+        <el-table-column prop="count_onstar" label="上星数目" width="120" v-if="$route.path===urlSubmit"></el-table-column>
+        <el-table-column prop="count_tohandle" label="待处理数目" width="120" v-if="$route.path===urlAdmin"></el-table-column>
+        <el-table-column fixed="right" label="操作" width="200">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="SubmitProgram(scope.$index, scope.row)" v-if="$route.path===urlSubmit">提交</el-button>
+            <el-button type="text" size="small" @click="SubmitProgram(scope.$index, scope.row)" v-if="isRightAdmin(1) && $route.path===urlSubmit">提交</el-button>
             <el-button type="text" size="small" @click="JudgeProgram(scope.$index, scope.row)" v-if="isRightAdmin(2) && $route.path===urlAdmin">审核</el-button>
             <el-button type="text" size="small" @click="UploadProgram(scope.$index, scope.row)" v-if="isRightAdmin(4) && $route.path===urlAdmin">上传</el-button>
             <el-button type="text" size="small" @click="ModifyTheme(scope.$index, scope.row)" v-if="isRightAdmin(2) && $route.path===urlAdmin">修改</el-button>
