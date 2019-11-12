@@ -70,7 +70,7 @@ export default {
     if (this.$route.path === this.urlAdmin) {
       this.currentlevel = 2
     } else {
-      this.currentlevel = 1
+      this.currentlevel = 0
     }
     if (localStorage.getItem('permission_public') >= 8) {
       this.GetSchoolList()
