@@ -4,7 +4,6 @@
       <el-select v-model="currentSchoolId" placeholder="学校" @change="GetApplyList(1)">
             <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>
-      <el-button type="text" @click="GetApplyList">刷新名单</el-button>
       <el-table :data="applyList" style="width:100%" height="500">
         <el-table-column prop="id" label="申请id" width="200"></el-table-column>
         <el-table-column prop="username" label="用户名" width="120"></el-table-column>
