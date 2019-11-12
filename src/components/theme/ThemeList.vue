@@ -130,7 +130,7 @@ export default {
         res => {
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
-            this.GetThemeList()
+            this.themeList.splice(index, 1)
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -179,7 +179,7 @@ export default {
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
             this.themeDialogVisible = false
-            this.GetThemeList()
+            this.GetThemeList(this.themePageIndex)
           } else {
             this.$message.error(`${res.data.msg}`)
           }
