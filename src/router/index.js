@@ -180,14 +180,7 @@ export default new Router({
           // 提交页面
           path: 'submit/:themeid',
           name: 'submit',
-          component: Submit,
-          beforeEnter: (to, from, next) => {
-            if (localStorage['permission_public'] >= 2 || localStorage['permission_private'] >= 2) {
-              next()
-            } else {
-              next(false)
-            }
-          }
+          component: Submit
         },
 
         // 星上程序
