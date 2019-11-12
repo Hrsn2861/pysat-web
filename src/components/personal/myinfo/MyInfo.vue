@@ -75,7 +75,7 @@
             <el-form-item label="学校">
               <el-input
                 class="my-info-item"
-                v-model="formInfo.school"
+                v-model="formInfo.school_name"
                 placeholder
                 :disabled="true"
               ></el-input>
@@ -203,6 +203,18 @@ import permissionComputer from '@/utils/functionUtils/permissionComputer'
 import { mapGetters } from 'vuex'
 
 export default {
+  inject: ['reload'],
+  beforeRouteUpdate (to, from, next) {
+    if (from.path.startsWith('/personal/myinfo') &&
+   to.path.startsWith('/personal/myinfo')) {
+      console.log('beforeRouteUpdate')
+      next()
+      this.reload()
+    } else {
+      next()
+    }
+  },
+
   mixins: [getSchoolAndThemeMixin, permissionOptionsMixin, permissionComputer, checkMobileMixin],
   props: ['username'], // 呃， props没有用？？？？
   name: 'MyInfo',
