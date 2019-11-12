@@ -91,7 +91,7 @@ export default new Router({
         {
           // 我的学校
           path: 'personal/myschool',
-          component: MySchool
+          component: MySchool // TODO: 这里不想加路由拦截，因为原计划这里是有无学校的人都看得见的
         },
 
         // 管理中心
@@ -111,28 +111,63 @@ export default new Router({
           // 程序审核
           path: 'admin/program/judge/:themeid',
           name: 'judge',
-          component: ProgramJudge
+          component: ProgramJudge,
+          beforeEnter: (to, from, next) => {
+            if (localStorage['permission_public'] >= 2 || localStorage['permission_private'] >= 2) {
+              next()
+            } else {
+              next(false)
+            }
+          }
         },
         {
           // 程序上传
           path: 'admin/program/upload/:themeid',
           name: 'upload',
-          component: ProgramUpload
+          component: ProgramUpload,
+          beforeEnter: (to, from, next) => {
+            if (localStorage['permission_public'] >= 4 || localStorage['permission_private'] >= 4) {
+              next()
+            } else {
+              next(false)
+            }
+          }
         },
         {
           // 用户列表
           path: 'admin/userlist',
-          component: UserList
+          component: UserList,
+          beforeEnter: (to, from, next) => {
+            if (localStorage['permission_public'] >= 2 || localStorage['permission_private'] >= 2) {
+              next()
+            } else {
+              next(false)
+            }
+          }
         },
         {
           // 管理学校
           path: 'admin/schoollist',
-          component: SchoolList
+          component: SchoolList,
+          beforeEnter: (to, from, next) => {
+            if (localStorage['permission_public'] >= 8) {
+              next()
+            } else {
+              next(false)
+            }
+          }
         },
         {
           // 加入申请
           path: 'admin/applylist',
-          component: ApplyList
+          component: ApplyList,
+          beforeEnter: (to, from, next) => {
+            if (localStorage['permission_private'] >= 2) {
+              next()
+            } else {
+              next(false)
+            }
+          }
         },
 
         // 提交程序
@@ -145,7 +180,14 @@ export default new Router({
           // 提交页面
           path: 'submit/:themeid',
           name: 'submit',
-          component: Submit
+          component: Submit,
+          beforeEnter: (to, from, next) => {
+            if (localStorage['permission_public'] >= 2 || localStorage['permission_private'] >= 2) {
+              next()
+            } else {
+              next(false)
+            }
+          }
         },
 
         // 星上程序
@@ -169,7 +211,14 @@ export default new Router({
         {
           // 发布教程
           path: 'course/upload',
-          component: CourseUpload
+          component: CourseUpload,
+          beforeEnter: (to, from, next) => {
+            if (localStorage['permission_public'] >= 2 || localStorage['permission_private'] >= 2) {
+              next()
+            } else {
+              next(false)
+            }
+          }
         },
 
         // 消息系统
