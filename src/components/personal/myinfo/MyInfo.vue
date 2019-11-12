@@ -128,10 +128,11 @@
         v-if="state === types.main_info"
       >
         <el-col :lg="{span:4}" :md="{span:6}" :sm="{span:7}" :xs="{span:12}">
-          <el-button type="danger" @click="logOut()" v-if="isSelf">登出</el-button>
+          <el-button class="main-btn" type="danger" @click="logOut()" v-if="isSelf">登出</el-button>
         </el-col>
         <el-col :lg="{span:4}" :md="{span:6}" :sm="{span:7}" :xs="{span:0}">
           <el-button
+          class="main-btn"
             type="primary"
             @click="state = types.change_pwd"
             v-if="isSelf || isGreatAdmin"
@@ -140,6 +141,7 @@
         <el-col :lg="{span:4}" :md="{span:6}" :sm="{span:7}" :xs="{span:0}">
           <el-button
             type="primary"
+            class="main-btn"
             @click="state = types.change_phone"
             v-if="isSelf || isGreatAdmin"
           >修改手机</el-button>
@@ -147,12 +149,14 @@
         <el-col :lg="{span:4}" :md="{span:6}" :sm="{span:7}" :xs="{span:0}">
           <el-button
             type="primary"
+            class="main-btn"
             @click="ChangeInfo()"
             v-if="isSelf || isGreatAdmin"
           >{{updateButtonText}}</el-button>
         </el-col>
         <el-col :lg="{span:4}" :md="{span:6}" :sm="{span:7}" :xs="{span:12}">
           <el-button
+            class="main-btn"
             type="warning"
             @click="ChangePermission()"
             v-if="!isSelf"
@@ -653,7 +657,7 @@ export default {
 .el-form-item {
   margin: 1.2%;
 }
-.el-button{
+.main-btn{
   width: 95%;
 }
 .upload-btn{
