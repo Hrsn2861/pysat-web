@@ -2,8 +2,11 @@
   <div class="main-div">
     <el-card class="box-card">
       <center>
+        <h3>
         {{themeInfo.title}}
+        </h3>
       </center>
+      <center>截止 : {{themeInfo.deadline}} ||| {{themeInfo.description}}</center>
       <AceContainer ref="AceContainer"></AceContainer>
       <el-row type="flex" justify="start">
         <el-col :span="6">
