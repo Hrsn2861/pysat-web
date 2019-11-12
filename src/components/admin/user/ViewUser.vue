@@ -9,7 +9,7 @@
           <el-select
               v-model="currentSchoolId"
               placeholder="发布区域"
-              @change="userPageIndex= 1;GetUserList(userPageIndex, currentSchoolId)"
+              @change="userPageIndex= 1;GetUserList(userPageIndex, currentSchoolId, showInvalid)"
               class="school-select"
             >
               <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
@@ -33,7 +33,7 @@
       </el-table>
       <el-row>
         <el-col :lg="{span:4}" :md="{span:6}" :xs="{span:12}" :sm="{span:12}">
-          <el-pagination :background="false" layout="prev, pager, next" :page-count="userPageCnt" :current-page.sync="userPageIndex" @current-change="GetUserList(userPageIndex, currentSchoolId)" @prev-click="userPageIndex --" @next-click="userPageIndex++"></el-pagination>
+          <el-pagination :background="false" layout="prev, pager, next" :page-count="userPageCnt" :current-page.sync="userPageIndex" @current-change="GetUserList(userPageIndex, currentSchoolId, showInvalid)" @prev-click="userPageIndex --" @next-click="userPageIndex++"></el-pagination>
         </el-col>
         <!-- <el-col :lg="{span:3}" :md="{span:5}" :xs="{span:14}" :sm="{span:5}">
           <el-button type="text" @click="GetUserList(userPageIndex, currentSchoolId)">刷新名单</el-button>
