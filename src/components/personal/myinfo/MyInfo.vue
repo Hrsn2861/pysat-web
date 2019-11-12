@@ -52,7 +52,7 @@
           <center>
             <h1>个人信息</h1>
           </center>
-          <el-form ref="myInfo" label-width="80px">
+          <el-form ref="myInfo" label-width="70px">
             <el-form-item label="用户名">
               <el-input
                 class="my-info-item"

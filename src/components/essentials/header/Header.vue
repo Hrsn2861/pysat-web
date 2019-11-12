@@ -7,7 +7,7 @@
     element-loading-background="rgba(0, 0, 0, 0.8)"
   >
   <!-- v-loading.fullscreen.lock="isMobile" -->
-    <div class="logo" :class="{'is-active':isActive}">
+    <div class="logo" :class="{'is-active':isActive}" v-if="isLogged">
       <img src="@/assets/icon_white.png" height="30px" @click="handleMenu" />
       PYSAT
     </div>
@@ -202,8 +202,9 @@ export default {
 
 @media all and (max-width: 768px) {
   .header .logo.is-active {
-    width: 0;
+    width: 50px;
     overflow: hidden;
   }
+
 }
 </style>

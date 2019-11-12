@@ -14,7 +14,7 @@ export default {
     height 50px
     line-height 50px
     width 100%
-    font-size 14px
+    font-size 10px
     text-align center
     color #777
     user-select none

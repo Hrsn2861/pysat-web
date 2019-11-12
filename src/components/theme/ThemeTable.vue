@@ -1,13 +1,13 @@
 <template>
     <div>
-    <el-table :data="displayData" style="width: 100%" height="600">
+    <el-table :data="displayData" style="width: 100%" :height="tableHeight">
         <el-table-column prop="id" label="主题ID" width="80"></el-table-column>
-        <el-table-column prop="title" label="主题名称" width="150"></el-table-column>
+        <el-table-column prop="title" fixed="left" label="主题名称" width="150"></el-table-column>
         <el-table-column prop="description" label="描述" :resizable="true"></el-table-column>
         <el-table-column prop="create_time" label="发布时间" width="160"></el-table-column>
         <el-table-column prop="deadline" label="截止日期" width="160"></el-table-column>
         <el-table-column prop="count" label="相关数目" width="120"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="200">
+        <el-table-column label="操作" width="200">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="SubmitProgram(scope.$index, scope.row)" v-if="$route.path===urlSubmit">提交</el-button>
             <el-button type="text" size="small" @click="JudgeProgram(scope.$index, scope.row)" v-if="isRightAdmin(2) && $route.path===urlAdmin">审核</el-button>
@@ -49,7 +49,9 @@ export default {
   },
 
   computed: {
-
+    tableHeight () {
+      return document.documentElement.clientHeight * 0.8
+    }
   },
 
   methods: {

@@ -15,10 +15,10 @@
         <span slot="title">概览</span>
       </el-menu-item>
 
-      <el-menu-item index="/hangout">
+      <!-- <el-menu-item index="/hangout">
         <i class="el-icon-view"></i>
         <span slot="title">隨便逛逛</span>
-      </el-menu-item>
+      </el-menu-item> -->
 
       <el-submenu index="/personal">
         <template slot="title">

@@ -199,7 +199,7 @@ export default {
   align-self: center;
   padding: 0%;
   height: 100%;
-  width: 80%;
+  width: 88%;
   border: 0px dashed rgb(40, 40, 40);
   background-color: rgba(255, 255, 255, 0.97);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
@@ -214,5 +214,11 @@ export default {
 }
 .el-pagination{
   padding: 0%;
+}
+.el-select{
+  width: 25%;
+}
+.el-button{
+  margin: 0%;
 }
 </style>

@@ -95,7 +95,7 @@ export default {
 <style scoped>
 .box-card {
   align-self: center;
-  height: 85vh;
+  height: auto;
   width: 95%;
   border: 0px dashed rgb(40, 40, 40);
   background-color: rgba(255, 255, 255, 0.95);
