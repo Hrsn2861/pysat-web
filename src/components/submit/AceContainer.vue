@@ -37,16 +37,15 @@ export default {
   height: auto;
   margin: 0%;
   width: 100%;
-  display: flex;
+  // display: flex;
   #code {
     height: auto;
-    width: 100%;
     #title-code{
         margin-bottom: 0.5%;
     }
     #text-code {
       height: 60vh;
-      width: 60vw;
+      width: 70vw;
     }
   }
 }

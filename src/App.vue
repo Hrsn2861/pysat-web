@@ -17,7 +17,9 @@ export default {
   width: 100%;
 
 }
-*{
-   font-family: 'Avenir','Helvetica', 'Arial', 'sans-serif' !important;
+
+li h1 h2 h3 h4 h5 div{
+  font-family: 'Avenir','Helvetica', 'Arial', 'sans-serif';
 }
+
 </style>

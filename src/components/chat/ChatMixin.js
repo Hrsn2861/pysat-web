@@ -61,7 +61,7 @@ export default {
         res => {
           if (res.data.status === 1) {
             this.$message.success('发送成功！')
-            this.changeCurrentSessionId(this.currentSessionId)
+            this.changeCurrentSessionId(0) // 当前消息被置顶了
           } else {
             this.$message.error('这个同学可能不存在喔')
           }
