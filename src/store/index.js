@@ -10,10 +10,10 @@ Vue.use(Vuex)
 const state = {
   token: '',
   user: null,
-  permission_public: -1,
-  permission_private: -1,
+  permission_public: 0,
+  permission_private: 0,
   school_name: '',
-  school_id: -1,
+  school_id: 0,
 
   // view-related
   sidebar: {
