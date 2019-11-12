@@ -98,7 +98,14 @@ export default new Router({
         {
           // 程序管理
           path: 'admin/program',
-          component: ThemeList
+          component: ThemeList,
+          beforeEnter: (to, from, next) => {
+            if (localStorage['permission_public'] >= 2 || localStorage['permission_private'] >= 2) {
+              next()
+            } else {
+              next(false)
+            }
+          }
         },
         {
           // 程序审核
