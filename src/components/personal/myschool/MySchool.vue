@@ -50,10 +50,10 @@
           </el-table>
           <el-row>
              <el-col :lg="{span:4}" :md="{span:5}" :xs="{span:14}" :sm="{span:5}">
-              <el-pagination :background="false" layout="prev, pager, next" :page-count="userPageCnt" :current-page.sync="userPageIndex" @current-change="GetUserList(userPageIndex)" @prev-click="userPageIndex --" @next-click="userPageIndex++"></el-pagination>
+              <el-pagination :background="false" layout="prev, pager, next" v-if="!isForbiddenInSchool" :page-count="userPageCnt" :current-page.sync="userPageIndex" @current-change="GetUserList(userPageIndex, schoolId, showInvalid)" @prev-click="userPageIndex --" @next-click="userPageIndex++"></el-pagination>
             </el-col>
             <el-col :lg="{span:3}" :md="{span:3}" :xs="{span:8}" :sm="{span:8}">
-              <el-checkbox v-model="showInvalid"
+              <el-checkbox v-model="showInvalid" v-if="!isForbiddenInSchool"
               @change="GetUserList(userPageIndex, schoolId, showInvalid)">显示封禁用户
               </el-checkbox>
             </el-col>
@@ -145,7 +145,7 @@ export default {
       return localStorage['school_id']
     },
     tableHeight () {
-      return document.documentElement.clientHeight * 0.65
+      return document.documentElement.clientHeight * 0.7
     },
     calculateTagType () {
       return function (permission) {
