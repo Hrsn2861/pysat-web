@@ -123,25 +123,29 @@ export default {
 
 <style scoped>
 .sidebar {
+  float: left;
   height: auto;
   min-height: 100vh;
-  background-color: #343A40;
+  background-color: #272727;
 
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
-  height: 1200px;
+  /* height: 1200px; */
+  height: 100vh;
   min-height: 100vh;
 
-  border-right: #343A41 solid 2px;
+  border-right: #272727 solid 2px;
   /* fix side bar white boarder */
+  /* 代表了没有展开的边框 */
 }
 
 .el-menu-vertical-demo {
-  height: 1200px;
+  /* height: 1200px; */
+  height: 100vh;
   min-height: 100vh;
-
-  border-right: #343A40 solid 2px;
+  /* 代表了展开后的边框 */
+  border-right: #272727 solid 2px;
 }
 
 .el-menu-item.is-active,

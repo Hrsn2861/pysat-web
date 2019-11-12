@@ -11,6 +11,7 @@ export const CHECKSESSION = 'CHECKSESSION'
 export const TESTFUNC = 'TESTFUNC'
 
 // Used in reponsive view
+export const SET_WINDOW_HEIGHT = 'SET_WINDOW_HEIGHT'
 export const TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR'
 export const CLOSE_SIDEBAR = 'CLOSE_SIDEBAR'
 export const TOGGLE_DEVICE = 'TOGGLE_DEVICE'

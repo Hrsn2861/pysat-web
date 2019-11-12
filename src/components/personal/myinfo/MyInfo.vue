@@ -13,7 +13,8 @@
           type="flex"
           justify="center"
           style="height:auto !important; user-select: none;"
-        >点击可以修改頭像了！呵呵</el-row>
+          v-if="isSelf"
+        >点击可以修改頭像！</el-row>
         <transition name="fade">
           <el-row
             type="flex"
@@ -36,8 +37,8 @@
               :limit="1"
               :auto-upload="false"
             >
-            <el-button slot="trigger" class="upload-btn" type="primitive">选取图片</el-button>
-            <el-button style="margin-left: 10px;" size="medium" type="primary" @click="RealSubmit">点击上传</el-button>
+            <center><el-button slot="trigger" class="upload-btn" type="primitive">选取图片</el-button></center>
+            <el-button type="primary" @click="RealSubmit">点击上传</el-button>
             </el-upload>
           </el-row>
         </transition>
@@ -51,7 +52,7 @@
           <center>
             <h1>个人信息</h1>
           </center>
-          <el-form ref="myInfo" label-width="100px">
+          <el-form ref="myInfo" label-width="80px">
             <el-form-item label="用户名">
               <el-input
                 class="my-info-item"
@@ -121,32 +122,42 @@
         </el-col>
       </el-row>
       <el-row
+        class="btn-row"
         type="flex"
         justify="center"
         v-if="state === types.main_info"
       >
-        <el-button type="danger" @click="logOut()" v-if="isSelf">登出</el-button>
-        <el-button
-          type="primary"
-          @click="state = types.change_pwd"
-          v-if="isSelf || isGreatAdmin"
-        >修改密码</el-button>
-        <el-button
-          type="primary"
-          @click="state = types.change_phone"
-          v-if="isSelf || isGreatAdmin"
-        >修改手机号码</el-button>
-        <el-button
-          type="primary"
-          @click="ChangeInfo()"
-          v-if="isSelf || isGreatAdmin"
-        >{{updateButtonText}}</el-button>
-        <el-button
-          type="warning"
-          @click="ChangePermission()"
-          v-if="!isSelf"
-        >{{changePermissionButtonText}}</el-button>
-
+        <el-col :lg="{span:4}" :md="{span:6}" :sm="{span:7}" :xs="{span:12}">
+          <el-button type="danger" @click="logOut()" v-if="isSelf">登出</el-button>
+        </el-col>
+        <el-col :lg="{span:4}" :md="{span:6}" :sm="{span:7}" :xs="{span:0}">
+          <el-button
+            type="primary"
+            @click="state = types.change_pwd"
+            v-if="isSelf || isGreatAdmin"
+          >修改密码</el-button>
+        </el-col>
+        <el-col :lg="{span:4}" :md="{span:6}" :sm="{span:7}" :xs="{span:0}">
+          <el-button
+            type="primary"
+            @click="state = types.change_phone"
+            v-if="isSelf || isGreatAdmin"
+          >修改手机</el-button>
+        </el-col>
+        <el-col :lg="{span:4}" :md="{span:6}" :sm="{span:7}" :xs="{span:0}">
+          <el-button
+            type="primary"
+            @click="ChangeInfo()"
+            v-if="isSelf || isGreatAdmin"
+          >{{updateButtonText}}</el-button>
+        </el-col>
+        <el-col :lg="{span:4}" :md="{span:6}" :sm="{span:7}" :xs="{span:12}">
+          <el-button
+            type="warning"
+            @click="ChangePermission()"
+            v-if="!isSelf"
+          >{{changePermissionButtonText}}</el-button>
+        </el-col>
       </el-row>
 
       <transition name="fade">
@@ -582,7 +593,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 .avatar-change {
   height: 80px;
@@ -613,7 +623,7 @@ export default {
   align-self: center;
   padding: 1%;
   height: auto;
-  width: 50%;
+  width: 70%;
   border: 0px dashed rgb(40, 40, 40);
   background-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
@@ -625,23 +635,17 @@ export default {
 }
 
 .el-form-item {
-  margin: 1.5%;
+  margin: 1.2%;
 }
-
-.change {
-  margin-top: 3%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.change-input {
-  margin: 1%;
-}
-.change-button {
-  margin: 0%;
+.el-button{
+  width: 95%;
 }
 .upload-btn{
   align-self: center
+}
+.btn-row{
+  margin-left: 5%;
+  margin-right: 5%;
 }
 
 </style>

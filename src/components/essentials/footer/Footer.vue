@@ -18,5 +18,7 @@ export default {
     text-align center
     color #777
     user-select none
-    background-color #272727
+    background-color #343A41
+
+    z-index 200
 </style>

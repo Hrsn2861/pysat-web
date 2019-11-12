@@ -57,6 +57,9 @@ export const mutations = {
     console.log('A test func in mutations.js')
   },
 
+  [types.SET_WINDOW_HEIGHT] (state, height) {
+    state.windowHeight = height
+  },
   // for view change
   [types.TOGGLE_SIDEBAR] (state) {
     if (state.sidebar.opened) {

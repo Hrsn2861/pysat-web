@@ -2,28 +2,28 @@
   <div class="main-div">
     <el-card class="box-card">
       <div v-if="hasSelectedSchool">
-        <el-card>
+        <el-card class="info-card school-card">
           <el-row type="flex" align="bottom">
-            <el-col :lg="{span:8}" :xs="{span:24}" :md="{span:12}">
+            <el-col :lg="{span:7}" :xs="{span:24}" :md="{span:12}" :sm="{span:12}">
               <h1>{{school.name}}</h1>
             </el-col>
-            <el-col :lg="{span:8}" :xs="{span:0}" :md="{span:5}">
+            <el-col :lg="{span:8}" :xs="{span:0}" :md="{span:5}" :sm="{span:5}">
               <i>
-                <h2 style="margin:0%;">校长 : {{school.headmaster}}</h2>
+                <h3 style="margin:0%;">校长 : {{school.headmaster}}</h3>
               </i>
             </el-col>
           </el-row>
         </el-card>
-        <el-card>
+        <el-card class="info-card description-card">
           {{school.description}}, 现有
           <i>{{school.population}}</i> 人
         </el-card>
-        <el-card>
-          <el-table :data="userList" style="width: 100%" stripe class="video-table" height="630">
-            <el-table-column prop="username" label="用户名" width="180"></el-table-column>
+        <el-card class="info-card table-card">
+          <el-table :data="userList" style="width: 100%" stripe class="video-table" :height="tableHeight">
+            <el-table-column prop="username" label="用户名" fixed="left" width="120"></el-table-column>
             <el-table-column prop="motto" label="个性签名" :resizable="true"></el-table-column>
             <el-table-column v-if="false" prop="permission" label="权限"></el-table-column>
-            <el-table-column fixed="right" label="身份" width="150">
+            <el-table-column label="身份" width="150">
               <template slot-scope="scope">
                 <el-tag
                   v-if="scope.row.username!==myName"
@@ -37,7 +37,7 @@
                 >{{statusDict[scope.row.permission]}}，自己</el-tag>
               </template>
             </el-table-column>
-            <el-table-column fixed="right" label="操作" width="200">
+            <el-table-column label="操作" width="150">
               <template slot-scope="scope">
                 <el-button
                   type="text"
@@ -48,13 +48,22 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination :background="false" layout="prev, pager, next" :page-count="userPageCnt" :current-page.sync="userPageIndex" @current-change="GetUserList(userPageIndex)" @prev-click="userPageIndex --" @next-click="userPageIndex++"></el-pagination>
+          <el-row>
+             <el-col :lg="{span:4}" :md="{span:5}" :xs="{span:14}" :sm="{span:5}">
+              <el-pagination :background="false" layout="prev, pager, next" :page-count="userPageCnt" :current-page.sync="userPageIndex" @current-change="GetUserList(userPageIndex)" @prev-click="userPageIndex --" @next-click="userPageIndex++"></el-pagination>
+            </el-col>
+            <el-col :lg="{span:3}" :md="{span:3}" :xs="{span:8}" :sm="{span:8}">
+              <el-checkbox v-model="showInvalid"
+              @change="GetUserList(userPageIndex, schoolId, showInvalid)">显示封禁用户
+              </el-checkbox>
+            </el-col>
+          </el-row>
 
         </el-card>
       </div>
       <div v-else class="change-school">
         <h2>申请加入学校，就是现在！</h2>
-         <el-table :data="schoolList" style="width: 100%" height="700">
+         <el-table :data="schoolList" style="width: 100%" :height="tableHeight">
             <el-table-column v-if="false" prop="id" label="学校ID" width="100"></el-table-column>
             <el-table-column prop="name" label="学校名称" width="150"></el-table-column>
             <el-table-column prop="headmaster" label="校长" width="100"></el-table-column>
@@ -98,7 +107,7 @@ export default {
   mounted: function () {
     if (this.hasSelectedSchool) {
       this.GetMySchoolInfo()
-      this.GetUserList(this.userPageIndex, localStorage['school_id'])
+      this.GetUserList(this.userPageIndex, localStorage['school_id'], this.showInvalid)
     } else {
       this.GetSchoolListNoPublic(this.schoolPageIndex) // 默认为1
     }
@@ -106,6 +115,7 @@ export default {
   },
   data () {
     return {
+      showInvalid: false,
       applyDialogVisible: false,
       formApplySchool: {
         reason: '',
@@ -124,14 +134,22 @@ export default {
       statusDict: {
         4: '校长',
         2: '老师',
-        1: '同学'
+        1: '同学',
+        0: '封禁'
       }
     }
   },
   computed: {
+    // I have to use this in checkbox
+    schoolId () {
+      return localStorage['school_id']
+    },
+    tableHeight () {
+      return document.documentElement.clientHeight * 0.65
+    },
     calculateTagType () {
       return function (permission) {
-        return permission === 4 ? 'warning' : permission === 2 ? 'success' : 'primary'
+        return permission === 4 ? 'warning' : permission === 2 ? 'success' : permission === 1 ? 'primary' : 'info'
       }
     }
   },
@@ -245,6 +263,9 @@ export default {
 .el-card:hover {
   box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);
 }
+.info-card:hover{
+  transform: translateX(5px);
+}
 .box-card {
   align-self: center;
 
@@ -257,7 +278,7 @@ export default {
   transition-duration: 1s;
 }
 h1 {
-  font-size: 50px;
+  font-size: 30px;
   margin-top: 1%;
   margin-bottom: 1%;
 }

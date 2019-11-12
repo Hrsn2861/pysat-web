@@ -19,6 +19,7 @@ const state = {
   sidebar: {
     opened: !+localStorage.getItem('sidebarStatus')
   },
+  windowHeight: 1000,
   device: 'desktop',
 
   chatSystem: {

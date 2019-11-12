@@ -65,6 +65,14 @@ export default {
     padding: 0;
     z-index : 200;
   }
+  // .el-footer
+  //   position absolute
+  //   top 100vh
+  //   margin 0
+  //   left -5vw
+  //   width 100vw
+  .el-footer
+    box-shadow 10px 10px 10px rgba(0, 0, 0, 0.15)
 
   .el-main {
     overflow: hidden

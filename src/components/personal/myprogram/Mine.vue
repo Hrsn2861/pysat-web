@@ -80,7 +80,7 @@ export default {
 .box-card {
   align-self: center;
   height: auto;
-  width: 95%;
+  width: 98%;
   border: 0px dashed rgb(40, 40, 40);
   background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);

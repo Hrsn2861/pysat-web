@@ -34,6 +34,9 @@ const actions = {
   },
 
   // Used in responsive-view
+  SetWindowHeight ({commit}) {
+    commit(types.SET_WINDOW_HEIGHT)
+  },
   ToggleSideBar ({ commit }) {
     commit(types.TOGGLE_SIDEBAR)
   },
