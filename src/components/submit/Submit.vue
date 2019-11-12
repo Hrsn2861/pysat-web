@@ -5,8 +5,8 @@
         {{themeInfo.title}}
       </center>
       <AceContainer ref="AceContainer"></AceContainer>
-      <el-row type="flex" justify="center">
-        <el-col :span="4">
+      <el-row type="flex" justify="start">
+        <el-col :span="6">
           <el-input
             type="textarea"
             placeholder="给你的程序取个名字"
@@ -15,7 +15,7 @@
             show-word-limit
           ></el-input>
         </el-col>
-        <el-col :span="20">
+        <el-col :span="18">
           <el-input
             type="textarea"
             placeholder="请简单描述一下你的程序(README)"
@@ -25,11 +25,11 @@
           ></el-input>
         </el-col>
       </el-row>
-      <el-row type="flex" justify="center">
-        <el-col span="8">
-          <el-button type="primary" @click="upload()" plain>点击上传！</el-button>
+      <el-row type="flex" justify="start">
+        <el-col :span="6">
+          <el-button type="primary" @click="upload()" plain>点击上传</el-button>
         </el-col>
-        <el-col span="8">
+        <el-col :span="6">
            <el-upload
             ref="upload"
             action="https://jsonplaceholder.typicode.com/posts/"
@@ -37,7 +37,6 @@
             :file-list="fileList"
             :auto-upload="false">
             <el-button slot="trigger" type="primary">选取文件</el-button>
-            <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">显示文件</el-button> -->
           </el-upload>
         </el-col>
       </el-row>
@@ -186,7 +185,7 @@ export default {
 }
 
 .el-button {
-  margin: 1%;
   margin-bottom: 0%;
+  margin: 0%;
 }
 </style>

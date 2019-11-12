@@ -3,7 +3,7 @@
     <div id="code">
       <div id="title-code" class="head-section">Source Code</div>
       <!-- <input id="launch-button" class="head-section" type="submit" value="Launch" /> -->
-      <div id="text-code">
+      <div id="text-code" >
         <editor v-model="code" @init="editorInit" lang="python" theme="chrome" ref="ace"></editor>
       </div>
     </div>
@@ -11,8 +11,10 @@
 </template>
 
 <script>
+import ResizeMixin from '@/utils/resolutionUtils/resizeHandler'
 export default {
   name: 'AceContainer',
+  mixins: [ResizeMixin],
   components: {
     editor: require('vue2-ace-editor')
   },
@@ -45,7 +47,7 @@ export default {
     }
     #text-code {
       height: 60vh;
-      width: 70vw;
+      width: 90vw;
     }
   }
 }
