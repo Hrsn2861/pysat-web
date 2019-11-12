@@ -1,6 +1,6 @@
 <template>
   <div class="main-div">
-    <el-card class="box-card">
+    <el-card class="box-card" v-bind:class="{ 'is-mobile': isMobile}">
       <div class="avatar">
         <el-row type="flex" justify="center" style="height:100px !important">
           <img
@@ -197,12 +197,13 @@ import { myGet, myPost } from '@/utils/requestFunc.js'
 import { Encrypt } from '@/utils/crypt.js'
 import { checkSession, logout } from '@/utils/sessionUtils/sessionFunc'
 import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
+import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
 import permissionOptionsMixin from '@/utils/functionUtils/permissionOptionsMixin'
 import permissionComputer from '@/utils/functionUtils/permissionComputer'
 import { mapGetters } from 'vuex'
 
 export default {
-  mixins: [getSchoolAndThemeMixin, permissionOptionsMixin, permissionComputer],
+  mixins: [getSchoolAndThemeMixin, permissionOptionsMixin, permissionComputer, checkMobileMixin],
   props: ['username'], // 呃， props没有用？？？？
   name: 'MyInfo',
   beforeCreate () {
@@ -593,7 +594,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .avatar-change {
   height: 80px;
   width: 80px;
@@ -629,6 +630,9 @@ export default {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
+  &.is-mobile {
+  width : 100%;
+  }
 }
 .box-card:hover {
   box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);

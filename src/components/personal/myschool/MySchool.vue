@@ -82,7 +82,7 @@
           <el-pagination :background="false" layout="prev, pager, next" :page-count="schoolPageCnt" :current-page.sync="schoolPageIndex" @current-change="GetSchoolListNoPublic(schoolPageIndex)" @prev-click="schoolPageIndex --" @next-click="schoolPageIndex++"></el-pagination>
       </div>
     </el-card>
-    <el-dialog :title="'加入: ' + formApplySchool.school_name + '（一个同学只有一次选择的权利）'" :visible.sync="applyDialogVisible" width="30%">
+    <el-dialog :title="'加入: ' + formApplySchool.school_name + '（一个同学只有一次选择的权利）'" :visible.sync="applyDialogVisible" width="40%">
         <el-input placeholder="请输入你的验证信息" v-model="formApplySchool.reason" clearable></el-input>
 
         <span slot="footer" class="dialog-footer">
