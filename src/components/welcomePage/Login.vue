@@ -241,7 +241,7 @@ export default {
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
   &.is-mobile {
-  width : 80%;
+  width : 95%;
   }
 }
 

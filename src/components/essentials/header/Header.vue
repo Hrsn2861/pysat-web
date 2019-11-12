@@ -118,7 +118,7 @@ export default {
   }
 
   .logo {
-    width: 200px;
+    width: 120px;
     height: 50px;
     background: #343A40;
     color: #fff;
