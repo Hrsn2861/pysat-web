@@ -8,16 +8,20 @@ export default {
     }
   },
   methods: {
-    GetUserList (index, schoolId) {
+    GetUserList (index, schoolId, showInvalid) {
       return new Promise(resolve => {
         let tmpData = {
           token: this.$store.getters.getUserToken,
-          show_invalid: 'true',
-          manager_first: 'true',
+          show_invalid: false,
+          manager_first: true,
           school_id: schoolId
         }
         if (index) { // 这样对应了后端默认获取第一页的语义
           tmpData['page'] = index
+        }
+        if (showInvalid) {
+          console.log('Hello', showInvalid)
+          tmpData.show_invalid = showInvalid
         }
         console.log(tmpData)
         myGet(

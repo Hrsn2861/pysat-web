@@ -1,13 +1,13 @@
 <template>
   <div class="main-div">
-    <el-col :span="15">
+    <el-col :lg="{span:12}" :md="{span:8}" :xs="{span:24}" :sm="{span:9}">
       <el-row>
         <el-card class="box-card box-card-lefttop">
           <el-table :data="videoList" style="width: 100%" stripe class="video-table" height="300">
             <el-table-column prop="upload_time" label="日期" width="180"></el-table-column>
-            <el-table-column prop="name" label="教程名" width="180"></el-table-column>
+            <el-table-column prop="name" label="教程名" width="180" fixed="left"></el-table-column>
             <el-table-column prop="description" label="简介"></el-table-column>
-            <el-table-column fixed="right" label="操作" width="200">
+            <el-table-column label="操作" width="130">
               <template slot-scope="scope">
                 <el-button
                   icon="el-icon-video-play"
@@ -33,7 +33,7 @@
             <el-carousel-item
               v-for="item in themeList"
               :key="item.id"
-              style="height:20vw !important;"
+              style="height:50vw !important;"
             >
               <h2>{{item.title}}</h2>
               <h5>
@@ -45,7 +45,8 @@
         </el-card>
       </el-row>
     </el-col>
-    <el-col :span="9">
+
+    <el-col :lg="{span:12}" :md="{span:16}" :xs="{span:0}" :sm="{span:15}">
       <el-row>
         <el-card class="box-card-right">
           <el-calendar>

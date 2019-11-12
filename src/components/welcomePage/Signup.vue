@@ -315,8 +315,6 @@ export default {
   user-select: none;
   text-align: center;
 }
-&.is-mobile
-  display none
 
 .box-card {
   align-self: center;
@@ -328,6 +326,10 @@ export default {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
+  &.is-mobile {
+  width : 80%;
+  }
+
 }
 .box-card:hover {
   box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);

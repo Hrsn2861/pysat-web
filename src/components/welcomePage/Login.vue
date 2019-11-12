@@ -226,10 +226,6 @@ export default {
   height: 100%;
 }
 
-&.is-mobile {
-  display: none;
-}
-
 .el-button {
   width: auto;
   height: auto;
@@ -238,12 +234,15 @@ export default {
 .box-card {
   align-self: center;
   height: auto;
-  width: 25%;
+  width: 30%;
   border: 0px dashed rgb(40, 40, 40);
   background-color: rgba(255, 255, 255, 0.7);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
+  &.is-mobile {
+  width : 80%;
+  }
 }
 
 .box-card:hover {

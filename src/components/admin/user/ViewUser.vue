@@ -16,24 +16,35 @@
           </el-select>
         </el-col>
       </el-row>
-      <el-table :data="userList" style="width:100%" height="670">
+      <el-table :data="userList" style="width:100%" :height="tableHeight">
         <!-- <el-table-column type="selection" width="55"></el-table-column> -->
-        <el-table-column prop="username" label="用戶" width="120"></el-table-column>
+        <el-table-column prop="username" label="用戶" fixed="left" width="130"></el-table-column>
         <el-table-column prop="motto" label="座右铭" :resizable="true"></el-table-column>
         <el-table-column prop="permission" label="用户权限" width="120"></el-table-column>
         <el-table-column prop="download" label="下载数" width="120"></el-table-column>
         <!-- <el-table-column prop="rating" label="打分" width="150">
           <el-rate></el-rate>
         </el-table-column> -->
-        <el-table-column fixed="right" label="操作" width="100">
+        <el-table-column label="操作" width="100">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="viewCurrentUser(scope.$index, scope.row)">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination :background="false" layout="prev, pager, next" :page-count="userPageCnt" :current-page.sync="userPageIndex" @current-change="GetUserList(userPageIndex, currentSchoolId)" @prev-click="userPageIndex --" @next-click="userPageIndex++"></el-pagination>
-      <el-button type="text" @click="GetUserList(userPageIndex, currentSchoolId)">刷新名单</el-button>
-
+      <el-row>
+        <el-col :lg="{span:4}" :md="{span:6}" :xs="{span:12}" :sm="{span:12}">
+          <el-pagination :background="false" layout="prev, pager, next" :page-count="userPageCnt" :current-page.sync="userPageIndex" @current-change="GetUserList(userPageIndex, currentSchoolId)" @prev-click="userPageIndex --" @next-click="userPageIndex++"></el-pagination>
+        </el-col>
+        <!-- <el-col :lg="{span:3}" :md="{span:5}" :xs="{span:14}" :sm="{span:5}">
+          <el-button type="text" @click="GetUserList(userPageIndex, currentSchoolId)">刷新名单</el-button>
+        </el-col> -->
+        <!-- 这里刷新名单删除，不方便我排版 -->
+        <el-col :lg="{span:3}" :md="{span:5}" :xs="{span:12}" :sm="{span:12}">
+           <el-checkbox v-model="showInvalid"
+              @change="GetUserList(userPageIndex, currentSchoolId, showInvalid)">显示封禁用户
+            </el-checkbox>
+        </el-col>
+      </el-row>
     </el-card>
   </div>
 </template>
@@ -50,6 +61,9 @@ export default {
     checkSession(this, '', '/')
   },
   computed: {
+    tableHeight () {
+      return document.documentElement.clientHeight * 0.8
+    }
   },
   mounted: function () {
     if (localStorage.getItem('permission_public') >= 8) {
@@ -77,6 +91,7 @@ export default {
 
   data () {
     return {
+      showInvalid: false
       // moved to getUserListMixin
       // userList: []
     }

@@ -68,7 +68,7 @@ export default {
 
 h1, h2 {
   font-weight: normal;
-  font-size: 150px;
+  font-size: 100px;
   color: white;
   margin-top: 20%;
   user-select: none;
@@ -83,7 +83,7 @@ h2:hover {
 
 h3 {
   font-weight: normal;
-  font-size: 100px;
+  font-size: 70px;
   color: whitesmoke;
   margin-top: 30%;
   user-select: none;

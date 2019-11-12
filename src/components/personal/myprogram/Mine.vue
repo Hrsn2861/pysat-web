@@ -1,6 +1,7 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
+      <h2>我的程序</h2>
       <MineTable :displayData="mineList" ref="MineTable"></MineTable>
       <el-pagination :background="false" layout="prev, pager, next" :page-count="minePageCnt" :current-page.sync="minePageIndex" @current-change="GetSchoolListNoPublic(minePageIndex)" @prev-click="minePageIndex --" @next-click="minePageIndex++"></el-pagination>
 
@@ -78,8 +79,8 @@ export default {
 <style scoped>
 .box-card {
   align-self: center;
-  height: 85vh;
-  width: 95%;
+  height: auto;
+  width: 98%;
   border: 0px dashed rgb(40, 40, 40);
   background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);

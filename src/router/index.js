@@ -8,7 +8,7 @@ import Login from '@/components/welcomePage/Login.vue'
 import Navi from '@/components/welcomePage/Navigation.vue'
 
 import Overview from '@/components/browse/Overview.vue'
-import Hangout from '@/components/browse/Hangout.vue'
+// import Hangout from '@/components/browse/Hangout.vue'
 
 import MyInfo from '@/components/personal/myinfo/MyInfo.vue'
 import MyProgram from '@/components/personal/myprogram/Mine.vue'
@@ -70,11 +70,11 @@ export default new Router({
           component: Overview
         },
 
-        // 随便逛逛
-        {
-          path: 'hangout',
-          component: Hangout
-        },
+        // // 随便逛逛
+        // {
+        //   path: 'hangout',
+        //   component: Hangout
+        // },
 
         // 个人中心
         {

@@ -4,7 +4,7 @@
       <Header></Header>
     </el-header>
     <el-container>
-      <Siderbar></Siderbar>
+        <Siderbar></Siderbar>
       <el-container>
         <el-main class="my-main-view">
           <!-- <Breadcrumb></Breadcrumb> -->
@@ -18,7 +18,7 @@
         </el-footer>
       </el-container>
     </el-container>
-    <Scrolltotop></Scrolltotop>
+    <!-- <Scrolltotop></Scrolltotop> -->
   </el-container>
 </template>
 
@@ -27,7 +27,7 @@ import Header from '@/components/essentials/header/Header'
 import Breadcrumb from '@/components/essentials/breadcrumb/Breadcrumb'
 import Footer from '@/components/essentials/footer/Footer'
 import Siderbar from '@/components/essentials/sidebar/Sidebar'
-import Scrolltotop from '@/components/essentials/scrolltotop/Scrolltotop'
+// import Scrolltotop from '@/components/essentials/scrolltotop/Scrolltotop'
 import ResizeMixin from '@/utils/resolutionUtils/resizeHandler'
 export default {
   name: 'Index',
@@ -48,8 +48,7 @@ export default {
     Header,
     Breadcrumb,
     Footer,
-    Siderbar,
-    Scrolltotop
+    Siderbar
   },
   computed: {
   },
@@ -78,6 +77,14 @@ export default {
     padding: 0;
     z-index : 200;
   }
+  // .el-footer
+  //   position absolute
+  //   top 100vh
+  //   margin 0
+  //   left -5vw
+  //   width 100vw
+  .el-footer
+    box-shadow 10px 10px 10px rgba(0, 0, 0, 0.15)
 
   .el-main {
     overflow: hidden
@@ -88,8 +95,5 @@ export default {
 
   body > .el-container {
     margin-bottom: 40px;
-  }
-  .sidebar{
-    height: 100% !important;
   }
 </style>

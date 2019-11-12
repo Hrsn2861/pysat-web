@@ -60,7 +60,8 @@ export const getters = {
     return state.chatSystem.sessions[state.chatSystem.currentSessionId].user // 通过sessionid返回用户名
   },
   sidebar: state => state.sidebar,
-  device: state => state.device
+  device: state => state.device,
+  getWindowHeight: state => state.windowHeight
 
 }
 export default getters

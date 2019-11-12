@@ -3,14 +3,16 @@
     :data="displayData"
     style="width: 100%"
     :default-sort="{prop: 'submit_time', order: 'descending'}"
-    height="500"
+    :height="tableHeight"
   >
-    <el-table-column prop="upload_time" label="上传时间" width="300"></el-table-column>
-    <el-table-column prop="name" label="教程名" width="200"></el-table-column>
+
+    <el-table-column prop="name" label="教程名" width="200" fixed="left"></el-table-column>
+    <el-table-column prop="description" label="简介" width="200"></el-table-column>
     <el-table-column prop="uploader" label="上传人" width="200"></el-table-column>
     <el-table-column prop="size" label="大小" width="200"></el-table-column>
-    <el-table-column prop="description" label="简介" width="200" fixed="right"></el-table-column>
-        <el-table-column fixed="right" label="操作" width="200">
+    <el-table-column prop="upload_time" label="上传时间" width="200"></el-table-column>
+
+        <el-table-column label="操作" width="200">
           <template slot-scope="scope">
             <el-button icon="el-icon-delete"
               v-if="isPrivateAdmin || isPublicAdmin" size="small"
@@ -34,6 +36,11 @@ export default {
       tableStatus: {
         likeIconOn: false
       }
+    }
+  },
+  computed: {
+    tableHeight () {
+      return document.documentElement.clientHeight * 0.8
     }
   },
   methods: {

@@ -2,16 +2,16 @@
   <el-table
     :data="displayData.filter(data => !search || ((data.theme_name !== null)  && data.theme_name.toLowerCase().includes(search.toLowerCase())))"
     style="width: 100%"
-    height="700"
+    :height="tableHeight"
   >
-    <el-table-column prop="upload_time" label="上传时间" width="250"></el-table-column>
-    <el-table-column prop="name" label="程序名" width="200"></el-table-column>
-    <el-table-column prop="author" label="作者" width="180"></el-table-column>
-    <el-table-column v-if="isPublic" prop="author_school_name" label="学校" width="180"></el-table-column>
-    <el-table-column prop="theme_name" label="主题" width="180"></el-table-column>
+    <el-table-column prop="name" label="程序名" width="150" fixed="left"></el-table-column>
+    <el-table-column prop="author" label="作者" width="150"></el-table-column>
+    <el-table-column v-if="isPublic" prop="author_school_name" label="学校" width="150"></el-table-column>
+    <el-table-column prop="theme_name" label="主题" :resizable="true"></el-table-column>
     <el-table-column prop="likes" label="点赞数" width="80"></el-table-column>
     <el-table-column prop="downloads" label="下载数" width="80"></el-table-column>
-    <el-table-column>
+    <el-table-column prop="upload_time" label="上传时间" width="200"></el-table-column>
+    <el-table-column width="300">
       <template slot="header" slot-scope="scope">
         <el-input
           v-model="search"
@@ -39,6 +39,11 @@ export default {
         likeIconOn: false
       },
       search: ''
+    }
+  },
+  computed: {
+    tableHeight () {
+      return document.documentElement.clientHeight * 0.8
     }
   },
   methods: {

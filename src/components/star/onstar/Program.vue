@@ -136,7 +136,7 @@ export default {
   background: url("~@/assets/background16-9-2.jpg");
   background-size: cover;
   background-repeat: none;
-  height: 100%;
+  height: auto;
 }
 .el-pagination{
   width: 100%;
