@@ -90,7 +90,7 @@ export default {
             console.log(res.data.data)
             var codeContent = new File([res.data.data.code.content], 'code.py', {type: 'text/plain;charset=utf-8'})
             saveAs(codeContent)
-            var codeReadme = new File([res.data.data.code.content], 'readme.py', {type: 'text/plain;charset=utf-8'})
+            var codeReadme = new File([res.data.data.code.content], 'readme.txt', {type: 'text/plain;charset=utf-8'})
             saveAs(codeReadme)
             if (!row.downloaded) {
               row.downloads += 1
