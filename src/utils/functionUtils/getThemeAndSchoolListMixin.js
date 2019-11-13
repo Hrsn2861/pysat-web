@@ -106,7 +106,7 @@ export default {
       })
     },
 
-    GetThemeList (index) {
+    GetThemeList (index, text) {
       return new Promise(resolve => {
         let tmpData = {
           token: this.$store.getters.getUserToken,
@@ -114,6 +114,9 @@ export default {
         }
         if (index) { // 这样对应了后端默认获取第一页的语义
           tmpData['page'] = index
+        }
+        if (text) {
+          tmpData['search_text'] = text
         }
         console.log(tmpData)
         myGet(

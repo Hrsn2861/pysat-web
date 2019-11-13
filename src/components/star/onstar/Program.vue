@@ -6,11 +6,11 @@
         </el-select>
       <el-tabs v-model="activeTabName" @tab-click="GetProgramList(1)">
         <el-tab-pane label="最新程序" name="tabNew" >
-          <ProgramTable ref = "tableNew" :displayData="programList" :isPublic="isPublic"></ProgramTable>
+          <ProgramTable ref = "tableNew" :displayData="programList" :isPublic="isPublic" @StartSearch="StartSearch"></ProgramTable>
           <el-pagination :background="false" layout="prev, pager, next" :page-count="programPageCnt" :current-page.sync="programPageIndex" @current-change="GetJudgeList(programPageIndex)" @prev-click="programPageIndex --" @next-click="programPageIndex++"></el-pagination>
         </el-tab-pane>
         <el-tab-pane label="最热程序" name="tabHot">
-          <ProgramTable ref = "tableHot" :displayData="programList" :isPublic="isPublic"></ProgramTable>
+          <ProgramTable ref = "tableHot" :displayData="programList" :isPublic="isPublic" @StartSearch="StartSearch"></ProgramTable>
           <el-pagination :background="false" layout="prev, pager, next" :page-count="programPageCnt" :current-page.sync="programPageIndex" @current-change="GetProgramList(programPageIndex)" @prev-click="judgePageIndex --" @next-click="judgePageIndex++"></el-pagination>
         </el-tab-pane>
       </el-tabs>
@@ -67,8 +67,11 @@ export default {
   },
 
   methods: {
+    StartSearch (search) {
+      this.GetProgramList(1, search)
+    },
     // 这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
-    GetProgramList (index) {
+    GetProgramList (index, text) {
       console.log(this.activeTabName)
       let tmpData = {
         token: this.$store.getters.getUserToken,
@@ -80,6 +83,9 @@ export default {
       }
       if (index) {
         tmpData['page'] = index
+      }
+      if (text) {
+        tmpData['search_text'] = text
       }
       if (this.activeTabName === 'tabNew') {
         tmpData.sort_type = 0

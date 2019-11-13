@@ -4,7 +4,7 @@
       <el-select v-model="currentSchoolId" placeholder="学校" @change="GetQueueList(1)">
         <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
       </el-select>
-      <QueueTable :displayData="queueList" :isPublic="isPublic"></QueueTable>
+      <QueueTable :displayData="queueList" :isPublic="isPublic" @StartSearch="StartSearch"></QueueTable>
       <el-pagination :background="false" layout="prev, pager, next" :page-count="queuePageCnt" :current-page.sync="queuePageIndex" @current-change="GetQueueList(queuePageIndex)" @prev-click="queuePageIndex --" @next-click="queuePageIndex++"></el-pagination>
 
     </el-card>
@@ -58,7 +58,10 @@ export default {
   },
 
   methods: {
-    GetQueueList (index) {
+    StartSearch (search) {
+      this.GetQueueList(1, search)
+    },
+    GetQueueList (index, text) {
       let tmpData = {
         token: this.$store.getters.getUserToken,
         mine: false,
@@ -68,6 +71,9 @@ export default {
       }
       if (index) {
         tmpData['page'] = index
+      }
+      if (text) {
+        tmpData['search_text'] = text
       }
       console.log(tmpData)
       myGet(

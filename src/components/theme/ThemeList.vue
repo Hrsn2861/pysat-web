@@ -15,6 +15,7 @@
       :currentSchoolId="currentSchoolId"
       @ModifyTheme="ModifyTheme"
       @DeleteTheme="DeleteTheme"
+      @StartSearch="StartSearch"
       >
       </ThemeTable>
       <el-pagination :background="false" layout="prev, pager, next" :page-count="themePageCnt" :current-page.sync="themePageIndex" @current-change="GetThemeList(themePageIndex)"  @prev-click="themePageIndex --" @next-click="themePageIndex++"></el-pagination>
@@ -109,7 +110,9 @@ export default {
     }
   },
   methods: {
-
+    StartSearch (search) {
+      this.GetThemeList(1, search)
+    },
     NewThemeDialog () {
       this.themeDialogVisible = true
       this.themeStatus = '新建主题'

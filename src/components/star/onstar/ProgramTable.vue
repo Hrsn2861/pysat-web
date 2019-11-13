@@ -1,6 +1,6 @@
 <template>
   <el-table
-    :data="displayData.filter(data => !search || ((data.theme_name !== null)  && data.theme_name.toLowerCase().includes(search.toLowerCase())))"
+    :data="displayData"
     style="width: 100%"
     :height="tableHeight"
   >
@@ -11,7 +11,7 @@
     <el-table-column prop="likes" label="点赞数" width="80"></el-table-column>
     <el-table-column prop="downloads" label="下载数" width="80"></el-table-column>
     <el-table-column prop="upload_time" label="上传时间" width="200"></el-table-column>
-    <el-table-column width="300">
+    <el-table-column width="200">
       <template slot="header" slot-scope="scope">
         <el-input
           v-model="search"
@@ -20,6 +20,11 @@
       <template slot-scope="scope">
         <el-button  icon="el-icon-star-off" circle @click="Like(scope.row)" :disabled="scope.row.liked"></el-button>
         <el-button   icon="el-icon-download" circle @click="Download(scope.row)"></el-button>
+      </template>
+    </el-table-column>
+    <el-table-column fixed="right" width="100">
+      <template slot="header" slot-scope="scope">
+        <el-button type="primary" @click="StartSearch">搜索</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -99,6 +104,10 @@ export default {
           this.$message.error(`${err.message}`, 'ERROR!')
         }
       )
+    },
+    StartSearch () {
+      console.log('StartSearch:' + this.search)
+      this.$emit('StartSearch', this.search)
     }
   }
 }
