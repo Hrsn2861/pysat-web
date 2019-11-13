@@ -142,9 +142,9 @@
           <el-button
             type="primary"
             class="main-btn"
-            @click="state = types.change_phone"
+            @click="state = types.change_passport"
             v-if="isSelf || isGreatAdmin"
-          >修改手机</el-button>
+          >修改手机或邮箱</el-button>
         </el-col>
         <el-col :lg="{span:4}" :md="{span:6}" :sm="{span:7}" :xs="{span:0}">
           <el-button
@@ -184,11 +184,11 @@
       </transition>
 
       <transition name="fade">
-        <div v-if="state === types.change_phone" class="change">
-          <el-input class="change-input" v-model="formChangephone.CAPTCHA" placeholder="验证码"></el-input>
-          <el-input class="change-input" v-model="formChangephone.phone" placeholder="新号码"></el-input>
+        <div v-if="state === types.change_passport" class="change">
+          <el-input class="change-input" v-model="formChangepassport.CAPTCHA" placeholder="验证码"></el-input>
+          <el-input class="change-input" v-model="formChangepassport.passport" placeholder="新号码"></el-input>
           <el-button id="update-btn" type="primary" @click="SendCAPTCHA" class="change-button">发送验证码</el-button>&nbsp;
-          <el-button id="update-btn" type="primary" @click="ChangePhone" class="change-button">更新</el-button>
+          <el-button id="update-btn" type="primary" @click="ChangePassport" class="change-button">更新</el-button>
           <el-button @click="state = types.main_info" class="change-button">取消</el-button>
         </div>
       </transition>
@@ -245,7 +245,7 @@ export default {
       types: {
         main_info: 0,
         change_pwd: 1,
-        change_phone: 2,
+        change_passport: 2,
         change_avatar: 3
       },
       avatarData: {},
@@ -293,11 +293,12 @@ export default {
         oldpwd: '',
         newpwd: ''
       },
-      formChangephone: {
+      formChangepassport: {
         CAPTCHA: '',
-        phone: ''
-      }
-
+        passport: ''
+      },
+      patternPhone: /^1[3456789]\d{9}$/,
+      patternEmail: /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
     }
   },
   computed: {
@@ -309,6 +310,12 @@ export default {
       'getPermissionPrivate',
       'getSchoolId'
     ]),
+    isPhone () {
+      return this.patternPhone.test(this.formChangepassport.passport)
+    },
+    isEmail () {
+      return this.patternEmail.test(this.formChangepassport.passport)
+    },
     isSelf () {
       return this.$route.params.username === this.$store.getters.getUser
     },
@@ -362,9 +369,9 @@ export default {
       this.formChangepwd.oldpwd = ''
       this.formChangepwd.newpwd = ''
     },
-    ResetChangephone () {
-      this.formChangephone.phone = ''
-      this.formChangephone.CAPTCHA = ''
+    ResetChangepassport () {
+      this.formChangepassport.passport = ''
+      this.formChangepassport.CAPTCHA = ''
     },
 
     GetMyInfo (queryUser) {
@@ -472,11 +479,11 @@ export default {
       )
     },
 
-    ChangePhone () {
+    ChangePassport () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
-        phone: this.formChangephone.phone,
-        CAPTCHA: this.formChangephone.CAPTCHA
+        passport: this.formChangepassport.passport,
+        CAPTCHA: this.formChangepassport.CAPTCHA
       }
 
       myPost(
@@ -484,11 +491,19 @@ export default {
         tmpdata,
         res => {
           if (res.data.status === 1) {
-            this.currentInfo.phone = this.formChangephone.phone
-            this.formInfo.phone = this.currentInfo.phone
+            if (this.isPhone) {
+              this.currentInfo.phone = this.formChangepassport.passport
+              this.formInfo.phone = this.currentInfo.phone
+            } else if (this.isEmail) {
+              this.currentInfo.email = this.formChangepassport.passport
+              this.formInfo.email = this.currentInfo.email
+            } else {
+              this.$message.error('不可能发生的错！')
+              return
+            }
             this.$message.success(`${res.data.msg}`)
             this.state = this.types.main_info
-            this.ResetChangephone()
+            this.ResetChangepassport()
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -586,8 +601,7 @@ export default {
     SendCAPTCHA () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
-        // username: this.username,
-        phone: this.formChangephone.phone
+        passport: this.formChangepassport.passport
       }
 
       myPost(
