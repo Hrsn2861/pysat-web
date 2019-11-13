@@ -11,6 +11,11 @@
         <el-table-column prop="count_tojudge" label="待审核数目" width="120" v-if="$route.path===urlAdmin && !isRightAdmin(4)"></el-table-column>
 
         <el-table-column fixed="right" label="操作" width="200">
+          <template slot="header" slot-scope="scope">
+            <el-input
+            v-model="search"
+            placeholder="输入关键字搜索主题"/>
+            </template>
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="SubmitProgram(scope.$index, scope.row)" v-if="isRightAdmin(1) && $route.path===urlSubmit">提交</el-button>
             <el-button type="text" size="small" @click="JudgeProgram(scope.$index, scope.row)" v-if="isRightAdmin(2) && $route.path===urlAdmin">审核</el-button>
@@ -29,6 +34,11 @@
                 <el-button type="primary" @click="DeleteTheme();deleteDialogVisible=false">确 定</el-button>
                </span>
             </el-dialog>
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" width="100">
+          <template slot="header" slot-scope="scope">
+            <el-button type="primary" @click="StartSearch">搜索</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -63,7 +73,8 @@ export default {
       urlAdmin: '/admin/program',
       deleteDialogVisible: false,
       selectRow: null,
-      selectIndex: -1
+      selectIndex: -1,
+      search: ''
     }
   },
 
@@ -98,6 +109,10 @@ export default {
       console.log(this.selectIndex)
       console.log(this.selectRow)
       this.$emit('DeleteTheme', this.selectIndex, this.selectRow)
+    },
+    StartSearch () {
+      console.log('StartSearch:' + this.search)
+      this.$emit('StartSearch', this.search)
     }
   }
 }

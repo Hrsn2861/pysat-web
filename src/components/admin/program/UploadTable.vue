@@ -98,7 +98,7 @@ export default {
             // this.$message.success('开始审核！')
             var codeContent = new File([res.data.data.code.content], 'code.py', {type: 'text/plain;charset=utf-8'})
             saveAs(codeContent)
-            var codeReadme = new File([res.data.data.code.readme], 'readme.py', {type: 'text/plain;charset=utf-8'})
+            var codeReadme = new File([res.data.data.code.readme], 'readme.txt', {type: 'text/plain;charset=utf-8'})
             saveAs(codeReadme)
           } else {
             this.$message.error(`${res.data.msg}`)

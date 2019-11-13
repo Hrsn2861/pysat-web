@@ -108,7 +108,7 @@ export default {
             saveAs(codeContent)
             var codeReadme = new File(
               [res.data.data.code.readme],
-              'readme.py',
+              'readme.txt',
               { type: 'text/plain;charset=utf-8' }
             )
             saveAs(codeReadme)

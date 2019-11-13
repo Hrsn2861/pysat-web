@@ -1,17 +1,17 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-        <el-select v-model="currentSchoolId" placeholder="学校" @change="GetProgramList(1)">
+        <el-select v-model="currentSchoolId" placeholder="学校" @change="GetProgramList(1);Reset()">
           <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
         </el-select>
-      <el-tabs v-model="activeTabName" @tab-click="GetProgramList(1)">
+      <el-tabs v-model="activeTabName" @tab-click="GetProgramList(1);Reset()">
         <el-tab-pane label="最新程序" name="tabNew" >
-          <ProgramTable ref = "tableNew" :displayData="programList" :isPublic="isPublic"></ProgramTable>
-          <el-pagination :background="false" layout="prev, pager, next" :page-count="programPageCnt" :current-page.sync="programPageIndex" @current-change="GetJudgeList(programPageIndex)" @prev-click="programPageIndex --" @next-click="programPageIndex++"></el-pagination>
+          <ProgramTable ref = "tableNew" :displayData="programList" :isPublic="isPublic" @StartSearch="StartSearch"></ProgramTable>
+          <el-pagination :background="false" layout="prev, pager, next" :page-count="programPageCnt" :current-page.sync="programPageIndex" @current-change="GetProgramList(programPageIndex, search)" @prev-click="programPageIndex --" @next-click="programPageIndex++"></el-pagination>
         </el-tab-pane>
         <el-tab-pane label="最热程序" name="tabHot">
-          <ProgramTable ref = "tableHot" :displayData="programList" :isPublic="isPublic"></ProgramTable>
-          <el-pagination :background="false" layout="prev, pager, next" :page-count="programPageCnt" :current-page.sync="programPageIndex" @current-change="GetProgramList(programPageIndex)" @prev-click="judgePageIndex --" @next-click="judgePageIndex++"></el-pagination>
+          <ProgramTable ref = "tableHot" :displayData="programList" :isPublic="isPublic" @StartSearch="StartSearch"></ProgramTable>
+          <el-pagination :background="false" layout="prev, pager, next" :page-count="programPageCnt" :current-page.sync="programPageIndex" @current-change="GetProgramList(programPageIndex, search)" @prev-click="programPageIndex --" @next-click="programPageIndex++"></el-pagination>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -56,7 +56,9 @@ export default {
           downloaded: true,
           id: -1
         }
-      ]
+      ],
+      search: ''
+
     }
   },
 
@@ -67,8 +69,19 @@ export default {
   },
 
   methods: {
+    Reset () {
+      this.$refs.tableNew.search = ''
+      this.$refs.tableHot.search = ''
+      this.search = ''
+      this.programPageIndex = 1
+    },
+    StartSearch (search) {
+      this.search = search
+      this.programPageIndex = 1
+      this.GetProgramList(1, this.search)
+    },
     // 这里的type指的是通过点击不同的tab，获取不同的api得到函数列表
-    GetProgramList (index) {
+    GetProgramList (index, text) {
       console.log(this.activeTabName)
       let tmpData = {
         token: this.$store.getters.getUserToken,
@@ -80,6 +93,9 @@ export default {
       }
       if (index) {
         tmpData['page'] = index
+      }
+      if (text) {
+        tmpData['search_text'] = text
       }
       if (this.activeTabName === 'tabNew') {
         tmpData.sort_type = 0

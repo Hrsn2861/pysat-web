@@ -25,8 +25,8 @@
       <el-form label-position="left" :model="formForgetpwd" ref="formForgetpwd">
         <transition name="fade">
           <el-row v-if="forgetVisible" class="forget">
-            <el-form-item label="手机号" prop="identity">
-              <el-input v-model="formForgetpwd.phone" class="forget-input" placeholder="手机号"></el-input>
+            <el-form-item label="手机号或邮箱" prop="identity">
+              <el-input v-model="formForgetpwd.passport" class="forget-input" placeholder="手机号或邮箱"></el-input>
             </el-form-item>
             <el-form-item label="用户名" prop="identity">
               <el-input v-model="formForgetpwd.username" class="forget-input" placeholder="用户名"></el-input>
@@ -101,7 +101,7 @@ export default {
         show: false
       },
       formForgetpwd: {
-        phone: '',
+        passport: '',
         username: '',
         newpwd: '',
         CAPTCHA: ''
@@ -157,7 +157,7 @@ export default {
     sendCAPTCHA () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
-        phone: this.formForgetpwd.phone,
+        passport: this.formForgetpwd.passport,
         username: this.formForgetpwd.username
       }
       console.log(tmpdata)
