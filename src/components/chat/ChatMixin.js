@@ -1,5 +1,4 @@
 import { myPost } from '@/utils/requestFunc.js'
-import { resolve } from 'path'
 
 export default {
   computed: {
