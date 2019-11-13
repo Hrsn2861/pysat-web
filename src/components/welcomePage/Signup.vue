@@ -24,8 +24,8 @@
           </el-form-item>
         </transition>
         <transition name="fade">
-          <el-form-item prop="phonenumber" v-if="step >= 4" @keyup.enter="next()">
-            <el-input v-model="registerForm.phonenumber" placeholder="请输入注册手机号"></el-input>
+          <el-form-item prop="passport" v-if="step >= 4" @keyup.enter="next()">
+            <el-input v-model="registerForm.passport" placeholder="请输入注册手机号或邮箱"></el-input>
           </el-form-item>
         </transition>
         <transition name="fade">
@@ -98,12 +98,13 @@ export default {
         cb()
       }
     }
-    var checkPhoneNumber = (rule, value, cb) => {
-      var pattern = /^1[3456789]\d{9}$/
+    var checkPassport = (rule, value, cb) => {
+      var patternPhone = /^1[3456789]\d{9}$/
+      var patternEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
       if (!value) {
         return cb(new Error('不能为空！'))
-      } else if (!pattern.test(value)) {
-        return cb(new Error('请填写真实的手机号！'))
+      } else if (!patternPhone.test(value) && !patternEmail.test(value)) {
+        return cb(new Error('请填写真实的手机号或Email！'))
       } else {
         cb() // 将判断传递给后面
       }
@@ -125,7 +126,7 @@ export default {
         pwd: '',
         checkPwd: '',
         captcha: '',
-        phonenumber: '',
+        passport: '',
         email: '',
         realname: '',
         school: ''
@@ -134,7 +135,7 @@ export default {
         userName: [{ validator: validateUser, trigger: 'blur' }],
         pwd: [{ validator: validatePwd, trigger: 'blur' }],
         checkPwd: [{ validator: validateCheckPwd, trigger: 'blur' }],
-        phonenumber: [{ validator: checkPhoneNumber, trigger: 'blur' }]
+        passport: [{ validator: checkPassport, trigger: 'blur' }]
       }
     }
   },
@@ -168,26 +169,30 @@ export default {
       }
       return true
     },
-    phonenumberValidate () {
-      var pattern = /^1[3456789]\d{9}$/
-      var x = this.registerForm.phonenumber
-      if (x === '') {
-        return false
-      } else if (!pattern.test(x)) {
-        return false
-      } else {
+    passportValidate () {
+      var patternPhone = /^1[3456789]\d{9}$/
+      var patternEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
+      var x = this.registerForm.passport
+      if (patternPhone.test(x) || patternEmail.test(x)) {
         return true
+      } else {
+        return false
       }
     },
     getCaptcha () {
       let data = {
         token: this.$store.getters.getUserToken,
-        phone: this.registerForm.phonenumber
+        passport: this.registerForm.passport
       }
+      console.log(data)
       myPost('api/user/sign/verify', data,
         res => {
-          this.$message.success(`${res.data.msg}`)
-          this.step++
+          if (res.data.status === 1) {
+            this.$message.success(`${res.data.msg}`)
+            this.step++
+          } else {
+            this.$message.error(`${res.data.msg}`)
+          }
         },
         err => {
           this.$message.error(`${err.message}`)
@@ -201,14 +206,14 @@ export default {
           let data = {
             username: this.registerForm.userName,
             password: Encrypt(this.registerForm.pwd),
-            phone: this.registerForm.phonenumber,
+            passport: this.registerForm.passport,
             token: this.$store.getters.getUserToken,
             CAPTCHA: this.registerForm.captcha
           }
 
           myPost('api/user/sign/register', data,
             res => {
-              if (res.data.status) {
+              if (res.data.status === 1) {
                 this.$message({
                   type: 'success',
                   message: '欢迎你,' + this.registerForm.userName + '!',
@@ -266,7 +271,7 @@ export default {
         (this.step === 4 || this.step === 5) &&
         this.checkPwdValidate() &&
         this.userValidate() &&
-        this.pwdValidate() && this.phonenumberValidate()
+        this.pwdValidate() && this.passportValidate()
       ) {
         this.step++
         this.percentage = 99
