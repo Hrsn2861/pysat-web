@@ -3,22 +3,24 @@
     <el-card class="box-card">
       <el-row style="margin-bottom:2%;">
         <!-- change为选中值发生变化时触发 -->
-        <el-select v-model="currentSchoolId" placeholder="学校" @change="GetThemeList()">
+        <el-select v-model="currentSchoolId" placeholder="学校" @change="GetThemeList();ResetSearch()">
           <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
         </el-select>
         <el-button @click="NewThemeDialog()" v-if="isRightAdmin(2) && $route.path===urlAdmin">点击创建</el-button>
-        <el-button @click="GetThemeList()">刷新一下</el-button>
+        <el-button @click="GetThemeList();ResetSearch()">刷新一下</el-button>
       </el-row>
 
       <ThemeTable
+      ref="themeTable"
       :displayData="themeList"
       :currentSchoolId="currentSchoolId"
       @ModifyTheme="ModifyTheme"
       @DeleteTheme="DeleteTheme"
+      :search="search"
       @StartSearch="StartSearch"
       >
       </ThemeTable>
-      <el-pagination :background="false" layout="prev, pager, next" :page-count="themePageCnt" :current-page.sync="themePageIndex" @current-change="GetThemeList(themePageIndex)"  @prev-click="themePageIndex --" @next-click="themePageIndex++"></el-pagination>
+      <el-pagination :background="false" layout="prev, pager, next" :page-count="themePageCnt" :current-page.sync="themePageIndex" @current-change="GetThemeList(themePageIndex, search)"  @prev-click="themePageIndex --" @next-click="themePageIndex++"></el-pagination>
       <el-dialog :title="themeStatus" :visible.sync="themeDialogVisible" width="30%">
         <el-input v-model="formCreateTheme.theme_name" placeholder="请输入主题名称"></el-input>
         <el-input v-model="formCreateTheme.theme_description" placeholder="请输入主题描述"></el-input>
@@ -106,12 +108,18 @@ export default {
         theme_name: '',
         theme_deadline: '',
         theme_description: ''
-      }
+      },
+      search: ''
     }
   },
   methods: {
+    ResetSearch () {
+      this.$refs.themeTable.search = ''
+      this.search = ''
+    },
     StartSearch (search) {
-      this.GetThemeList(1, search)
+      this.search = search
+      this.GetThemeList(1, this.search)
     },
     NewThemeDialog () {
       this.themeDialogVisible = true
@@ -182,6 +190,7 @@ export default {
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
             this.themeDialogVisible = false
+            this.ResetSearch()
             this.GetThemeList(this.themePageIndex)
           } else {
             this.$message.error(`${res.data.msg}`)
