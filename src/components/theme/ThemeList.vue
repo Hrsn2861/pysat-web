@@ -3,11 +3,11 @@
     <el-card class="box-card">
       <el-row style="margin-bottom:2%;">
         <!-- change为选中值发生变化时触发 -->
-        <el-select v-model="currentSchoolId" placeholder="学校" @change="GetThemeList();ResetSearch()">
+        <el-select v-model="currentSchoolId" placeholder="学校" @change="GetThemeList();Reset()">
           <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
         </el-select>
         <el-button @click="NewThemeDialog()" v-if="isRightAdmin(2) && $route.path===urlAdmin">点击创建</el-button>
-        <el-button @click="GetThemeList();ResetSearch()">刷新一下</el-button>
+        <el-button @click="GetThemeList();Reset()">刷新一下</el-button>
       </el-row>
 
       <ThemeTable
@@ -113,12 +113,14 @@ export default {
     }
   },
   methods: {
-    ResetSearch () {
+    Reset () {
       this.$refs.themeTable.search = ''
       this.search = ''
+      this.themePageIndex = 1
     },
     StartSearch (search) {
       this.search = search
+      this.themePageIndex = 1
       this.GetThemeList(1, this.search)
     },
     NewThemeDialog () {
@@ -190,7 +192,7 @@ export default {
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
             this.themeDialogVisible = false
-            this.ResetSearch()
+            this.Reset()
             this.GetThemeList(this.themePageIndex)
           } else {
             this.$message.error(`${res.data.msg}`)

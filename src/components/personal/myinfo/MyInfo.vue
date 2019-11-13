@@ -186,7 +186,7 @@
       <transition name="fade">
         <div v-if="state === types.change_passport" class="change">
           <el-input class="change-input" v-model="formChangepassport.CAPTCHA" placeholder="验证码"></el-input>
-          <el-input class="change-input" v-model="formChangepassport.passport" placeholder="新号码"></el-input>
+          <el-input class="change-input" v-model="formChangepassport.passport" placeholder="新号码或新邮箱"></el-input>
           <el-button id="update-btn" type="primary" @click="SendCAPTCHA" class="change-button">发送验证码</el-button>&nbsp;
           <el-button id="update-btn" type="primary" @click="ChangePassport" class="change-button">更新</el-button>
           <el-button @click="state = types.main_info" class="change-button">取消</el-button>
@@ -487,7 +487,7 @@ export default {
       }
 
       myPost(
-        'api/user/info/setphone',
+        'api/user/info/setpassport',
         tmpdata,
         res => {
           if (res.data.status === 1) {
