@@ -100,6 +100,7 @@ export default {
     }
     var checkPassport = (rule, value, cb) => {
       var patternPhone = /^1[3456789]\d{9}$/
+      // eslint-disable-next-line no-useless-escape
       var patternEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
       if (!value) {
         return cb(new Error('不能为空！'))
@@ -171,6 +172,7 @@ export default {
     },
     passportValidate () {
       var patternPhone = /^1[3456789]\d{9}$/
+      // eslint-disable-next-line no-useless-escape
       var patternEmail = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
       var x = this.registerForm.passport
       if (patternPhone.test(x) || patternEmail.test(x)) {

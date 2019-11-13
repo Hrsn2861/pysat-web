@@ -298,6 +298,7 @@ export default {
         passport: ''
       },
       patternPhone: /^1[3456789]\d{9}$/,
+      // eslint-disable-next-line no-useless-escape
       patternEmail: /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
     }
   },
