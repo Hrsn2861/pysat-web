@@ -10,6 +10,10 @@ import { myPost } from '@/utils/requestFunc.js'
 export default {
   name: 'vue-upload',
   props: {
+    fileList: {
+      type: Array,
+      default: null
+    },
     description: {
       type: String,
       default: ''
@@ -20,7 +24,7 @@ export default {
     },
     school_id: {
       type: Number,
-      default: -1
+      default: 0
     },
     accept: {
       type: String,
@@ -29,7 +33,7 @@ export default {
     // 上传地址
     url: {
       type: String,
-      default: '/api/file/upload/chunk' // hard-code...
+      default: '/api/file/video/chunk' // hard-code...
     },
     // 上传最大数量 默认为100
     fileNumLimit: {
@@ -61,32 +65,21 @@ export default {
   data () {
     return {
       uploader: null,
-      key: ''
+      keys: []
     }
   },
   mounted () {
     this.initWebUpload()
   },
   methods: {
-    randomString (len) {
-      var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
-      var maxPos = $chars.length
-      var pwd = ''
-      for (var i = 0; i < len; i++) {
-        pwd += $chars.charAt(Math.floor(Math.random() * maxPos))
-      }
-      return pwd
+    FindKey (file) {
+      let index = this.fileList.findIndex(ele => ele.id === file.id)
+      return this.keys[index]
     },
-    keyGenerator () {
-      const currentTime = new Date().getTime()
-      const key = `${currentTime}` + this.randomString(12)
-      return key
-    },
-
     initWebUpload () {
       this.uploader = WebUploader.create({
-        auto: true, // 选完文件后，是否自动上传
-        swf: '/static/lib/webuploader/Uploader.swf', // swf文件路径 //这玩意儿有啥用？？？
+        auto: false, // 选完文件后，是否自动上传
+        swf: '/static/lib/webuploader/Uploader.swf', // swf文件路径 //这玩意儿有啥用？？？啊♂？
         server: this.url, // 文件接收服务端
         pick: {
           id: this.uploadButton, // 选择文件的按钮
@@ -105,13 +98,16 @@ export default {
 
       // 当有文件被添加进队列的时候，添加到页面预览
       this.uploader.on('fileQueued', (file) => {
-        this.$emit('fileChange', file)
+        console.log('fileQueued')
+        if (!file.size) return
+        this.fileList.push(file)
+        this.keys.push(this.keyGenerator())
+        console.log(file)
+        console.log(this.keys)
       })
 
       this.uploader.on('uploadStart', (file) => {
         console.log('uploadStart')
-        this.key = this.keyGenerator()
-        console.log('key' + this.key)
         // 在这里可以准备好formData的数据
         let tmpData = {
           token: this.$store.getters.getUserToken,
@@ -120,10 +116,10 @@ export default {
           filename: file.name,
           video_title: this.title,
           description: this.description,
-          key: this.key
+          key: this.FindKey(file)
         }
         myPost(
-          '/api/file/upload/start',
+          '/api/file/video/start',
           tmpData,
           res => {
             if (res.data.status === 1) {
@@ -141,27 +137,32 @@ export default {
       this.uploader.on('uploadBeforeSend', (object, data, headers) => {
         console.log('uploadBeforeSend')
         data.token = this.$store.getters.getUserToken
-        data.key = this.key
+        data.key = this.FindKey(data)
+        console.log(object)
         console.log(data)
+        console.log(headers)
       })
 
       // 文件上传过程中创建进度条实时显示。
       this.uploader.on('uploadProgress', (file, percentage) => {
-        this.$emit('progress', file, percentage)
+        this.$emit('uploadProgress', file, percentage)
       })
 
       this.uploader.on('uploadSuccess', (file, response) => {
         let tmpData = {
           token: this.$store.getters.getUserToken,
-          key: this.key
+          key: this.FindKey(file)
         }
         myPost(
-          '/api/file/upload/done',
+          '/api/file/video/done',
           tmpData,
           res => {
             if (res.data.status === 1) {
-              console.log(res.data)
-              this.$message.success(`${res.data.msg}`)
+              this.title = ''
+              this.description = ''
+              this.$emit('ClearText')
+              this.$message.success(`${file.name}: ${response}`)
+              console.log(this.fileList)
             } else {
               console.log(res.data)
               this.$message.error(`${res.data.msg}`)
@@ -171,12 +172,10 @@ export default {
             this.$message.error(`${err.message}`, 'ERROR!')
           }
         )
-        // this.$emit('success', file, response)
       })
 
       this.uploader.on('uploadError', (file, reason) => {
-        console.error(reason)
-        this.$emit('uploadError', file, reason)
+        this.$message.error(`${file.name}: ${reason}`)
       })
 
       this.uploader.on('error', (type) => {
@@ -188,13 +187,8 @@ export default {
         } else {
           errorMessage = `上传出错！请检查后重新上传！错误代码${type}`
         }
-
         console.error(errorMessage)
-        this.$emit('error', errorMessage)
-      })
-
-      this.uploader.on('uploadComplete', (file, response) => {
-        this.$emit('complete', file, response)
+        this.$message.error(`${errorMessage}`)
       })
     },
 
@@ -210,6 +204,8 @@ export default {
     },
     // 在队列中移除文件
     removeFile (file, bool) {
+      let index = this.fileList.findIndex(ele => ele.id === file.id)
+      this.keys.splice(index, 1)
       this.uploader.removeFile(file, bool)
     },
 
@@ -235,6 +231,20 @@ export default {
           }
         default: return accept
       }
+    },
+    randomString (len) {
+      var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
+      var maxPos = $chars.length
+      var pwd = ''
+      for (var i = 0; i < len; i++) {
+        pwd += $chars.charAt(Math.floor(Math.random() * maxPos))
+      }
+      return pwd
+    },
+    keyGenerator () {
+      const currentTime = new Date().getTime()
+      const key = `${currentTime}` + this.randomString(12)
+      return key
     }
 
   }

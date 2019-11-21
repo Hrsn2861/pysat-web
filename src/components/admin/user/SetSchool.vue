@@ -37,8 +37,8 @@
 </template>
 <script>
 import { myPost } from '@/utils/requestFunc.js'
-import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 import permissionComputer from '@/utils/functionUtils/permissionComputer'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 export default {
   mixins: [getSchoolAndThemeMixin, permissionComputer],
@@ -46,7 +46,7 @@ export default {
     // 只有网站管理员可以创建学校！
   },
   mounted: function () {
-    this.GetSchoolList()
+    this.GetSchoolListNoPublic()
   },
   beforeCreate () {
     checkSession(this, '', '/')
@@ -91,7 +91,7 @@ export default {
           if (res.data.status === 1) {
             this.$message.success(`${res.data.msg}`)
             this.schoolDialogVisible = false
-            this.GetSchoolList()
+            this.GetSchoolListNoPublic()
           } else {
             console.log(tmpData)
             this.$message.error(`${res.data.msg}`)
@@ -101,12 +101,6 @@ export default {
           this.$message.error(`${err.message}`, 'ERROR!')
         }
       )
-    },
-    GetSchoolList () {
-      let tmpData = {
-        token: this.$store.getters.getUserToken
-      }
-      this.GetSchoolListFromMixin(tmpData)
     }
   }
 }

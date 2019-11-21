@@ -25,8 +25,8 @@
       <el-form label-position="left" :model="formForgetpwd" ref="formForgetpwd">
         <transition name="fade">
           <el-row v-if="forgetVisible" class="forget">
-            <el-form-item label="手机号" prop="identity">
-              <el-input v-model="formForgetpwd.phone" class="forget-input" placeholder="手机号"></el-input>
+            <el-form-item label="手机号或邮箱" prop="identity">
+              <el-input v-model="formForgetpwd.passport" class="forget-input" placeholder="手机号或邮箱"></el-input>
             </el-form-item>
             <el-form-item label="用户名" prop="identity">
               <el-input v-model="formForgetpwd.username" class="forget-input" placeholder="用户名"></el-input>
@@ -101,7 +101,7 @@ export default {
         show: false
       },
       formForgetpwd: {
-        phone: '',
+        passport: '',
         username: '',
         newpwd: '',
         CAPTCHA: ''
@@ -141,8 +141,6 @@ export default {
                 this.$store.dispatch('setUser', this.formLogin.identity)
                 // 登录成功 跳转至首页
                 this.$router.push('overview')
-                window.location.reload()
-                // this.$router.push({name: 'myinfo', params: {username: '___default'}})
               } else {
                 this.$message.error(`${res.data.msg}`)
                 return false
@@ -159,7 +157,7 @@ export default {
     sendCAPTCHA () {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
-        phone: this.formForgetpwd.phone,
+        passport: this.formForgetpwd.passport,
         username: this.formForgetpwd.username
       }
       console.log(tmpdata)
@@ -228,10 +226,6 @@ export default {
   height: 100%;
 }
 
-&.is-mobile {
-  display: none;
-}
-
 .el-button {
   width: auto;
   height: auto;
@@ -240,12 +234,15 @@ export default {
 .box-card {
   align-self: center;
   height: auto;
-  width: 25%;
+  width: 30%;
   border: 0px dashed rgb(40, 40, 40);
   background-color: rgba(255, 255, 255, 0.7);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
+  &.is-mobile {
+  width : 95%;
+  }
 }
 
 .box-card:hover {

@@ -1,12 +1,12 @@
 <template>
   <div class="main-div">
     <div class="box-card">
-      <div id="chat-layout">
-        <div class="sidebar">
+      <div id="chat-layout" v-bind:class="{ 'is-mobile': isMobile}">
+        <div class="sidebar" v-bind:class="{ 'is-mobile': isMobile}">
           <card></card>
           <list></list>
         </div>
-        <div class="main">
+        <div class="main" v-bind:class="{ 'is-mobile': isMobile}">
           <message></message>
           <usertext ></usertext>
         </div>
@@ -21,9 +21,10 @@ import list from '@/components/chat/List.vue'
 import message from '@/components/chat/Message.vue'
 import usertext from '@/components/chat/UserText.vue'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
+import checkMobileMixin from '@/utils/resolutionUtils/checkMobileHandler'
 import ChatMixin from './ChatMixin.js'
 export default {
-  mixins: [ChatMixin],
+  mixins: [ChatMixin, checkMobileMixin],
   beforeCreate () {
     checkSession(this, '', '/')
   },
@@ -53,6 +54,9 @@ export default {
   margin: 0%;
   width: 75vw;
   height: 73vh;
+  &.is-mobile {
+  width : 95vw;
+  }
   overflow: hidden;
   border-radius: 10px;
   .main {
@@ -63,6 +67,9 @@ export default {
   .sidebar,
   .main {
     height: 100%;
+    &.is-mobile {
+    width : 50%;
+    }
   }
   .sidebar {
     float: left;

@@ -12,7 +12,8 @@
             <span>{{entry.date}}</span>
           </p></center>
           <div class="main" :class="{self:entry.self}">
-            <img class="avatar" src="@/assets/cx.png" alt />
+            <img v-if="!entry.self" class="avatar" :src="chatUserUrl"/>
+            <img v-else class="avatar" :src="myAvatarUrl"/>
             <p class="text">{{entry.content}}</p>
           </div>
         </li>
@@ -31,6 +32,9 @@ export default {
     return {
       img: '@/assets/logo.png'
     }
+  },
+  computed: {
+
   },
   methods: {
     // Velocity这个动画我已经在最外面的index.html引入了

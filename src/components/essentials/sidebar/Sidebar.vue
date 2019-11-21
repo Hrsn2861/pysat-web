@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar">
+  <div class="sidebar" @mouseover="$store.state.sidebar.opened = true" @mouseleave="$store.state.sidebar.opened = false">
     <el-menu
       v-if="!isLogged"
       :default-active="activeIndex"
@@ -7,41 +7,42 @@
       class="el-menu-vertical-demo"
       :collapse="isCollapse"
       background-color="#272727"
-      text-color="#fff"
-      active-text-color="#ffd04b"
+      text-color="#A2A3A6"
+      active-text-color="#fff"
     >
       <el-menu-item index="/overview">
         <i class="el-icon-s-grid"></i>
         <span slot="title">概览</span>
       </el-menu-item>
 
-      <el-menu-item index="/hangout">
+      <!-- <el-menu-item index="/hangout">
         <i class="el-icon-view"></i>
         <span slot="title">隨便逛逛</span>
-      </el-menu-item>
+      </el-menu-item> -->
 
       <el-submenu index="/personal">
         <template slot="title">
           <i class="el-icon-user"></i>
           <span slot="title">个人中心</span>
         </template>
-        <el-menu-item index="/personal/myinfo/___default">个人信息</el-menu-item>
+        <el-menu-item :index="myinfoindex">个人信息</el-menu-item>
         <el-menu-item index="/personal/myprogram">我的程序</el-menu-item>
-        <el-menu-item>我的学校</el-menu-item>
+        <!-- 就让所有人都能看见学校好了 -->
+        <el-menu-item index="/personal/myschool">我的学校</el-menu-item>
       </el-submenu>
 
-      <el-submenu index="/admin" v-if="getPermission_Public>=2 || getPermission_Private>=2">
+      <el-submenu index="/admin" v-if="getPermissionPublic>=2 || getPermissionPrivate>=2">
         <template slot="title">
           <i class="el-icon-s-platform"></i>
           <span slot="title">管理中心</span>
         </template>
-        <el-menu-item index="/theme">程序管理</el-menu-item> <!-- 程序管理和提交程序共用一个路由是有原因的....-->
+        <el-menu-item index="/admin/program">程序管理</el-menu-item> <!-- 程序管理和提交程序共用一个路由是有原因的....-->
         <el-menu-item index="/admin/userlist">用户列表</el-menu-item>
-        <el-menu-item index="/admin/schoollist" v-if="getPermission_Public>=8">学校列表</el-menu-item>
-        <el-menu-item index="/admin/applylist" v-if="getPermission_Private>=2">加入申请</el-menu-item>
+        <el-menu-item index="/admin/schoollist" v-if="getPermissionPublic>=8">学校列表</el-menu-item>
+        <el-menu-item index="/admin/applylist" v-if="getPermissionPrivate>=2">加入申请</el-menu-item>
       </el-submenu>
 
-      <el-menu-item index="/theme">
+      <el-menu-item index="/theme/submit">
         <i class="el-icon-upload"></i>
         <span slot="title">提交程序</span>
       </el-menu-item>
@@ -61,7 +62,7 @@
           <span slot="title">线上教程</span>
         </template>
         <el-menu-item index="/course/view">查看教程</el-menu-item>
-        <el-menu-item index="/course/upload" v-if="getPermission_Public>=2 || getPermission_Private>=2">发布教程</el-menu-item>
+        <el-menu-item index="/course/upload" v-if="getPermissionPublic>=2 || getPermissionPrivate>=2">发布教程</el-menu-item>
       </el-submenu>
 
       <el-menu-item index="/chat">
@@ -93,10 +94,14 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'getPermission_Public',
-      'getPermission_Private',
-      'getSchool_Id'
+      'getPermissionPublic',
+      'getPermissionPrivate',
+      'getSchoolId',
+      'getUser'
     ]),
+    myinfoindex () {
+      return '/personal/myinfo/' + this.getUser
+    },
     isCollapse () {
       return !this.sidebar.opened
     },
@@ -118,24 +123,34 @@ export default {
 
 <style scoped>
 .sidebar {
-  height: 100%;
+  float: left;
+  height: auto;
   min-height: 100vh;
-  background-color: rgb(84, 92, 100);
+  background-color: #272727;
+
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
+  /* height: 1200px; */
+  height: 100vh;
   min-height: 100vh;
-  height: 100%;
+
+  border-right: #272727 solid 2px;
+  /* fix side bar white boarder */
+  /* 代表了没有展开的边框 */
 }
 
 .el-menu-vertical-demo {
+  /* height: 1200px; */
+  height: 100vh;
   min-height: 100vh;
-  height: 100%;
+  /* 代表了展开后的边框 */
+  border-right: #272727 solid 2px;
 }
 
 .el-menu-item.is-active,
 .el-submenu.is-active >>> .el-submenu__title {
-  background: #484e5c !important;
+  background: #343A41 !important;
 }
 
 .el-submenu .el-menu-item {
@@ -143,14 +158,15 @@ export default {
   min-width: auto;
 }
 .el-submenu.is-active .el-menu-item {
-  background: #484e5c !important;
+  background: #343A41 !important;
 }
 .el-submenu.is-active .el-menu-item.is-active {
-  background: #3a4046 !important;
+  background: #91939A !important;
+  /* 代表被选中的 */
 }
 .el-submenu .el-menu-item:hover {
   padding-left: 60px !important;
-  background: rgb(67, 74, 80) !important;
+  background: rgb(42, 42, 42) !important;
 }
 .el-menu-item i {
   padding-bottom: 4px;

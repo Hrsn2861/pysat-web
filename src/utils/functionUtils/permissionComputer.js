@@ -1,5 +1,29 @@
+import { mapGetters } from 'vuex'
 export default {
   computed: {
+    ...mapGetters([
+      'getPermissionPublic',
+      'getPermissionPrivate',
+      'getSchoolId'
+    ]),
+    hasSelectedSchool () {
+      return this.getSchoolId !== 0
+    },
+    isForbiddenInSchool () {
+      return this.getPermissionPrivate === 0 & this.hasSelectedSchool
+    },
+    isRightAdmin () {
+      return function (level) {
+        if (this.getPermissionPublic >= 8) {
+          return true
+        }
+        if (this.currentSchoolId === 0) {
+          return this.getPermissionPublic >= level
+        } else {
+          return this.getPermissionPrivate >= level
+        }
+      }
+    },
     // 这里暂时好像没有用
     isPrivateAdmin () {
       return (

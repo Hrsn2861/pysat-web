@@ -14,13 +14,14 @@ export async function checkSession (context, loggedUrl, unloggedUrl) {
       if (res.data.status === 1) {
         if (res.data.data.user) {
           // 已登陆
-          context.$message.success('已登陆！')
+          // 已登录就别显示了，不然消息太多了...
+          // context.$message.success('已登陆！')
           logged = true
           console.log(res.data.data.user)
           context.$store.dispatch('checkSession', {user: res.data.data.user}) // 不管登陆还是没有登陆都要将改变user，（没有登陆，vuex的user的状态空）
         } else {
           // 未登录
-          context.$message.success('未登录！')
+          // context.$message.success('未登录！')
           context.$store.dispatch('userLogOut')
         }
         // console.log('index: ' + res.data.data.user)
@@ -74,7 +75,7 @@ export async function checkSession (context, loggedUrl, unloggedUrl) {
     if (loggedUrl !== '') {
       console.log('sessionFunc.js Jumpto: ', loggedUrl)
       if (loggedUrl === 'myinfo') {
-        context.$router.push({name: loggedUrl, params: {username: '___default'}})
+        context.$router.push({name: loggedUrl, params: this.$store.getters.getUser}) // TODO: 这里改了一下，看看有没有问题
       } else {
         context.$router.push(loggedUrl)
       }

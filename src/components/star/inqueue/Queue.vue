@@ -1,14 +1,12 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tabs v-model="moduleName" @tab-click="GetQueueList()">
-        <el-tab-pane label="在野" name="public" v-if="permission_public>=1">
-          <QueueTable v-bind:displayData="tableData"></QueueTable>
-        </el-tab-pane>
-        <el-tab-pane label="校内" name="private" v-if="permission_private>=1">
-          <QueueTable v-bind:displayData="tableData"></QueueTable>
-        </el-tab-pane>
-      </el-tabs>
+      <el-select v-model="currentSchoolId" placeholder="学校" @change="GetQueueList(1);Reset()">
+        <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
+      </el-select>
+      <QueueTable ref="queueTable" :displayData="queueList" :isPublic="isPublic" @StartSearch="StartSearch"></QueueTable>
+      <el-pagination :background="false" layout="prev, pager, next" :page-count="queuePageCnt" :current-page.sync="queuePageIndex" @current-change="GetQueueList(queuePageIndex, search); Reset()" @prev-click="queuePageIndex --" @next-click="queuePageIndex++"></el-pagination>
+
     </el-card>
   </div>
 </template>
@@ -18,8 +16,11 @@
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
 import QueueTable from '@/components/star/inqueue/QueueTable.vue'
 import { myGet } from '@/utils/requestFunc.js'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 
 export default {
+  mixins: [getSchoolAndThemeMixin],
+
   components: {
     QueueTable
   },
@@ -27,46 +28,60 @@ export default {
     checkSession(this, '', '/')
   },
   created () {
-    this.permission_public = localStorage.getItem('permission_public')
-    this.permission_private = localStorage.getItem('permission_private')
+
   },
   mounted: function () {
+    if (localStorage['permission_public'] >= 8) {
+      this.GetSchoolList()
+    }
     this.GetQueueList()
   },
   data () {
     return {
-      tableData: [
+      queuePageCnt: 100,
+      queuePageIndex: 1,
+      queueList: [
         {
-          submit_time: '2016-05-02',
-          name: '面向陈旭程序设计基础',
-          author: '陈旭老师',
-          id: 'woshishuji'
-        },
-        {
-          submit_time: '6102-05-02',
-          name: '编译原理PA1-B',
-          author: '大牛顾掀宇',
-          id: 'woshidaniu'
+          submit_time: '9999-12-31',
+          author: '？？？',
+          name: '？？？？？',
+          id: -1
         }
       ],
-      moduleName: 'public',
-      permission_public: -1,
-      permission_private: -1
+      search: ''
     }
   },
+
+  computed: {
+    isPublic () {
+      return Number(this.currentSchoolId) === 0
+    }
+  },
+
   methods: {
-    GetQueueList () {
+    Reset () {
+      this.$refs.queueTable.search = ''
+      this.search = ''
+      this.queuePageIndex = 1
+    },
+    StartSearch (search) {
+      this.search = search
+      this.queuePageIndex = 1
+      this.GetQueueList(1, this.search)
+    },
+    GetQueueList (index, text) {
       let tmpData = {
         token: this.$store.getters.getUserToken,
         mine: false,
-        school_id: -1,
+        school_id: this.currentSchoolId,
         status_low: 3,
         status_up: 5
       }
-      if (this.moduleName === 'public') {
-        tmpData.school_id = 0
-      } else {
-        tmpData.school_id = localStorage.getItem('school_id')
+      if (index) {
+        tmpData['page'] = index
+      }
+      if (text) {
+        tmpData['search_text'] = text
       }
       console.log(tmpData)
       myGet(
@@ -75,7 +90,8 @@ export default {
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
-            this.tableData = res.data.data.code_list
+            this.queueList = res.data.data.code_list
+            this.queuePageCnt = Math.ceil(res.data.data.tot_count / 20)
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -93,10 +109,10 @@ export default {
 <style scoped>
 .box-card {
   align-self: center;
-  height: 85vh;
+  height: auto;
   width: 95%;
   border: 0px dashed rgb(40, 40, 40);
-  background-color: rgba(255, 255, 255, 0.92);
+  background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
@@ -118,5 +134,9 @@ export default {
   background-size: cover;
   background-repeat: none;
   height: 100%;
+}
+.el-pagination{
+  width: 100%;
+  padding: 0%;
 }
 </style>

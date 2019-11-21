@@ -1,7 +1,10 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <MineTable :displayData="tableData" ref="MineTable"></MineTable>
+      <h2>我的程序</h2>
+      <MineTable :displayData="mineList" ref="MineTable"></MineTable>
+      <el-pagination :background="false" layout="prev, pager, next" :page-count="minePageCnt" :current-page.sync="minePageIndex" @current-change="GetSchoolListNoPublic(minePageIndex)" @prev-click="minePageIndex --" @next-click="minePageIndex++"></el-pagination>
+
     </el-card>
   </div>
 </template>
@@ -23,7 +26,9 @@ export default {
   },
   data () {
     return {
-      tableData: [
+      minePageCnt: 100,
+      minePageIndex: 1,
+      mineList: [
         {
           submit_time: '2016-05-02',
           name: '面向陈旭程序设计基础',
@@ -41,17 +46,22 @@ export default {
     }
   },
   methods: {
-    GetMineList () {
-      let tmpdata = {
+    GetMineList (index) {
+      let tmpData = {
         token: this.$store.getters.getUserToken,
         mine: true
       }
+      if (index) {
+        tmpData['page'] = index
+      }
       myGet(
         '/api/program/list/get',
-        tmpdata,
+        tmpData,
         res => {
           if (res.data.status === 1) {
-            this.tableData = res.data.data.code_list
+            this.mineList = res.data.data.code_list
+            this.minePageCnt = Math.ceil(res.data.data.tot_count / 20)
+            console.log(res.data.data.code_list)
           } else {
             this.$message.error(`${res.data.msg}`)
           }
@@ -69,10 +79,10 @@ export default {
 <style scoped>
 .box-card {
   align-self: center;
-  height: 85vh;
-  width: 95%;
+  height: auto;
+  width: 98%;
   border: 0px dashed rgb(40, 40, 40);
-  background-color: rgba(255, 255, 255, 0.92);
+  background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
@@ -94,5 +104,8 @@ export default {
   background-size: cover;
   background-repeat: none;
   height: 100%;
+}
+.el-pagination{
+  padding: 0%;
 }
 </style>

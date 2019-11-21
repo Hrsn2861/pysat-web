@@ -1,39 +1,49 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
-      <el-tag type="info">{{themeInfo.title}}</el-tag>
-      <AceContainer ref="AceContainer"></AceContainer>
-      <el-col :span="4">
-        <el-input
-          type="textarea"
-          placeholder="给你的程序取个名字"
-          v-model="codename"
-          maxlength="10"
-          show-word-limit
-        ></el-input>
-      </el-col>
-      <el-col :span="20">
-        <el-input
-          type="textarea"
-          placeholder="请简单描述一下你的程序(README)"
-          v-model="readme"
-          maxlength="30"
-          show-word-limit
-        ></el-input>
-      </el-col>
-
       <center>
-        <el-button type="primary" @click="upload()" plain>点击上传！</el-button>
+        <h3>
+        {{themeInfo.title}}
+        </h3>
       </center>
-      <el-upload
-        ref="upload"
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :on-preview="handlePreview"
-        :file-list="fileList"
-        :auto-upload="false">
-        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-        <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">显示文件</el-button> -->
-      </el-upload>
+      <center>截止 : {{themeInfo.deadline}} ||| {{themeInfo.description}}</center>
+      <AceContainer ref="AceContainer"></AceContainer>
+      <el-row type="flex" justify="start">
+        <el-col :span="6">
+          <el-input
+            type="textarea"
+            placeholder="给你的程序取个名字"
+            v-model="codename"
+            maxlength="10"
+            show-word-limit
+          ></el-input>
+        </el-col>
+        <el-col :span="18">
+          <el-input
+            type="textarea"
+            placeholder="请简单描述一下你的程序(README)"
+            v-model="readme"
+            maxlength="30"
+            show-word-limit
+          ></el-input>
+        </el-col>
+      </el-row>
+      <el-row type="flex" justify="start">
+        <el-col :span="6">
+          <el-button type="primary" @click="upload()" plain>点击上传</el-button>
+        </el-col>
+        <el-col :span="6">
+           <el-upload
+            ref="upload"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :on-preview="handlePreview"
+            :file-list="fileList"
+            :auto-upload="false">
+            <el-button slot="trigger" type="primary">选取文件</el-button>
+          </el-upload>
+        </el-col>
+      </el-row>
+
     </el-card>
   </div>
 </template>
@@ -117,13 +127,7 @@ export default {
         code_name: this.codename,
         code_content: this.$refs.AceContainer.code,
         code_readme: this.readme,
-        school_id: -1,
         theme_id: this.currentThemeId
-      }
-      if (this.moduleId === 0) {
-        tmpData.school_id = 0
-      } else {
-        tmpData.school_id = localStorage.getItem('school_id')
       }
       console.log(tmpData)
       myPost(
@@ -160,7 +164,7 @@ export default {
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
   margin: 0%;
-  width: 70%;
+  width: auto;
   height: auto;
 }
 
@@ -184,7 +188,7 @@ export default {
 }
 
 .el-button {
-  margin: 1%;
   margin-bottom: 0%;
+  margin: 0%;
 }
 </style>

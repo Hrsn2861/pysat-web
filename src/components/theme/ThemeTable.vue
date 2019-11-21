@@ -1,26 +1,56 @@
 <template>
-    <el-table :data="displayData" style="width: 100%" height="800">
+    <div>
+    <el-table :data="displayData" style="width: 100%" :height="tableHeight">
         <el-table-column prop="id" label="主题ID" width="80"></el-table-column>
-        <el-table-column prop="title" label="主题名称" width="150"></el-table-column>
+        <el-table-column prop="title" fixed="left" label="主题名称" width="150"></el-table-column>
         <el-table-column prop="description" label="描述" :resizable="true"></el-table-column>
-        <el-table-column prop="create_time" label="发布时间" width="150"></el-table-column>
-        <el-table-column prop="deadline" label="截止日期" width="150"></el-table-column>
-        <el-table-column prop="count" label="相关数目" width="120"></el-table-column>
+        <el-table-column prop="create_time" label="发布时间" width="160"></el-table-column>
+        <el-table-column prop="deadline" label="截止日期" width="160"></el-table-column>
+        <el-table-column prop="count_onstar" label="上星数目" width="120" v-if="$route.path===urlSubmit"></el-table-column>
+        <el-table-column prop="count_tohandle" label="待处理数目" width="120" v-if="$route.path===urlAdmin && isRightAdmin(4)"></el-table-column>
+        <el-table-column prop="count_tojudge" label="待审核数目" width="120" v-if="$route.path===urlAdmin && !isRightAdmin(4)"></el-table-column>
+
         <el-table-column fixed="right" label="操作" width="200">
+          <template slot="header" slot-scope="scope">
+            <el-input
+            v-model="search"
+            placeholder="输入关键字搜索主题"/>
+            </template>
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="SubmitProgram(scope.$index, scope.row)">提交</el-button>
-            <el-button type="text" size="small" @click="JudgeProgram(scope.$index, scope.row)" v-if="isRightAdmin(2)">审核</el-button>
-            <el-button type="text" size="small" @click="UploadProgram(scope.$index, scope.row)" v-if="isRightAdmin(4)">上传</el-button>
-            <el-button type="text" size="small" @click="ModifyTheme(scope.$index, scope.row)" v-if="isRightAdmin(2)">修改</el-button>
-            <el-button type="text" size="small" @click="DeleteTheme(scope.$index, scope.row)" v-if="isRightAdmin(4)">删除</el-button>
+            <el-button type="text" size="small" @click="SubmitProgram(scope.$index, scope.row)" v-if="isRightAdmin(1) && $route.path===urlSubmit">提交</el-button>
+            <el-button type="text" size="small" @click="JudgeProgram(scope.$index, scope.row)" v-if="isRightAdmin(2) && $route.path===urlAdmin">审核</el-button>
+            <el-button type="text" size="small" @click="UploadProgram(scope.$index, scope.row)" v-if="isRightAdmin(4) && $route.path===urlAdmin">上传</el-button>
+            <el-button type="text" size="small" @click="ModifyTheme(scope.$index, scope.row)" v-if="isRightAdmin(2) && $route.path===urlAdmin">修改</el-button>
+            <el-button type="text" size="small" @click="MakeDeleteDialogVisible(scope.$index, scope.row)" v-if="isRightAdmin(4) && $route.path===urlAdmin">删除</el-button>
+            <el-dialog
+              title="提示"
+              :visible.sync="deleteDialogVisible"
+              width="30%"
+              :append-to-body="true"
+            >
+              <span>确定要删除该主题吗？</span>
+               <span slot="footer" class="dialog-footer">
+                <el-button @click="deleteDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="DeleteTheme();deleteDialogVisible=false">确 定</el-button>
+               </span>
+            </el-dialog>
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" width="100">
+          <template slot="header" slot-scope="scope">
+            <el-button type="primary" @click="StartSearch">搜索</el-button>
           </template>
         </el-table-column>
       </el-table>
+    </div>
+
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import permissionComputer from '@/utils/functionUtils/permissionComputer'
 
 export default {
+  mixins: [permissionComputer],
+
   props: {
     displayData: {
       type: Array,
@@ -39,27 +69,18 @@ export default {
   },
   data () {
     return {
-
+      urlSubmit: '/theme/submit',
+      urlAdmin: '/admin/program',
+      deleteDialogVisible: false,
+      selectRow: null,
+      selectIndex: -1,
+      search: ''
     }
   },
 
   computed: {
-    ...mapGetters([
-      'getPermission_Public',
-      'getPermission_Private',
-      'getSchool_Id'
-    ]),
-    isRightAdmin () {
-      return function (level) {
-        if (this.getPermission_Public >= 8) {
-          return true
-        }
-        if (this.currentSchoolId === 0) {
-          return this.getPermission_Public >= level
-        } else {
-          return this.getPermission_Private >= level
-        }
-      }
+    tableHeight () {
+      return document.documentElement.clientHeight * 0.8
     }
   },
 
@@ -76,11 +97,22 @@ export default {
       this.$router.push({ name: 'upload', params: { themeid: row.id } })
     },
 
-    DeleteTheme (index, row) {
-      this.$emit('DeleteTheme', index, row)
-    },
     ModifyTheme (index, row) {
       this.$emit('ModifyTheme', index, row)
+    },
+    MakeDeleteDialogVisible (index, row) {
+      this.selectIndex = index
+      this.selectRow = row
+      this.deleteDialogVisible = true
+    },
+    DeleteTheme () {
+      console.log(this.selectIndex)
+      console.log(this.selectRow)
+      this.$emit('DeleteTheme', this.selectIndex, this.selectRow)
+    },
+    StartSearch () {
+      console.log('StartSearch:' + this.search)
+      this.$emit('StartSearch', this.search)
     }
   }
 }
@@ -112,13 +144,13 @@ export default {
   transition: box-shadow 0.3s ease-in-out !important;
   transition-duration: 1s;
 }
-.el-table {
-  height: 82vh !important;
-}
 .box-card:hover {
   box-shadow: 0 5px 15px rgba(20, 20, 20, 0.8);
 }
 .create-theme {
   margin-top: 0.5%;
+}
+.el-pagination{
+  padding: 0%;
 }
 </style>

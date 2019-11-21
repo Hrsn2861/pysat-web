@@ -1,6 +1,9 @@
 <template>
   <div class="main-div">
     <el-card class="box-card">
+      <el-select v-model="currentSchoolId" placeholder="学校" @change="GetApplyList(1)">
+            <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+      </el-select>
       <el-table :data="applyList" style="width:100%" height="500">
         <el-table-column prop="id" label="申请id" width="200"></el-table-column>
         <el-table-column prop="username" label="用户名" width="120"></el-table-column>
@@ -22,11 +25,9 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-select v-model="currentSchoolId" placeholder="学校" @change="GetApplyList()">
-        <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-      </el-select>
-      <el-button type="text" @click="GetApplyList">刷新名单</el-button>
-      <el-button type="text">...</el-button>
+
+      <el-pagination :background="false" layout="prev, pager, next" :page-count="applyPageCnt" :current-page.sync="applyPageIndex" @current-change="GetApplyList(applyPageIndex)" @prev-click="applyPageIndex --" @next-click="applyPageIndex++"></el-pagination>
+
     </el-card>
 
   </div>
@@ -34,16 +35,23 @@
 <script>
 import { myPost } from '@/utils/requestFunc.js'
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
 import permissionComputer from '@/utils/functionUtils/permissionComputer'
+import getSchoolAndThemeMixin from '@/utils/functionUtils/getThemeAndSchoolListMixin'
+
 export default {
   mixins: [getSchoolAndThemeMixin, permissionComputer],
   data () {
     return {
-      applyList: [
-      ],
-      currentSchoolId: 3,
+      applyPageCnt: 100,
+      applyPageIndex: 1,
+      applyList: [],
+      currentSchoolId: 0,
       schoolList: [
+        {
+          id: localStorage.getItem('school_id'),
+          name: localStorage.getItem('school_name'),
+          disabled: Number(localStorage.getItem('school_id')) === 0
+        }
       ]
     }
   },
@@ -51,23 +59,18 @@ export default {
     checkSession(this, '', '/')
   },
   mounted: function () {
-    this.GetSchoolList()
+    // 能进入该页面的一定是校内权限>=2（有学校或者是网站管理员）
+
+    if (localStorage.getItem('permission_public') >= 8) {
+      this.GetSchoolListNoPublic().then(res => {
+        this.GetApplyList()
+      })
+    } else {
+      this.currentSchoolId = this.schoolList[0].id
+      this.GetApplyList()
+    }
   },
   computed: {
-    // 如果是private和public的admin，那么getSchoolList就可以成功调用，否则默认显示localStorage的
-    isPrivateAdmin () {
-      return (
-        localStorage['permission_private'] >= 2
-      )
-    },
-    isPublicAdmin () {
-      return (
-        localStorage['permission_public'] >= 2
-      )
-    },
-    isGreatAdmin () {
-      return localStorage['permission_public'] >= 8
-    }
 
   },
   methods: {
@@ -75,54 +78,26 @@ export default {
       console.log('View user index: ', index)
       this.$router.push({ name: 'myinfo', params: { username: row.username } })
     },
-    GetSchoolList () {
-      if (this.isGreatAdmin) {
-        let tmpData = {
-          token: this.$store.getters.getUserToken
-        }
-        this.GetSchoolListFromMixin(tmpData).then(
-          res => {
-            this.currentSchoolId = this.schoolList[0].id
-            this.GetApplyList()
-          }
-        )
-      } else {
-        if (this.isPublicAdmin) {
-          this.schoolList.push(
-            {
-              id: 0,
-              name: '公共区域'
-            }
-          )
-          this.currentSchoolId = 0
-        }
-        if (this.isPrivateAdmin) {
-          this.schoolList.push(
-            {
-              id: localStorage['school_id'],
-              name: localStorage['school_name']
-            }
-          )
-          this.currentSchoolId = localStorage['school_id']
-        }
-        this.GetApplyList()
-      }
-    },
-    GetApplyList () {
+
+    GetApplyList (index) {
       console.log(this.schoolList)
       console.log(this.currentSchoolId)
-      let tmpdata = {
+      let tmpData = {
         token: this.$store.getters.getUserToken,
         school_id: this.currentSchoolId,
         type: 2
         // TODO : 这里默认返回未处理的
       }
+      if (index) {
+        tmpData['page'] = index
+      }
       myPost(
         '/api/school/admin/applylist',
-        tmpdata,
+        tmpData,
         res => {
           if (res.data.status === 1) {
             console.log(res.data.data)
+            this.applyPageCnt = Math.ceil(res.data.data.tot_count / 20)
             this.applyList = res.data.data.apply_list
           } else {
             this.$message.error(`${res.data.msg}`)
@@ -136,14 +111,14 @@ export default {
     ApproveCurrentUserOrNot (index, row, approveOrNot) {
       console.log('Approve user: ', row.username)
 
-      let tmpdata = {
+      let tmpData = {
         token: this.$store.getters.getUserToken,
         apply_id: row.id,
         approve: approveOrNot
       }
       myPost(
         '/api/school/admin/approve',
-        tmpdata,
+        tmpData,
         res => {
           if (res.data.status === 1) {
             this.applyList.splice(index, 1)
@@ -193,5 +168,9 @@ export default {
   background-size: cover;
   background-repeat: none;
   height: 100%;
+}
+.el-pagination{
+  width: 100%;
+  padding: 0%;
 }
 </style>

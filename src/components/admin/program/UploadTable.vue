@@ -2,12 +2,19 @@
   <el-table
     :data="displayData"
     style="width: 100%"
-    height="500"
+    height="400"
   >
-    <el-table-column prop="submit_time" label="提交时间" width="300"></el-table-column>
+    <el-table-column prop="judge_time" label="审核时间" width="300"></el-table-column>
     <el-table-column prop="author" label="作者" width="180"></el-table-column>
-    <el-table-column prop="name" label="程序名" width="200"></el-table-column>
-    <el-table-column prop="status" label="审核状态"  width="200" :formatter="statusFormatter"></el-table-column>
+    <el-table-column prop="name" label="程序名" :resizable="true"></el-table-column>
+    <el-table-column prop="status" label="审核状态" width="180" >
+      <template slot-scope="scope">
+        <el-tag
+          :type="calculateTagType(scope.row.status)"
+          disable-transitions
+        >{{statusDict[scope.row.status]}}</el-tag>
+      </template>
+    </el-table-column>
 
     <el-table-column label="下载" width="150" fixed="right">
       <template slot-scope="scope">
@@ -55,10 +62,25 @@ export default {
       }
     }
   },
+  computed: {
+    calculateTagType () {
+      return function (status) {
+        if (status === 5) {
+          return 'success'
+        } else if (status >= 2 && status <= 4) {
+          return 'warning'
+        } else if (status >= 0 && status <= 1) {
+          return 'info'
+        } else if (status < 0) {
+          return 'danger'
+        }
+      }
+    }
+  },
   methods: {
-    statusFormatter (row, column) {
-      return this.statusDict[row.status.toString()]
-    },
+    // statusFormatter (row, column) {
+    //   return this.statusDict[row.status.toString()]
+    // },
     Download (index, row) {
       let tmpdata = {
         token: this.$store.getters.getUserToken,
@@ -76,7 +98,7 @@ export default {
             // this.$message.success('开始审核！')
             var codeContent = new File([res.data.data.code.content], 'code.py', {type: 'text/plain;charset=utf-8'})
             saveAs(codeContent)
-            var codeReadme = new File([res.data.data.code.readme], 'readme.py', {type: 'text/plain;charset=utf-8'})
+            var codeReadme = new File([res.data.data.code.readme], 'readme.txt', {type: 'text/plain;charset=utf-8'})
             saveAs(codeReadme)
           } else {
             this.$message.error(`${res.data.msg}`)
@@ -163,7 +185,4 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-.active{
-    height: 50vh;
-}
 </style>

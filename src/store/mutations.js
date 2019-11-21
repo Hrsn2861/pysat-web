@@ -36,8 +36,8 @@ export const mutations = {
       state.school_name = data.user.school.name
       localStorage.setItem('school_name', data.user.school.name)
 
-      state.school_id = data.user.school_id
-      localStorage.setItem('school_id', data.user.school.id)
+      state.school_id = data.user.school.id
+      localStorage.setItem('school_id', Number(data.user.school.id))
     }
   },
 
@@ -57,6 +57,9 @@ export const mutations = {
     console.log('A test func in mutations.js')
   },
 
+  [types.SET_WINDOW_HEIGHT] (state, height) {
+    state.windowHeight = height
+  },
   // for view change
   [types.TOGGLE_SIDEBAR] (state) {
     if (state.sidebar.opened) {
@@ -102,16 +105,16 @@ export const mutations = {
     console.log('From Mutations INIT_DATA', data.chat_list)
     // console.log(state.user)
     state.chatSystem.msgCount = data.msg_count
-    state.chatSystem.sessions.push(
-      {
-        id: 0,
-        user: '官方小助手',
-        unread: 0,
-        avatar: ''
-      }
-    )
+    // state.chatSystem.sessions.push(
+    //   {
+    //     id: 0,
+    //     user: '官方小助手',
+    //     unread: 0,
+    //     avatar: '/api/file/avatar/get' + '?token=' + localStorage['token']
+    //   }
+    // )
 
-    var index = 1
+    var index = 0
     for (var i = 0; i < data.chat_list.length; ++i) {
       var chat = data.chat_list[i]
       state.chatSystem.sessions.push(
@@ -121,7 +124,7 @@ export const mutations = {
           unread: chat.unread,
           // 这里chat的user有一些杂七杂八的信息
           // 需要用chat.user过滤
-          avatar: ''
+          avatar: '/api/file/avatar/get' + '?token=' + localStorage['token'] + '&username=' + chat.user.username
         }
       )
       index += 1
