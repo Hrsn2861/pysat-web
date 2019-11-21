@@ -8,7 +8,7 @@
 
 <script>
 import { checkSession } from '@/utils/sessionUtils/sessionFunc'
-import cx from '@/assets/cx.png'
+import cx from '@/assets/team9.jpg'
 
 export default {
   beforeCreate () {

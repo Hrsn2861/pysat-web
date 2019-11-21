@@ -37,7 +37,7 @@
               :limit="1"
               :auto-upload="false"
             >
-            <center><el-button slot="trigger" class="upload-btn" type="primitive">选取图片</el-button></center>
+            <el-button slot="trigger" class="upload-btn" type="primitive">选取图片</el-button>
             <el-button type="primary" @click="RealSubmit">点击上传</el-button>
             </el-upload>
           </el-row>
